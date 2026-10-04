@@ -1,10 +1,8 @@
 FROM node:22-bookworm-slim AS frontend
 WORKDIR /app
-COPY package.json package-lock.json ./
-COPY client/package.json client/package.json
-RUN npm ci
+COPY scripts/build-frontend.mjs ./scripts/build-frontend.mjs
 COPY client ./client
-RUN npm run build
+RUN node scripts/build-frontend.mjs
 
 FROM python:3.12-slim-bookworm AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 APP_ENV=production

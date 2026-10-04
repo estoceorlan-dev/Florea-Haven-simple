@@ -1,6 +1,15 @@
-import { formatCurrency, formatDateTime } from './currency.js';
+export const currency = new Intl.NumberFormat('en-PH', {
+  style: 'currency',
+  currency: 'PHP',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+}).format;
 
-export { formatCurrency as currency, formatDateTime as dateTime };
+export const dateTime = (value) =>
+  new Intl.DateTimeFormat('en-PH', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value));
 
 // These helpers use ordinary DOM methods. They never build HTML strings.
 export const find = (selector, root = document) => root.querySelector(selector);

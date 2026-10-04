@@ -1,6 +1,6 @@
 # Plain HTML frontend migration
 
-`Florea-Haven-project` now uses **18 standalone HTML documents**, plain CSS, and native JavaScript for live data/actions. The sibling `Florea-Haven-react` repository remains the original reference. [ADR 0005](decisions/0005-plain-html-pages.md) supersedes the intermediate JavaScript-template implementation in ADR 0004.
+`Florea-Haven-project` now uses **18 standalone HTML documents**, plain CSS, and native JavaScript for live data/actions. The sibling `Florea-Haven-react` repository remains the original reference. [ADR 0005](decisions/0005-plain-html-pages.md) describes the current implementation. Superseded React/Express and intermediate frontend design records are available in Git history.
 
 ## Current structure
 

@@ -2,7 +2,7 @@
 
 Date: 2026-10-04
 
-Status: Accepted and implemented. Supersedes ADR 0004's JavaScript templates, router, state stores, and Vite application tooling.
+Status: Accepted and implemented. Replaces the intermediate JavaScript templates, router, state stores, and Vite application tooling. Superseded design records are available in Git history.
 
 ## Context
 

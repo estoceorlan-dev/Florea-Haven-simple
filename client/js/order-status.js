@@ -15,11 +15,3 @@ export const allowedOrderTransitions = {
   delivered: [],
   cancelled: [],
 };
-
-export const orderTransitionLabels = {
-  confirmed: 'Confirm order',
-  preparing: 'Start preparing',
-  shipped: 'Mark as shipped',
-  delivered: 'Mark as delivered',
-  cancelled: 'Cancel order',
-};

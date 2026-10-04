@@ -1,35 +1,35 @@
 # ADR 0002: Python Flask backend
 
-Frontend choice superseded in this fork by [ADR 0005](0005-plain-html-pages.md); this record preserves the original backend decision.
+The current HTML frontend is described in [ADR 0005](0005-plain-html-pages.md). This record describes the retained Python backend and database compatibility requirements.
 
 - Status: Accepted and implemented
 - Date: 2026-09-28
-- Supersedes: ADR 0001's Express runtime, JavaScript database adapter, in-memory fallback, and deployment assumptions
+- Replaces: the original Express runtime, JavaScript database adapter, in-memory fallback, and deployment assumptions
 
 ## Reason
 
-The course requires Python in the application. React already communicates with the backend through a documented JSON API, so migrating the API preserves the existing storefront, administrator interface, and UI/UX improvements.
+The course requires Python in the application. A documented JSON API allows the backend and frontend to change independently while preserving the storefront, administrator interface, and persisted data.
 
 ## Decision
 
 - Python Flask owns authentication, validation, catalog, cart, checkout, inventory, and order administration.
-- React, Tailwind, React Query, and React Router remain the frontend.
+- Standalone HTML pages and native JavaScript communicate with the Flask API on the same origin.
 - Psycopg executes parameterized SQL against PostgreSQL. No ORM or second backend is introduced.
-- The original five SQL migrations and catalog seed move to `backend/`. Migration filenames and the `schema_migrations` ledger remain unchanged, allowing existing databases to continue without data conversion.
+- SQL migrations and the catalog seed live in `backend/`. Migration filenames and the `schema_migrations` ledger remain unchanged, allowing existing databases to continue without data conversion.
 - PostgreSQL is required in development and tests. Tests create and remove their own random schema; they never truncate application tables.
 - The API retains endpoint paths, success/error envelopes, numeric money values, UTC timestamps, cookie name, HS256 signing, and bcrypt password compatibility.
 - `Decimal` is used for internal money calculations. Cart hashes and order fingerprints preserve the original JavaScript serialization for the supported inputs.
 - A user's cart mutations and checkout acquire the same user-row lock. Checkout locks product rows in UUID order and commits order creation, stock reduction, snapshots, and cart clearing together.
 - Cancellation locks the order, validates its transition, and restores stock in the same transaction. Repeated or concurrent cancellations cannot restore stock twice.
-- Vite proxies `/api` to Flask on port 4000 during development. Flask can serve the built React app and its deep links in production, alongside `/api`, through Waitress.
+- Flask serves editable HTML, CSS, and JavaScript on port 4000 during development. Waitress serves the copied release website alongside `/api` in production.
 - Production requires `APP_ENV=production`, a stable `JWT_SECRET`, the public HTTPS `CLIENT_ORIGIN`, and persistent PostgreSQL. Use a TLS-terminating host/reverse proxy. `DATABASE_SSL=true` enables certificate and hostname verification; supply the provider's trusted root when needed.
-- The default rate-limit store is in-process memory, matching the previous single-process API. Deploy one Waitress process initially. Multiple instances require shared limiter storage and its corresponding Python dependency.
+- Local development can use in-process rate limits. Render uses shared Redis limiter storage as configured in the deployment runbook.
 
 ## Migration boundaries
 
-This changes the backend implementation and local tooling, not the course project's feature scope. Image uploads and other unfinished roadmap features remain future work. Node/npm are still development tools for React; the running production application and all business logic use Python.
+The Python backend owns the API business rules, including managed image uploads and user administration. Node/npm provide local commands and frontend checks; the running production application and all business logic use Python.
 
-The Express source is retired after the Python replacement passes verification; it remains available in Git history. Existing frontend edits are preserved.
+The retired Express source and original design records remain available in Git history. The original React project is preserved in the sibling repository.
 
 ## Verification
 
@@ -37,11 +37,10 @@ The Python suite covers catalog filtering and administration, sessions and permi
 
 Compatibility fixtures in `backend/tests/fixtures/express-compatibility.json` were generated using the previous backend's bcryptjs, jose, and JSON.stringify implementations. They verify existing hashes, tokens, cart revisions, and replay of pre-migration orders.
 
-Existing Vitest frontend tests remain in place. Manual browser verification and hosted deployment are separate from automated API and frontend checks.
+Vitest checks the native JavaScript helpers, while Playwright verifies customer and administrator journeys on desktop and mobile. Hosted deployment checks are described in the deployment runbook.
 
 ## References
 
 - [Flask application factories](https://flask.palletsprojects.com/en/stable/patterns/appfactories/)
-- [Flask single-page applications](https://flask.palletsprojects.com/en/stable/patterns/singlepageapplications/)
 - [Flask deployment with Waitress](https://flask.palletsprojects.com/en/stable/deploying/waitress/)
 - [Psycopg transaction management](https://www.psycopg.org/psycopg3/docs/basic/transactions.html)
