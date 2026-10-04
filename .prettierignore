@@ -2,13 +2,10 @@ node_modules/
 client/dist/
 coverage/
 package-lock.json
-architecture.md
-implementation-plan.md
 backend/.venv/
 backend/.pytest_cache/
 backend/.ruff_cache/
 .postgres-test/
 
-.pptx-build/
 test-results/
 playwright-report/

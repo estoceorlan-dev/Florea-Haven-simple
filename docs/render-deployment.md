@@ -5,10 +5,10 @@ The repository is prepared for a single-origin Render Docker web service, manage
 ## Before deployment
 
 1. Run `npm ci`, `npm run backend:setup`, `npx playwright install chromium`, and `npm run check`. Set `TEST_DATABASE_URL` to a PostgreSQL instance where the test user may create schemas. Tests never seed or truncate application tables.
-2. Connect the repository to Render and create a **Blueprint** from `render.yaml`. Keep the repository root as the build context. The multi-stage Dockerfile builds React with Node 22 and runs Flask/Waitress as an unprivileged user on Python 3.12.
+2. Connect the repository to Render and create a **Blueprint** from `render.yaml`. Keep the repository root as the build context. The multi-stage Dockerfile copies the HTML, CSS, and JavaScript website files with Node 22 and runs Flask/Waitress as an unprivileged user on Python 3.12. Clean URLs map to separate HTML documents.
 3. Supply `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in Render's secret fields. Use a separate Cloudinary environment for staging. No unsigned upload preset is required; uploads are signed by the server SDK. Leave unsigned uploads disabled.
 4. Render generates `JWT_SECRET` and wires private database and Key Value URLs. Preserve the signing key across deploys. When migrating existing users, set the existing stable signing key before deploying if their sessions must survive.
-5. Without a custom domain, the app uses Render's `RENDER_EXTERNAL_URL` as its allowed origin. For a custom domain set `CLIENT_ORIGIN=https://your-domain.example` with **no trailing slash**. Keep `VITE_API_URL` empty. Use the canonical domain for all browser traffic.
+5. Without a custom domain, the app uses Render's `RENDER_EXTERNAL_URL` as its allowed origin. For a custom domain set `CLIENT_ORIGIN=https://your-domain.example` with **no trailing slash**. Browser API requests use the same origin; no frontend API URL variable is needed. Use the canonical domain for all browser traffic.
 
 See the official [Blueprint schema](https://render.com/docs/blueprint-spec), [Docker deployments](https://render.com/docs/docker), and [health checks](https://render.com/docs/health-checks). The Blueprint's `preDeployCommand` applies migrations before the new version receives traffic; this requires a paid web service. `autoDeployTrigger: checksPass` waits for repository checks, so enable the included GitHub workflow on your deployment branch.
 

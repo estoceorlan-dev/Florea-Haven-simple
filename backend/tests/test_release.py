@@ -61,3 +61,25 @@ def test_static_cache_and_csp(app, tmp_path):
     assert response.headers["X-Request-ID"]
     assert "immutable" in client.get("/assets/app-hash.js").headers["Cache-Control"]
     assert client.get("/api/health").headers["Cache-Control"] == "no-store"
+
+
+def test_clean_urls_serve_separate_html_documents(app, tmp_path):
+    (tmp_path / "index.html").write_text("Home document")
+    (tmp_path / "pages").mkdir()
+    (tmp_path / "admin").mkdir()
+    for name in ["login", "product", "order", "order-confirmation"]:
+        (tmp_path / "pages" / f"{name}.html").write_text(f"{name} document")
+    (tmp_path / "admin" / "order.html").write_text("Admin order document")
+    app.config["FRONTEND_DIST"] = tmp_path
+    client = app.test_client()
+    for route, content in [
+        ("/login", "login document"),
+        ("/products/product-id", "product document"),
+        ("/orders/order-id", "order document"),
+        ("/orders/order-id/confirmation", "order-confirmation document"),
+        ("/admin/orders/order-id", "Admin order document"),
+    ]:
+        response = client.get(route)
+        assert response.status_code == 200
+        assert response.get_data(as_text=True) == content
+        assert response.headers["Cache-Control"] == "no-cache"

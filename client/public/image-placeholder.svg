@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Botanical image placeholder">
+  <rect width="200" height="200" fill="#f8e4ea"/>
+  <g transform="translate(68 68) scale(2.7)" fill="none" stroke="#985168" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 2 17 2c2 4 3 8.5 3 11a7 7 0 0 1-7 7Z"/>
+    <path d="M2 22c0-6 6-10 12-12"/>
+  </g>
+</svg>

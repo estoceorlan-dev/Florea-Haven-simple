@@ -1,5 +1,11 @@
 {
   "singleQuote": true,
   "trailingComma": "all",
-  "printWidth": 88
+  "printWidth": 88,
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": { "htmlWhitespaceSensitivity": "ignore" }
+    }
+  ]
 }

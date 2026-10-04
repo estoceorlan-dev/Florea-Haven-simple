@@ -14,6 +14,7 @@ from werkzeug.exceptions import HTTPException
 
 from .db import close_db, one
 from .errors import ApiError
+from .frontend import document_for_path
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -54,7 +55,7 @@ def create_app(config=None):
         or (None if environment == "production" else secrets.token_urlsafe(48)),
         SESSION_DAYS=int(os.getenv("SESSION_DAYS", "7")),
         CLIENT_ORIGIN=os.getenv("CLIENT_ORIGIN")
-        or os.getenv("RENDER_EXTERNAL_URL", "http://localhost:5173"),
+        or os.getenv("RENDER_EXTERNAL_URL", "http://localhost:4000"),
         MAX_CONTENT_LENGTH=100 * 1024,
         MAX_FORM_MEMORY_SIZE=100 * 1024,
         MAX_FORM_PARTS=5,
@@ -66,6 +67,9 @@ def create_app(config=None):
         FRONTEND_DIST=ROOT / "client" / "dist",
     )
     app.config.update(config or {})
+    if app.config["APP_ENV"] == "development" and not (config or {}).get("FRONTEND_DIST"):
+        # Development serves the files teammates edit, without a frontend build server.
+        app.config["FRONTEND_DIST"] = ROOT / "client"
     if not app.config["JWT_SECRET"]:
         raise RuntimeError("JWT_SECRET is required in production.")
     if app.config["APP_ENV"] == "production":
@@ -206,10 +210,20 @@ def create_app(config=None):
             response = send_from_directory(dist, path)
             if path.startswith("assets/"):
                 response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+            else:
+                response.headers["Cache-Control"] = "no-cache"
             return response
-        if path.startswith("assets/") or not (dist / "index.html").is_file():
+        if app.config["APP_ENV"] == "development" and (dist / "public" / path).is_file():
+            response = send_from_directory(dist / "public", path)
+            response.headers["Cache-Control"] = "no-cache"
+            return response
+        if path.startswith(("assets/", "js/", "css/")) or not (dist / "index.html").is_file():
             raise ApiError(404, "NOT_FOUND", "Build the frontend with npm run build.")
-        response = send_from_directory(dist, "index.html")
+        document = document_for_path(path)
+        # The index fallback retains compatibility with custom minimal test distributions.
+        if not (dist / document).is_file():
+            document = "index.html"
+        response = send_from_directory(dist, document)
         response.headers["Cache-Control"] = "no-cache"
         return response
 

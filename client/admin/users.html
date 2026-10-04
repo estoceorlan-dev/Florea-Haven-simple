@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fffaf8" />
+    <meta
+      name="description"
+      content="Floréa Haven — flowers, seeds, and botanical fragrances."
+    />
+    <title>Users — Floréa Haven</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script src="/theme-init.js"></script>
+    <script type="module" src="/js/common.js"></script>
+    <script type="module" src="/js/admin-users.js"></script>
+  </head>
+  <body data-page="admin-users" data-access="admin">
+    <!-- The complete page layout is here. JavaScript only fills data and handles actions. -->
+    <div class="min-h-screen bg-surface-muted text-text">
+      <nav aria-label="Skip navigation">
+        <a class="skip-link" href="#main-content">Skip to admin content</a>
+      </nav>
+      <aside
+        class="fixed inset-y-0 left-0 z-30 hidden w-72 flex-col border-r border-border bg-surface lg:flex"
+      >
+        <div class="border-b border-border px-6 py-6">
+          <a aria-label="Floréa Haven home" href="/">
+            <span class="inline-flex items-center gap-1.5 text-evergreen sm:gap-2.5">
+              <span
+                aria-hidden="true"
+                class="hidden min-[400px]:grid size-8 shrink-0 place-items-center rounded-full border border-evergreen/20 bg-sage/50 sm:size-9"
+              >
+                <span class="brand-sprout">F</span>
+              </span>
+              <span
+                class="whitespace-nowrap font-display text-[1.15rem] leading-none tracking-[-0.035em] sm:text-[1.65rem]"
+              >
+                Floréa
+                <i class="font-normal text-clay">Haven</i>
+              </span>
+            </span>
+          </a>
+          <p
+            class="mt-3 pl-11 text-[0.62rem] font-extrabold uppercase tracking-[0.16em] text-text-muted"
+          >
+            Administrator
+          </p>
+        </div>
+        <div class="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-5">
+          <nav class="grid gap-1" aria-label="Administrator">
+            <a class="admin-nav-link" href="/admin">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-layout-dashboard"
+                aria-hidden="true"
+              >
+                <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+                <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+                <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+                <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+              </svg>
+              <span>Dashboard</span>
+            </a>
+            <a class="admin-nav-link" href="/admin/orders">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-clipboard-list"
+                aria-hidden="true"
+              >
+                <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+                <path
+                  d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                ></path>
+                <path d="M12 11h4"></path>
+                <path d="M12 16h4"></path>
+                <path d="M8 11h.01"></path>
+                <path d="M8 16h.01"></path>
+              </svg>
+              <span>Orders</span>
+            </a>
+            <a class="admin-nav-link" href="/admin/products">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-package"
+                aria-hidden="true"
+              >
+                <path
+                  d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"
+                ></path>
+                <path d="M12 22V12"></path>
+                <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                <path d="m7.5 4.27 9 5.15"></path>
+              </svg>
+              <span>Products</span>
+            </a>
+            <a class="admin-nav-link" href="/admin/categories">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-tags"
+                aria-hidden="true"
+              >
+                <path
+                  d="M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"
+                ></path>
+                <path
+                  d="M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"
+                ></path>
+                <circle cx="10.5" cy="6.5" r=".5" fill="currentColor"></circle>
+              </svg>
+              <span>Categories</span>
+            </a>
+            <a
+              class="admin-nav-link admin-nav-link-active"
+              aria-current="page"
+              href="/admin/users"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-users"
+                aria-hidden="true"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+              <span>Users</span>
+            </a>
+            <a class="admin-nav-link" href="/">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-store"
+                aria-hidden="true"
+              >
+                <path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"></path>
+                <path
+                  d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"
+                ></path>
+                <path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"></path>
+              </svg>
+              <span>Floréa Haven</span>
+            </a>
+          </nav>
+          <div class="mt-auto space-y-5 border-t border-border px-2 pt-5">
+            <div class="theme-selector">
+              <label class="theme-selector-label" for="control-1">Appearance</label>
+              <div class="relative min-w-0 max-w-full font-sans w-full">
+                <select
+                  class="inline-flex min-h-11 min-w-0 max-w-full items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-2.5 text-left text-sm font-medium text-text shadow-low transition-colors hover:border-border-strong hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-canvas w-full plain-select"
+                  data-theme-select=""
+                  aria-label="Appearance"
+                  id="control-1"
+                >
+                  <option value="system">System</option>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                </select>
+              </div>
+              <span class="sr-only" aria-live="polite" id="control-2">
+                light theme active
+              </span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span
+                class="grid size-10 shrink-0 place-items-center rounded-full bg-brand-soft text-brand"
+                data-user-avatar=""
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-user-round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="8" r="5"></circle>
+                  <path d="M20 21a8 8 0 0 0-16 0"></path>
+                </svg>
+                <img class="h-full w-full rounded-full object-cover" alt="" hidden="" />
+                <span data-avatar-initial="" aria-hidden="true" hidden=""></span>
+              </span>
+              <div class="min-w-0">
+                <p
+                  class="truncate text-sm font-semibold text-text"
+                  data-user-display=""
+                >
+                  Administrator
+                </p>
+                <p
+                  class="mt-0.5 truncate text-xs text-text-muted"
+                  data-user-email=""
+                ></p>
+              </div>
+            </div>
+            <button
+              class="drawer-action-link w-full border border-border"
+              type="button"
+              data-sign-out=""
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-log-out"
+                aria-hidden="true"
+              >
+                <path d="m16 17 5-5-5-5"></path>
+                <path d="M21 12H9"></path>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              </svg>
+              Sign out
+            </button>
+          </div>
+        </div>
+      </aside>
+      <div class="min-w-0 lg:pl-72">
+        <div
+          class="min-h-screen min-w-0 overflow-x-hidden lg:h-screen lg:overflow-y-auto"
+        >
+          <header
+            class="sticky top-0 z-20 border-b border-border bg-surface/95 backdrop-blur"
+          >
+            <div
+              class="admin-content-shell flex min-h-16 items-center justify-between gap-4 py-3"
+            >
+              <div class="flex min-w-0 items-center gap-3">
+                <button
+                  class="icon-button shrink-0 lg:hidden"
+                  type="button"
+                  aria-controls="navigation-panel"
+                  aria-label="Open administrator navigation"
+                  aria-expanded="false"
+                  data-open-navigation=""
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-menu"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 5h16"></path>
+                    <path d="M4 12h16"></path>
+                    <path d="M4 19h16"></path>
+                  </svg>
+                </button>
+                <a class="lg:hidden" aria-label="Floréa Haven home" href="/">
+                  <span
+                    class="inline-flex items-center gap-1.5 text-evergreen sm:gap-2.5"
+                  >
+                    <span
+                      aria-hidden="true"
+                      class="grid size-8 shrink-0 place-items-center rounded-full border border-evergreen/20 bg-sage/50 sm:size-9"
+                    >
+                      <span class="brand-sprout">F</span>
+                    </span>
+                  </span>
+                </a>
+                <div class="min-w-0">
+                  <p
+                    class="text-[0.6rem] font-extrabold uppercase tracking-[0.15em] text-text-muted"
+                  >
+                    Admin workspace
+                  </p>
+                  <p class="truncate font-display text-xl text-evergreen sm:text-2xl">
+                    Users
+                  </p>
+                </div>
+              </div>
+              <div class="flex min-w-0 items-center gap-3">
+                <div class="hidden min-w-0 text-right sm:block">
+                  <p
+                    class="truncate text-xs font-semibold text-evergreen"
+                    data-user-display=""
+                  >
+                    Administrator
+                  </p>
+                  <p
+                    class="mt-0.5 truncate text-[0.68rem] text-text-muted"
+                    data-user-email=""
+                  ></p>
+                </div>
+                <span
+                  class="rounded-full bg-brand-soft px-3 py-1.5 text-[0.62rem] font-extrabold uppercase tracking-[0.14em] text-brand"
+                >
+                  Admin
+                </span>
+              </div>
+            </div>
+          </header>
+          <main
+            id="main-content"
+            class="admin-content-shell py-8 sm:py-10"
+            hidden=""
+            tabindex="-1"
+          >
+            <p id="page-error" class="form-alert mb-6" role="alert" hidden=""></p>
+            <p
+              id="page-notice"
+              class="mb-6 rounded-control border border-border bg-surface-muted p-4 text-sm text-text"
+              role="status"
+              hidden=""
+            ></p>
+            <section>
+              <div
+                class="flex flex-wrap items-end justify-between gap-5 border-b border-border pb-7"
+              >
+                <div>
+                  <p class="eyebrow text-clay">Account administration</p>
+                  <h1
+                    class="mt-2 font-display text-5xl tracking-[-0.045em] text-evergreen"
+                  >
+                    Users
+                  </h1>
+                  <p class="mt-3 max-w-2xl text-sm leading-6 text-text-muted">
+                    Manage customer and administrator accounts. Deactivate access while
+                    keeping order history.
+                  </p>
+                </div>
+                <button class="button-primary" data-new-user="">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-plus"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5v14"></path>
+                  </svg>
+                  Add user
+                </button>
+              </div>
+
+              <form
+                class="mt-7 grid gap-4 rounded-card border border-border bg-surface p-4 shadow-low sm:grid-cols-2 xl:grid-cols-4"
+                aria-label="Filter users"
+                id="filter-form"
+                action="/admin/users"
+                method="get"
+              >
+                <label class="form-field">
+                  Search users
+                  <input
+                    class="form-input"
+                    type="search"
+                    placeholder="Name or email"
+                    maxlength="254"
+                    name="search"
+                  />
+                </label>
+                <label class="form-field">
+                  Filter by role
+                  <select class="form-input" name="role">
+                    <option value="all">All roles</option>
+                    <option value="customer">Customers</option>
+                    <option value="admin">Administrators</option>
+                  </select>
+                </label>
+                <label class="form-field">
+                  Filter by status
+                  <select class="form-input" name="status">
+                    <option value="all">All statuses</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </label>
+                <div class="flex items-end gap-2">
+                  <button class="button-primary" type="submit">Apply filters</button>
+                  <button class="button-secondary" type="button" data-clear-filters="">
+                    Clear
+                  </button>
+                </div>
+              </form>
+              <div class="mt-6 grid items-start gap-6" id="user-editor-layout">
+                <div class="min-w-0">
+                  <div
+                    class="overflow-hidden rounded-card border border-border bg-surface shadow-low"
+                  >
+                    <div
+                      class="flex items-center gap-3 border-b border-border bg-surface-muted px-5 py-4"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-users"
+                        aria-hidden="true"
+                      >
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                      </svg>
+                      <h2
+                        class="text-sm font-bold text-evergreen"
+                        data-field="user-count"
+                      >
+                        User accounts
+                      </h2>
+                    </div>
+                    <ul class="divide-y divide-border" id="admin-user-list"></ul>
+                  </div>
+                  <div class="mt-4 flex items-center justify-between gap-4">
+                    <p class="text-xs text-text-muted" data-field="page-summary"></p>
+                  </div>
+                </div>
+                <form
+                  class="rounded-card border border-border bg-surface p-6 shadow-low"
+                  aria-label="Create user"
+                  id="user-form"
+                  hidden=""
+                >
+                  <p class="eyebrow text-clay">Account details</p>
+                  <h2
+                    class="mt-2 font-display text-3xl text-evergreen"
+                    data-field="form-title"
+                  >
+                    Add a user
+                  </h2>
+                  <fieldset class="mt-6 grid min-w-0 gap-5">
+                    <label class="form-field">
+                      Full name
+                      <input
+                        class="form-input"
+                        name="name"
+                        autocomplete="name"
+                        required=""
+                        minlength="2"
+                        maxlength="80"
+                      />
+                    </label>
+                    <label class="form-field">
+                      Email address
+                      <input
+                        class="form-input"
+                        name="email"
+                        type="email"
+                        autocomplete="email"
+                        required=""
+                        maxlength="254"
+                      />
+                    </label>
+                    <label class="form-field">
+                      Password
+                      <input
+                        class="form-input"
+                        name="password"
+                        type="password"
+                        pattern="(?=.*[A-Za-z])(?=.*[0-9]).{8,72}"
+                        autocomplete="new-password"
+                        aria-label="Password"
+                        aria-describedby="user-password-hint"
+                        required=""
+                        minlength="8"
+                        maxlength="72"
+                      />
+                      <span id="user-password-hint" class="form-hint text-text-muted">
+                        8–72 characters, including a letter and a number.
+                      </span>
+                    </label>
+                    <label class="form-field">
+                      Account role
+                      <select
+                        class="form-input"
+                        name="role"
+                        aria-label="Account role"
+                        aria-describedby="user-role-hint"
+                      >
+                        <option value="customer">Customer</option>
+                        <option value="admin">Administrator</option>
+                      </select>
+                      <span id="user-role-hint" class="form-hint text-text-muted">
+                        Administrators can manage users, products, categories, and
+                        orders.
+                      </span>
+                    </label>
+                    <button
+                      class="button-primary w-full"
+                      type="submit"
+                      data-save-user=""
+                    >
+                      Create user
+                    </button>
+                    <button
+                      class="button-secondary w-full"
+                      type="button"
+                      data-cancel-editing=""
+                    >
+                      Cancel
+                    </button>
+                  </fieldset>
+                </form>
+              </div>
+            </section>
+
+            <nav
+              id="pagination"
+              hidden=""
+              class="mt-8 flex items-center justify-between gap-4"
+              aria-label="Pagination"
+            >
+              <a class="button-secondary" data-previous-page="" href="?page=1">
+                Previous
+              </a>
+              <a class="button-secondary" data-next-page="" href="?page=2">Next</a>
+            </nav>
+          </main>
+        </div>
+      </div>
+    </div>
+    <!-- Reusable HTML: navigation-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="navigation-template">
+      <div class="navigation-drawer-root" id="navigation-overlay">
+        <button
+          class="navigation-drawer-backdrop"
+          type="button"
+          tabindex="-1"
+          aria-label="Close Administrator navigation"
+          data-close-overlay=""
+        ></button>
+        <aside
+          class="navigation-drawer-panel"
+          role="dialog"
+          aria-modal="true"
+          data-side="left"
+          id="navigation-panel"
+          aria-label="Administrator navigation"
+        >
+          <div
+            class="flex min-h-16 items-center justify-between gap-4 border-b border-border px-5 py-4"
+          >
+            <p class="font-display text-2xl text-evergreen">Admin menu</p>
+            <button
+              class="icon-button shrink-0"
+              type="button"
+              aria-label="Close Administrator navigation"
+              data-drawer-autofocus="true"
+              data-close-overlay=""
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-x"
+                aria-hidden="true"
+              >
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="flex min-h-0 flex-1 flex-col overflow-y-auto">
+            <div class="border-b border-border bg-surface-muted px-5 py-5">
+              <div class="flex items-center gap-3">
+                <span
+                  class="grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft text-brand"
+                  data-user-avatar=""
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-user-round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="8" r="5"></circle>
+                    <path d="M20 21a8 8 0 0 0-16 0"></path>
+                  </svg>
+                  <img
+                    class="h-full w-full rounded-full object-cover"
+                    alt=""
+                    hidden=""
+                  />
+                  <span data-avatar-initial="" aria-hidden="true" hidden=""></span>
+                </span>
+                <div class="min-w-0">
+                  <p class="truncate font-semibold text-text" data-user-display="">
+                    Administrator
+                  </p>
+                  <p
+                    class="mt-1 truncate text-xs text-text-muted"
+                    data-user-email=""
+                  ></p>
+                </div>
+              </div>
+            </div>
+            <div class="px-3 py-4">
+              <nav class="grid gap-1" aria-label="Administrator">
+                <a
+                  class="admin-nav-link admin-nav-link-active"
+                  aria-current="page"
+                  href="/admin"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-layout-dashboard"
+                    aria-hidden="true"
+                  >
+                    <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+                    <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+                    <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+                    <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+                  </svg>
+                  <span>Dashboard</span>
+                </a>
+                <a class="admin-nav-link" href="/admin/orders">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-clipboard-list"
+                    aria-hidden="true"
+                  >
+                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+                    <path
+                      d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                    ></path>
+                    <path d="M12 11h4"></path>
+                    <path d="M12 16h4"></path>
+                    <path d="M8 11h.01"></path>
+                    <path d="M8 16h.01"></path>
+                  </svg>
+                  <span>Orders</span>
+                </a>
+                <a class="admin-nav-link" href="/admin/products">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-package"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"
+                    ></path>
+                    <path d="M12 22V12"></path>
+                    <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                    <path d="m7.5 4.27 9 5.15"></path>
+                  </svg>
+                  <span>Products</span>
+                </a>
+                <a class="admin-nav-link" href="/admin/categories">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-tags"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"
+                    ></path>
+                    <path
+                      d="M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"
+                    ></path>
+                    <circle cx="10.5" cy="6.5" r=".5" fill="currentColor"></circle>
+                  </svg>
+                  <span>Categories</span>
+                </a>
+                <a class="admin-nav-link" href="/admin/users">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-users"
+                    aria-hidden="true"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                  </svg>
+                  <span>Users</span>
+                </a>
+                <a class="admin-nav-link" href="/">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-store"
+                    aria-hidden="true"
+                  >
+                    <path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"></path>
+                    <path
+                      d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"
+                    ></path>
+                    <path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"></path>
+                  </svg>
+                  <span>Floréa Haven</span>
+                </a>
+              </nav>
+            </div>
+            <div class="mt-auto space-y-5 border-t border-border px-5 py-6">
+              <div class="theme-selector">
+                <label class="theme-selector-label" for="navigation-control-3">
+                  Appearance
+                </label>
+                <div class="relative min-w-0 max-w-full font-sans w-full">
+                  <select
+                    class="inline-flex min-h-11 min-w-0 max-w-full items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-2.5 text-left text-sm font-medium text-text shadow-low transition-colors hover:border-border-strong hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-canvas w-full plain-select"
+                    data-theme-select=""
+                    aria-label="Appearance"
+                    id="navigation-control-3"
+                  >
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
+                <span
+                  class="sr-only"
+                  aria-live="polite"
+                  id="navigation-template-control-4"
+                >
+                  light theme active
+                </span>
+              </div>
+              <button
+                class="drawer-action-link w-full border border-border"
+                type="button"
+                data-sign-out=""
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-log-out"
+                  aria-hidden="true"
+                >
+                  <path d="m16 17 5-5-5-5"></path>
+                  <path d="M21 12H9"></path>
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                </svg>
+                Sign out
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </template>
+    <!-- Reusable HTML: user-row-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="user-row-template">
+      <li
+        class="grid gap-4 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+        data-user-row=""
+      >
+        <div class="min-w-0">
+          <h3
+            class="break-words font-display text-2xl text-evergreen"
+            data-field="name"
+          >
+            User name
+          </h3>
+          <p class="mt-1 break-all text-sm text-text-muted" data-field="email"></p>
+          <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+            <span
+              class="rounded-full bg-brand-soft px-3 py-1 text-brand"
+              data-field="role"
+            >
+              Customer
+            </span>
+            <span
+              class="rounded-full px-3 py-1 bg-brand-soft text-success"
+              data-field="active-status"
+            >
+              Active
+            </span>
+          </div>
+          <p class="mt-3 text-xs text-text-muted" data-field="joined"></p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button class="button-secondary" aria-label="Edit user" data-edit-user="">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-pencil"
+              aria-hidden="true"
+            >
+              <path
+                d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+              ></path>
+              <path d="m15 5 4 4"></path>
+            </svg>
+            Edit
+          </button>
+          <button
+            class="button-secondary"
+            aria-label="Change user status"
+            data-toggle-user=""
+          >
+            Deactivate
+          </button>
+        </div>
+      </li>
+    </template>
+    <!-- Reusable HTML: confirmation-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="confirmation-template">
+      <div class="confirmation-root" id="confirmation-overlay">
+        <button
+          class="confirmation-backdrop"
+          type="button"
+          aria-label="Close confirmation"
+          data-close-overlay=""
+        ></button>
+        <section
+          class="confirmation-panel"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="confirmation-title"
+          aria-describedby="confirmation-description"
+        >
+          <span
+            class="grid size-11 place-items-center rounded-full bg-brand-soft text-danger"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-alert-triangle"
+              aria-hidden="true"
+            >
+              <path
+                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+              ></path>
+              <path d="M12 9v4"></path>
+              <path d="M12 17h.01"></path>
+            </svg>
+          </span>
+          <p class="eyebrow mt-5 text-danger">Please confirm</p>
+          <h2
+            class="mt-2 font-display text-3xl text-evergreen"
+            id="confirmation-title"
+            data-confirm-title=""
+          >
+            Confirm this change?
+          </h2>
+          <p
+            class="mt-3 text-sm leading-6 text-text-muted"
+            id="confirmation-description"
+            data-confirm-description=""
+          >
+            Review this action before continuing.
+          </p>
+          <div class="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button class="button-secondary" type="button" data-close-overlay="">
+              Keep it
+            </button>
+            <button class="button-danger" type="button" data-confirm-action="">
+              Confirm
+            </button>
+          </div>
+        </section>
+      </div>
+    </template>
+    <noscript>
+      <p class="page-shell py-5">
+        Enable JavaScript to load live product data and use account or checkout actions.
+      </p>
+    </noscript>
+  </body>
+</html>

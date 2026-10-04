@@ -2,17 +2,1390 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fffaf8" />
     <meta
       name="description"
-      content="Floréa Haven — flowers, seeds, and botanical fragrances for slower, more beautiful days."
+      content="Floréa Haven — flowers, seeds, and botanical fragrances."
     />
-    <meta name="theme-color" content="#fffaf8" />
+    <title>Let beautytake root. — Floréa Haven</title>
+    <link rel="stylesheet" href="/css/styles.css" />
     <script src="/theme-init.js"></script>
-    <title>Floréa Haven — Let beauty take root</title>
+    <script type="module" src="/js/common.js"></script>
+    <script type="module" src="/js/catalog.js"></script>
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+  <body data-page="home" data-access="public">
+    <!-- The complete page layout is here. JavaScript only fills data and handles actions. -->
+    <div class="min-h-screen bg-canvas text-text">
+      <nav aria-label="Skip navigation">
+        <a class="skip-link" href="#main-content">Skip to content</a>
+      </nav>
+      <div
+        class="bg-evergreen px-4 py-2.5 text-center text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-ivory sm:text-[0.68rem] sm:tracking-[0.19em]"
+      >
+        Cash on Delivery · Made gently in Bohol
+      </div>
+      <header
+        class="sticky top-0 z-40 border-b border-border/70 bg-canvas/90 shadow-low backdrop-blur-xl"
+      >
+        <div
+          class="page-shell flex h-20 items-center justify-between gap-1 sm:gap-3 xl:h-24"
+        >
+          <button
+            class="icon-button xl:hidden"
+            type="button"
+            aria-controls="navigation-panel"
+            aria-label="Open navigation"
+            aria-expanded="false"
+            data-open-navigation=""
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-menu"
+            >
+              <path d="M4 5h16"></path>
+              <path d="M4 12h16"></path>
+              <path d="M4 19h16"></path>
+            </svg>
+          </button>
+          <a class="min-w-0 shrink-0" aria-label="Floréa Haven home" href="/">
+            <span class="inline-flex items-center gap-1.5 text-evergreen sm:gap-2.5">
+              <span
+                aria-hidden="true"
+                class="hidden min-[400px]:grid size-8 shrink-0 place-items-center rounded-full border border-evergreen/20 bg-sage/50 sm:size-9"
+              >
+                <span class="brand-sprout">F</span>
+              </span>
+              <span
+                class="whitespace-nowrap font-display text-[1.15rem] leading-none tracking-[-0.035em] sm:text-[1.65rem]"
+              >
+                Floréa
+                <i class="font-normal text-clay">Haven</i>
+              </span>
+            </span>
+          </a>
+          <nav
+            class="hidden items-center gap-0.5 rounded-full border border-border/60 bg-surface-muted/70 p-1 xl:flex"
+            aria-label="Main navigation"
+          >
+            <a class="nav-link nav-link-active" aria-current="page" href="/">Home</a>
+            <a class="nav-link" href="/products">Shop all</a>
+            <a class="nav-link" href="/products?category=flowers">Flowers</a>
+            <a class="nav-link" href="/products?category=seeds">Seeds</a>
+            <a class="nav-link" href="/products?category=perfumes">Perfumes</a>
+          </nav>
+          <div class="flex shrink-0 items-center sm:gap-1">
+            <button
+              class="icon-button"
+              type="button"
+              aria-label="Search products"
+              aria-expanded="false"
+              data-toggle-search=""
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-search"
+              >
+                <path d="m21 21-4.34-4.34"></path>
+                <circle cx="11" cy="11" r="8"></circle>
+              </svg>
+            </button>
+            <a
+              class="icon-button relative"
+              aria-label="Shopping cart with 0 items"
+              href="/cart"
+              data-cart-link=""
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-shopping-bag"
+                aria-hidden="true"
+              >
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                <path d="M3.103 6.034h17.794"></path>
+                <path
+                  d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"
+                ></path>
+              </svg>
+              <span
+                data-cart-count=""
+                class="absolute -right-1 -top-1 grid min-w-5 h-5 place-items-center rounded-full bg-brand px-1 text-[0.6rem] font-bold text-canvas"
+                hidden=""
+              >
+                0
+              </span>
+            </a>
+            <a
+              class="account-link"
+              aria-label="Sign in"
+              href="/login"
+              data-account-link=""
+            >
+              <span
+                class="inline-grid shrink-0 place-items-center rounded-full bg-brand-soft text-brand size-8"
+                data-user-avatar=""
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="19"
+                  height="19"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-user-round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="8" r="5"></circle>
+                  <path d="M20 21a8 8 0 0 0-16 0"></path>
+                </svg>
+                <img class="h-full w-full rounded-full object-cover" alt="" hidden="" />
+                <span data-avatar-initial="" aria-hidden="true" hidden=""></span>
+              </span>
+              <span class="hidden min-w-0 md:block">
+                <span
+                  class="block text-[0.6rem] font-bold uppercase tracking-[0.12em] text-text-muted"
+                >
+                  Welcome
+                </span>
+                <span
+                  class="block max-w-28 truncate text-xs font-semibold text-evergreen xl:max-w-36"
+                  data-account-name=""
+                >
+                  Sign in
+                </span>
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <form
+          class="animate-reveal border-t border-border bg-surface/95 px-4 py-4"
+          role="search"
+          id="site-search-form"
+          hidden=""
+          action="/products"
+          method="get"
+        >
+          <div
+            class="mx-auto flex max-w-2xl items-center gap-3 rounded-full border border-border bg-canvas p-2 pl-4 focus-within:border-brand"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-search shrink-0"
+              aria-hidden="true"
+            >
+              <path d="m21 21-4.34-4.34"></path>
+              <circle cx="11" cy="11" r="8"></circle>
+            </svg>
+            <label class="sr-only" for="site-search">Search the collection</label>
+            <input
+              id="site-search"
+              class="min-h-11 min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-text-muted"
+              placeholder="Search flowers, seeds, perfumes…"
+              name="search"
+            />
+            <button class="button-primary px-4 sm:px-6" type="submit">Search</button>
+          </div>
+        </form>
+      </header>
+
+      <main id="main-content" tabindex="-1">
+        <p id="page-error" class="form-alert mb-6" role="alert" hidden=""></p>
+        <p
+          id="page-notice"
+          class="mb-6 rounded-control border border-border bg-surface-muted p-4 text-sm text-text"
+          role="status"
+          hidden=""
+        ></p>
+        <section class="page-shell pt-4 sm:pt-6">
+          <div
+            class="grid overflow-hidden rounded-[2rem] border border-border/70 bg-linear-to-br from-surface-muted via-canvas to-brand-soft shadow-low lg:min-h-[620px] lg:grid-cols-2 lg:rounded-[2.5rem]"
+          >
+            <div
+              class="flex animate-reveal flex-col justify-center px-6 py-10 sm:px-10 sm:py-14 lg:px-12 xl:px-16"
+            >
+              <p class="eyebrow mb-7 flex items-center gap-2 text-brand-strong">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-flower2"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"
+                  ></path>
+                  <circle cx="12" cy="8" r="2"></circle>
+                  <path d="M12 10v12"></path>
+                  <path d="M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z"></path>
+                  <path d="M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z"></path>
+                </svg>
+                Flowers · Seeds · Fragrance
+              </p>
+              <h1
+                class="font-display text-[clamp(3.4rem,6.8vw,6.5rem)] leading-[0.96] tracking-[-0.06em] text-evergreen"
+              >
+                Let beauty
+                <span class="block font-normal italic text-clay">take root.</span>
+              </h1>
+              <p
+                class="mt-6 max-w-md text-base leading-7 text-text-muted sm:text-lg sm:leading-8"
+              >
+                Garden-made gestures and botanical rituals, chosen to bring a little
+                more softness into every day.
+              </p>
+              <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <a class="button-primary" href="/products">
+                  Explore the collection
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-arrow-right"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                  </svg>
+                </a>
+                <a class="button-secondary" href="/products?category=flowers">
+                  Shop fresh flowers
+                </a>
+              </div>
+              <div
+                class="mt-8 flex items-center gap-3 border-t border-border pt-5 text-xs leading-5 text-text-muted"
+              >
+                <span
+                  class="grid size-9 shrink-0 place-items-center rounded-full bg-brand-soft text-brand"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-leaf"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                    ></path>
+                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                  </svg>
+                </span>
+                A little nature. A little everyday joy.
+              </div>
+            </div>
+            <div
+              class="relative m-3 mt-0 min-h-72 overflow-hidden rounded-[1.5rem] bg-brand-soft sm:min-h-96 lg:m-4 lg:ml-0 lg:rounded-[2rem]"
+            >
+              <img
+                class="absolute inset-0 size-full object-cover object-center"
+                src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&amp;fit=crop&amp;w=1800&amp;q=90"
+                alt="A romantic arrangement of pale garden flowers"
+                fetchpriority="high"
+              />
+              <div
+                class="absolute inset-0 bg-linear-to-t from-image-overlay/55 via-transparent to-transparent"
+              ></div>
+              <div
+                class="absolute inset-x-5 bottom-5 flex items-center gap-3 rounded-2xl border border-white/30 bg-white/90 p-4 text-[#3d2a31] shadow-lg backdrop-blur-md sm:inset-x-7 sm:bottom-7 sm:p-5"
+              >
+                <span
+                  class="grid size-10 shrink-0 place-items-center rounded-full bg-[#f8e4ea] text-[#74374d]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-flower2"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"
+                    ></path>
+                    <circle cx="12" cy="8" r="2"></circle>
+                    <path d="M12 10v12"></path>
+                    <path d="M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z"></path>
+                    <path d="M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z"></path>
+                  </svg>
+                </span>
+                <div>
+                  <p class="font-display text-xl leading-tight">
+                    Rooted in the little things
+                  </p>
+                  <p class="mt-1 text-xs text-[#705b63]">
+                    Thoughtfully selected in Bohol
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="page-shell py-14 sm:py-20 lg:py-24">
+          <div
+            class="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end md:mb-14"
+          >
+            <div>
+              <p class="eyebrow text-clay">Find your kind of beautiful</p>
+              <h2 class="section-title mt-3">Three ways to grow</h2>
+            </div>
+            <p class="max-w-sm text-sm leading-6 text-text-muted">
+              From the first seed to the final note of fragrance, each piece is selected
+              to feel personal and quietly special.
+            </p>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-3 lg:gap-6" id="category-list"></div>
+        </section>
+        <section
+          class="rounded-[2rem] border-y border-border/70 bg-surface-muted/50 py-14 sm:mx-4 sm:rounded-[2.5rem] sm:py-20 lg:py-24"
+        >
+          <div class="page-shell">
+            <div class="mb-10 flex items-end justify-between gap-4 md:mb-14">
+              <div>
+                <p class="eyebrow text-clay">From our garden</p>
+                <h2 class="section-title mt-3">Haven favorites</h2>
+              </div>
+              <a class="text-link hidden sm:inline-flex" href="/products">
+                View the full collection
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-arrow-right"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </a>
+            </div>
+            <div class="product-grid featured-grid" id="product-list"></div>
+            <section
+              id="empty-state"
+              hidden=""
+              class="rounded-card border border-border bg-surface p-8 text-center"
+            >
+              <h2 class="font-display text-3xl text-evergreen">No pieces found.</h2>
+              <p class="mt-3 text-sm text-text-muted">
+                Try another search or collection.
+              </p>
+            </section>
+            <a class="button-secondary mt-10 w-full sm:hidden" href="/products">
+              View the full collection
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-arrow-right"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </section>
+        <section class="page-shell py-14 sm:py-20 lg:py-24">
+          <div
+            class="grid overflow-hidden rounded-card border border-border bg-surface-muted shadow-low md:grid-cols-2"
+          >
+            <div class="relative min-h-64 sm:min-h-[360px]">
+              <img
+                class="absolute inset-0 size-full object-cover"
+                src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&amp;fit=crop&amp;w=1400&amp;q=85"
+                alt="Green leaves growing in warm natural light"
+                loading="lazy"
+              />
+            </div>
+            <div class="flex items-center px-6 py-10 sm:px-10 lg:px-14 lg:py-16">
+              <div>
+                <p class="eyebrow text-clay">The Floréa promise</p>
+                <h2
+                  class="mt-4 max-w-md font-display text-4xl leading-[1.02] tracking-[-0.045em] text-evergreen sm:text-5xl"
+                >
+                  Chosen for the way it makes a day feel.
+                </h2>
+                <p class="mt-6 max-w-md text-sm leading-7 text-text-muted">
+                  We look for lasting flowers, generous seeds, and fragrances that
+                  unfold gently. Everything in the Haven earns its place through beauty,
+                  character, and care.
+                </p>
+                <div
+                  class="mt-9 grid gap-5 sm:grid-cols-3 md:grid-cols-1 lg:grid-cols-3"
+                >
+                  <div class="flex items-center gap-2.5">
+                    <span
+                      class="grid size-9 shrink-0 place-items-center rounded-full border border-border bg-surface text-brand"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-flower2"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"
+                        ></path>
+                        <circle cx="12" cy="8" r="2"></circle>
+                        <path d="M12 10v12"></path>
+                        <path d="M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z"></path>
+                        <path d="M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z"></path>
+                      </svg>
+                    </span>
+                    <span class="text-xs font-semibold">Season-led</span>
+                  </div>
+                  <div class="flex items-center gap-2.5">
+                    <span
+                      class="grid size-9 shrink-0 place-items-center rounded-full border border-border bg-surface text-brand"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-leaf"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                        ></path>
+                        <path
+                          d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+                        ></path>
+                      </svg>
+                    </span>
+                    <span class="text-xs font-semibold">Botanical</span>
+                  </div>
+                  <div class="flex items-center gap-2.5">
+                    <span
+                      class="grid size-9 shrink-0 place-items-center rounded-full border border-border bg-surface text-brand"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-sparkles"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"
+                        ></path>
+                        <path d="M20 2v4"></path>
+                        <path d="M22 4h-4"></path>
+                        <circle cx="4" cy="20" r="2"></circle>
+                      </svg>
+                    </span>
+                    <span class="text-xs font-semibold">Small-batch</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer
+        class="mt-8 rounded-t-[2rem] bg-evergreen text-ivory sm:mt-12 sm:rounded-t-[3rem]"
+      >
+        <div class="page-shell grid gap-12 py-14 md:grid-cols-[1.4fr_1fr_1fr] md:py-20">
+          <div class="max-w-sm">
+            <a aria-label="Floréa Haven home" href="/">
+              <span class="inline-flex items-center gap-2.5 text-ivory">
+                <span
+                  class="grid size-9 place-items-center rounded-full border border-ivory/25 bg-canvas/10"
+                >
+                  <span class="brand-sprout">F</span>
+                </span>
+                <span class="font-display text-[1.65rem] tracking-[-0.035em]">
+                  Floréa
+                  <i class="font-normal text-blush">Haven</i>
+                </span>
+              </span>
+            </a>
+            <p class="mt-5 text-sm leading-7 text-ivory">
+              Garden-grown beauty for homes that make room for softness, scent, and
+              small everyday rituals.
+            </p>
+          </div>
+          <div>
+            <p class="eyebrow text-blush">Explore</p>
+            <div class="mt-5 flex flex-col gap-3 text-sm text-ivory">
+              <a class="hover:text-canvas" href="/products">Shop all</a>
+              <a class="hover:text-canvas" href="/products?category=flowers">
+                Fresh flowers
+              </a>
+              <a class="hover:text-canvas" href="/products?category=seeds">
+                Garden seeds
+              </a>
+              <a class="hover:text-canvas" href="/products?category=perfumes">
+                Botanical perfumes
+              </a>
+            </div>
+          </div>
+          <div>
+            <p class="eyebrow text-blush">Your orders</p>
+            <p class="mt-5 text-sm leading-7 text-ivory">
+              View your purchase details and follow each order from confirmation to
+              delivery.
+            </p>
+            <a
+              class="mt-3 inline-block text-sm underline hover:text-canvas"
+              href="/orders"
+            >
+              Track your order
+            </a>
+          </div>
+        </div>
+        <div class="border-t border-white/10 px-4 py-5 text-center text-xs text-ivory">
+          © 2026 Floréa Haven. Made to grow slowly.
+        </div>
+      </footer>
+    </div>
+    <!-- Reusable HTML: navigation-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="navigation-template">
+      <div class="navigation-drawer-root" id="navigation-overlay">
+        <button
+          class="navigation-drawer-backdrop"
+          type="button"
+          tabindex="-1"
+          aria-label="Close Mobile navigation"
+          data-close-overlay=""
+        ></button>
+        <aside
+          class="navigation-drawer-panel"
+          role="dialog"
+          aria-modal="true"
+          data-side="left"
+          id="navigation-panel"
+          aria-label="Mobile navigation"
+        >
+          <div
+            class="flex min-h-16 items-center justify-between gap-4 border-b border-border px-5 py-4"
+          >
+            <p class="font-display text-2xl text-evergreen">Explore</p>
+            <button
+              class="icon-button shrink-0"
+              type="button"
+              aria-label="Close Mobile navigation"
+              data-drawer-autofocus="true"
+              data-close-overlay=""
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-x"
+                aria-hidden="true"
+              >
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="flex min-h-0 flex-1 flex-col overflow-y-auto">
+            <div class="border-b border-border bg-surface-muted px-5 py-5">
+              <div class="flex items-center gap-3">
+                <span
+                  class="grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft text-brand"
+                >
+                  <span
+                    class="inline-grid shrink-0 place-items-center rounded-full bg-brand-soft text-brand size-11"
+                    data-user-avatar=""
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="19"
+                      height="19"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-user-round"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="8" r="5"></circle>
+                      <path d="M20 21a8 8 0 0 0-16 0"></path>
+                    </svg>
+                    <img
+                      class="h-full w-full rounded-full object-cover"
+                      alt=""
+                      hidden=""
+                    />
+                    <span data-avatar-initial="" aria-hidden="true" hidden=""></span>
+                  </span>
+                </span>
+                <div class="min-w-0">
+                  <p class="truncate font-semibold text-text" data-user-display="">
+                    Welcome to Floréa Haven
+                  </p>
+                  <p class="mt-1 truncate text-xs text-text-muted" data-user-email="">
+                    Sign in to see your account and orders
+                  </p>
+                </div>
+              </div>
+            </div>
+            <nav class="px-3 py-4" aria-label="Store navigation">
+              <a class="drawer-nav-link" aria-current="page" href="/">Home</a>
+              <a class="drawer-nav-link" href="/products">Shop all</a>
+              <a class="drawer-nav-link" href="/products?category=flowers">Flowers</a>
+              <a class="drawer-nav-link" href="/products?category=seeds">Seeds</a>
+              <a class="drawer-nav-link" href="/products?category=perfumes">Perfumes</a>
+            </nav>
+            <div class="mx-5 border-t border-border pt-4">
+              <p class="eyebrow mb-2 text-text-muted">Account</p>
+              <a class="drawer-action-link" href="/login" data-drawer-account="">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-user-round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="8" r="5"></circle>
+                  <path d="M20 21a8 8 0 0 0-16 0"></path>
+                </svg>
+                Sign in
+              </a>
+              <a class="drawer-action-link" href="/cart">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-shopping-bag"
+                  aria-hidden="true"
+                >
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                  <path d="M3.103 6.034h17.794"></path>
+                  <path
+                    d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"
+                  ></path>
+                </svg>
+                Cart
+              </a>
+              <div data-member-only="" hidden="">
+                <a class="drawer-action-link" href="/orders">My orders</a>
+                <button
+                  class="drawer-action-link w-full"
+                  type="button"
+                  data-sign-out=""
+                >
+                  Sign out
+                </button>
+              </div>
+            </div>
+            <div class="mt-auto px-5 py-6">
+              <div class="theme-selector">
+                <label class="theme-selector-label" for="navigation-control-1">
+                  Appearance
+                </label>
+                <div class="relative min-w-0 max-w-full font-sans w-full">
+                  <select
+                    class="inline-flex min-h-11 min-w-0 max-w-full items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-2.5 text-left text-sm font-medium text-text shadow-low transition-colors hover:border-border-strong hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-canvas w-full plain-select"
+                    data-theme-select=""
+                    aria-label="Appearance"
+                    id="navigation-control-1"
+                  >
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
+                <span
+                  class="sr-only"
+                  aria-live="polite"
+                  id="navigation-template-control-2"
+                >
+                  light theme active
+                </span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </template>
+    <!-- Reusable HTML: product-card-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="product-card-template">
+      <article class="product-card group" data-product-card="">
+        <a
+          class="relative m-2 mb-0 block aspect-square overflow-hidden rounded-[1.1rem] bg-brand-soft"
+          href="/products"
+          data-product-link=""
+        >
+          <img
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+            width="800"
+            height="800"
+            decoding="async"
+            class="size-full object-cover transition duration-500 ease-out motion-safe:group-hover:scale-[1.035] motion-safe:group-focus-within:scale-[1.035]"
+            alt=""
+            loading="lazy"
+            data-field="image"
+          />
+          <span
+            class="absolute left-3 top-3 rounded-full bg-ivory/95 px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-evergreen shadow-sm"
+            data-featured=""
+          >
+            Haven favorite
+          </span>
+          <span
+            class="absolute bottom-3 right-3 grid size-10 translate-y-2 place-items-center rounded-full bg-evergreen text-canvas opacity-0 shadow-lg transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-arrow-up-right"
+              aria-hidden="true"
+            >
+              <path d="M7 7h10v10"></path>
+              <path d="M7 17 17 7"></path>
+            </svg>
+          </span>
+        </a>
+        <div class="flex flex-1 flex-col p-4 sm:p-5">
+          <div class="min-w-0">
+            <div class="min-w-0 break-words">
+              <p
+                class="text-[0.64rem] font-bold uppercase tracking-[0.17em] text-clay"
+                data-field="category"
+              >
+                Collection
+              </p>
+              <h3
+                class="mt-2 font-display text-xl leading-snug tracking-[-0.025em] sm:text-[1.35rem]"
+              >
+                <a
+                  class="hover:text-evergreen"
+                  href="/products"
+                  data-field="name"
+                  data-product-link=""
+                >
+                  Product name
+                </a>
+              </h3>
+            </div>
+            <p
+              class="mt-3 text-lg font-semibold tracking-tight text-brand-strong"
+              data-field="price"
+            >
+              Price
+            </p>
+          </div>
+          <p
+            class="stock-indicator mb-5 mt-3 self-start"
+            data-stock-state="available"
+            data-stock=""
+          >
+            <span class="stock-indicator-dot" aria-hidden="true"></span>
+            <span aria-live="polite" aria-atomic="true" data-field="stock">
+              Checking stock…
+            </span>
+          </p>
+          <div class="mt-auto border-t border-border/70 pt-4">
+            <div class="grid grid-cols-[minmax(0,1fr)_3rem] items-start gap-2">
+              <button type="button" class="button-primary w-full px-3" data-buy-now="">
+                Buy now
+              </button>
+              <div class="contents">
+                <button
+                  type="button"
+                  class="button-secondary size-12 px-0"
+                  aria-label="Add product to cart"
+                  title="Add to cart"
+                  aria-busy="false"
+                  data-add-cart=""
+                >
+                  <span class="relative inline-flex" aria-hidden="true">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-shopping-cart"
+                    >
+                      <path
+                        d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"
+                      ></path>
+                      <path
+                        d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"
+                      ></path>
+                      <circle cx="18" cy="20" r="2"></circle>
+                      <circle cx="8" cy="20" r="2"></circle></svg
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-plus absolute -right-1 -top-1"
+                    >
+                      <path d="M5 12h14"></path>
+                      <path d="M12 5v14"></path>
+                    </svg>
+                  </span>
+                </button>
+                <span class="sr-only" aria-live="polite"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </template>
+    <!-- Reusable HTML: category-card-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="category-card-template">
+      <a class="category-card group" data-category-card="">
+        <img
+          class="size-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-105 motion-safe:group-focus-visible:scale-105"
+          alt=""
+          loading="lazy"
+          data-field="image"
+        />
+        <span
+          class="absolute inset-0 bg-gradient-to-t from-image-overlay/90 via-image-overlay/5 to-transparent"
+        ></span>
+        <span
+          class="absolute left-5 top-5 grid size-9 place-items-center rounded-full border border-white/40 text-xs text-white"
+          data-field="number"
+        ></span>
+        <span class="absolute inset-x-0 bottom-0 p-6 text-white sm:p-4 lg:p-8">
+          <span
+            class="text-[0.64rem] font-bold uppercase tracking-[0.18em] text-blush"
+            data-field="label"
+          ></span>
+          <span class="mt-1 flex items-end justify-between gap-4">
+            <span
+              class="font-display text-4xl tracking-[-0.04em] sm:text-3xl lg:text-4xl"
+              data-field="name"
+            >
+              Collection name
+            </span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-arrow-right mb-1 transition group-hover:translate-x-1"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </span>
+          <span class="mt-2 block text-xs text-white/65" data-field="count"></span>
+        </span>
+      </a>
+    </template>
+    <!-- Reusable HTML: purchase-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="purchase-template">
+      <dialog
+        class="purchase-dialog m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-[1.75rem] border border-border bg-canvas p-0 text-text shadow-overlay backdrop:bg-backdrop backdrop:backdrop-blur-sm motion-safe:animate-reveal motion-safe:[animation-duration:200ms]"
+        aria-labelledby="purchase-title"
+        aria-busy="false"
+        id="purchase-dialog"
+      >
+        <header
+          class="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border bg-canvas/95 px-5 py-4 backdrop-blur-md sm:px-7"
+        >
+          <div>
+            <p class="eyebrow text-brand">A little something beautiful</p>
+            <h2
+              class="mt-1 font-display text-3xl text-brand-strong"
+              id="purchase-title"
+            >
+              Make it yours
+            </h2>
+          </div>
+          <button
+            class="icon-button disabled:opacity-40"
+            type="button"
+            aria-label="Close purchase dialog"
+            autofocus=""
+            data-purchase-close=""
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-x"
+              aria-hidden="true"
+            >
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+          </button>
+        </header>
+        <div class="p-5 sm:p-7">
+          <div class="outline-none" tabindex="-1">
+            <p class="mb-5 text-xs font-medium text-text-muted" data-purchase-step="">
+              1. Review your selection
+            </p>
+            <div
+              class="flex items-center gap-4 rounded-2xl border border-border bg-surface p-3 sm:gap-5"
+            >
+              <img
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+                width="800"
+                height="800"
+                decoding="async"
+                class="size-20 shrink-0 rounded-xl object-cover sm:size-24"
+                alt=""
+                loading="eager"
+                data-field="image"
+              />
+              <div class="min-w-0">
+                <p class="text-xs font-medium text-text-muted" data-field="category">
+                  Collection
+                </p>
+                <h3
+                  class="mt-1 break-words font-display text-xl leading-tight text-brand-strong sm:text-2xl"
+                  data-field="name"
+                >
+                  Product name
+                </h3>
+                <p class="mt-2 text-sm font-semibold text-brand-strong">₱1,890</p>
+              </div>
+            </div>
+            <p
+              class="form-alert mt-5"
+              data-purchase-error=""
+              role="alert"
+              hidden=""
+            ></p>
+            <section data-purchase-review="">
+              <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p class="text-sm font-semibold">Quantity</p>
+                  <p
+                    class="stock-indicator mt-2"
+                    data-stock-state="available"
+                    data-stock=""
+                  >
+                    <span class="stock-indicator-dot" aria-hidden="true"></span>
+                    <span aria-live="polite" aria-atomic="true" data-field="stock">
+                      Checking stock…
+                    </span>
+                  </p>
+                </div>
+                <div
+                  class="flex items-center rounded-full border border-border bg-surface p-1"
+                >
+                  <button
+                    class="icon-button disabled:opacity-30"
+                    aria-label="Decrease quantity"
+                    type="button"
+                    disabled=""
+                    data-quantity-decrease=""
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-minus"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 12h14"></path>
+                    </svg>
+                  </button>
+                  <output
+                    class="min-w-10 text-center text-sm font-semibold tabular-nums"
+                    aria-label="Quantity"
+                    aria-live="polite"
+                    data-purchase-quantity=""
+                  >
+                    1
+                  </output>
+                  <button
+                    class="icon-button disabled:opacity-30"
+                    aria-label="Increase quantity"
+                    type="button"
+                    data-quantity-increase=""
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-plus"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 12h14"></path>
+                      <path d="M12 5v14"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="mt-6 flex items-center justify-between border-t border-border pt-5"
+              >
+                <span class="text-sm text-text-muted">Total</span>
+                <strong class="text-xl text-brand-strong" data-purchase-total="">
+                  ₱1,890
+                </strong>
+              </div>
+              <p class="mt-3 text-xs leading-5 text-text-muted">
+                Buy this selection now. Items already in your cart will stay there.
+              </p>
+              <button
+                class="button-primary mt-6 w-full"
+                type="button"
+                data-purchase-continue=""
+              >
+                Continue to checkout
+              </button>
+            </section>
+            <form class="mt-6" id="purchase-form" hidden="" data-purchase-checkout="">
+              <fieldset>
+                <legend class="mb-4 font-display text-2xl text-brand-strong">
+                  Delivery details
+                </legend>
+                <div class="grid gap-4 sm:grid-cols-2">
+                  <div class="form-field">
+                    <label for="purchase-recipientName">Recipient name</label>
+                    <input
+                      class="form-input"
+                      id="purchase-recipientName"
+                      type="text"
+                      autocomplete="name"
+                      required=""
+                      minlength="2"
+                      maxlength="80"
+                      aria-invalid="false"
+                      name="recipientName"
+                    />
+                  </div>
+                  <div class="form-field">
+                    <label for="purchase-phone">Phone number</label>
+                    <input
+                      class="form-input"
+                      id="purchase-phone"
+                      type="tel"
+                      autocomplete="tel"
+                      required=""
+                      minlength="7"
+                      maxlength="30"
+                      aria-invalid="false"
+                      name="phone"
+                    />
+                  </div>
+                  <div class="form-field sm:col-span-2">
+                    <label for="purchase-addressLine1">Address line 1</label>
+                    <input
+                      class="form-input"
+                      id="purchase-addressLine1"
+                      type="text"
+                      autocomplete="address-line1"
+                      required=""
+                      minlength="5"
+                      maxlength="160"
+                      aria-invalid="false"
+                      name="addressLine1"
+                    />
+                  </div>
+                  <div class="form-field sm:col-span-2">
+                    <label for="purchase-addressLine2">
+                      Address line 2
+                      <span class="ml-2 font-normal normal-case text-text-muted">
+                        Optional
+                      </span>
+                    </label>
+                    <input
+                      class="form-input"
+                      id="purchase-addressLine2"
+                      type="text"
+                      autocomplete="address-line2"
+                      minlength="0"
+                      maxlength="160"
+                      aria-invalid="false"
+                      name="addressLine2"
+                    />
+                  </div>
+                  <div class="form-field">
+                    <label for="purchase-city">City</label>
+                    <input
+                      class="form-input"
+                      id="purchase-city"
+                      type="text"
+                      autocomplete="address-level2"
+                      required=""
+                      minlength="2"
+                      maxlength="80"
+                      aria-invalid="false"
+                      name="city"
+                    />
+                  </div>
+                  <div class="form-field">
+                    <label for="purchase-province">Province</label>
+                    <input
+                      class="form-input"
+                      id="purchase-province"
+                      type="text"
+                      autocomplete="address-level1"
+                      required=""
+                      minlength="2"
+                      maxlength="80"
+                      aria-invalid="false"
+                      name="province"
+                    />
+                  </div>
+                  <div class="form-field">
+                    <label for="purchase-postalCode">Postal code</label>
+                    <input
+                      class="form-input"
+                      id="purchase-postalCode"
+                      type="text"
+                      autocomplete="postal-code"
+                      required=""
+                      minlength="3"
+                      maxlength="12"
+                      aria-invalid="false"
+                      name="postalCode"
+                    />
+                  </div>
+                  <div class="form-field">
+                    <label for="purchase-country">Country</label>
+                    <input
+                      class="form-input"
+                      id="purchase-country"
+                      type="text"
+                      autocomplete="country-name"
+                      value="Philippines"
+                      required=""
+                      readonly=""
+                      aria-invalid="false"
+                      name="country"
+                    />
+                  </div>
+                </div>
+              </fieldset>
+              <div
+                class="mt-5 flex gap-3 rounded-2xl bg-brand-soft p-4 text-sm text-brand-strong"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-banknote shrink-0"
+                  aria-hidden="true"
+                >
+                  <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+                  <circle cx="12" cy="12" r="2"></circle>
+                  <path d="M6 12h.01M18 12h.01"></path>
+                </svg>
+                <div>
+                  <strong>Cash on Delivery</strong>
+                  <p class="mt-1 text-xs leading-5">Pay when your order arrives.</p>
+                </div>
+              </div>
+              <div
+                class="mt-5 flex items-center justify-between border-t border-border pt-5"
+              >
+                <span class="text-sm text-text-muted">Order total</span>
+                <strong class="text-xl text-brand-strong" data-purchase-total="">
+                  ₱1,890
+                </strong>
+              </div>
+              <button class="button-primary mt-5 w-full" type="submit">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-lock-keyhole"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="16" r="1"></circle>
+                  <rect x="3" y="10" width="18" height="12" rx="2"></rect>
+                  <path d="M7 10V7a5 5 0 0 1 10 0v3"></path>
+                </svg>
+                Place order
+              </button>
+              <button
+                class="button-quiet mt-3 w-full"
+                type="button"
+                data-purchase-back=""
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-arrow-left"
+                  aria-hidden="true"
+                >
+                  <path d="m12 19-7-7 7-7"></path>
+                  <path d="M19 12H5"></path>
+                </svg>
+                Back to selection
+              </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+    </template>
+    <noscript>
+      <p class="page-shell py-5">
+        Enable JavaScript to load live product data and use account or checkout actions.
+      </p>
+    </noscript>
   </body>
 </html>

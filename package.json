@@ -7,7 +7,7 @@
     "client"
   ],
   "scripts": {
-    "dev": "concurrently --kill-others --names client,api --prefix-colors magenta,green \"npm run dev --workspace client\" \"npm run dev:backend\"",
+    "dev": "node scripts/backend.mjs dev",
     "backend:setup": "node scripts/backend.mjs setup",
     "dev:backend": "node scripts/backend.mjs dev",
     "start": "node scripts/backend.mjs serve",
@@ -17,8 +17,8 @@
     "lint": "npm run lint:backend && npm run lint --workspace client",
     "lint:backend": "node scripts/backend.mjs lint",
     "format:backend": "node scripts/backend.mjs format",
-    "format": "prettier --write \"**/*.{js,jsx,json,md,yml,yaml,css}\" --ignore-path .prettierignore",
-    "format:check": "prettier --check \"**/*.{js,jsx,json,md,yml,yaml,css}\" --ignore-path .prettierignore",
+    "format": "prettier --write \"**/*.{js,html,json,md,yml,yaml,css}\" --ignore-path .prettierignore",
+    "format:check": "prettier --check \"**/*.{js,html,json,md,yml,yaml,css}\" --ignore-path .prettierignore",
     "db:up": "docker compose up -d --wait postgres",
     "db:down": "docker compose down",
     "db:setup": "npm run db:up && npm run db:migrate && npm run db:seed",
@@ -36,7 +36,6 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
-    "concurrently": "^9.2.1",
     "prettier": "^3.6.2"
   }
 }

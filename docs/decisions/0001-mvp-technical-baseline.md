@@ -1,5 +1,7 @@
 # ADR 0001: MVP and Technical Baseline
 
+Frontend choice superseded in this fork by [ADR 0004](0004-vanilla-frontend.md); this record preserves the original decision.
+
 > Historical baseline. [ADR 0002](./0002-python-flask-backend.md) supersedes the Express runtime, database adapter, in-memory fallback, and deployment decisions. The business rules and API conventions below still apply.
 
 - Status: Accepted

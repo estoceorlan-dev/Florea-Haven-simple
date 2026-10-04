@@ -1,36 +1,24 @@
-# Release readiness — 2026-09-28
+﻿# Release readiness — 2026-10-04
 
-Status: **Release candidate prepared for Render. Not deployed to a hosted environment.**
+Status: **The plain HTML website is implemented and verified locally. Render configuration is prepared; hosted deployment remains pending.**
 
-## Implemented
+## Current implementation
 
-- Profile and product uploads, replacement/removal, previews, progress, retry feedback, avatars, responsive delivery, and missing-image fallbacks.
-- Cloudinary uploads signed server-side after decoded-file validation, animation rejection, dimension/size limits, metadata stripping, and bounded WebP re-encoding. A per-process upload slot bounds memory use.
-- Owner/admin authorization, durable orphan/replacement cleanup, and preservation of the previous image on upload/database failures.
-- Shared user-scoped administrator queries with cancellation, polling, cache reuse, and mutation invalidation.
-- Fixes for checkout-confirmation and login/logout redirect races, failed logout handling, navigation scroll position, 320px header overflow, and catalog/navigation/footer contrast.
-- Production configuration checks, CSP without inline scripts, secure cookies, origin checks, upload/body limits, shared rate limits, static caching, request IDs, and logs that avoid raw request bodies and database errors.
-- Multi-stage non-root Docker image, current-schema-valid Render Blueprint, CI release checks, isolated browser tests, disposable production smoke stack, and deployment/backup/rollback documentation.
-- Migration 006 applied to the existing local PostgreSQL database without reseeding the catalog. Tests used separate disposable schemas. No production database was modified.
+The storefront and administrator interface use 18 standalone HTML documents, plain CSS, and native JavaScript for live data and actions. Page/UI markup is in HTML, including forms and reusable templates; the custom JavaScript renderer/router and Vite application tooling are removed. Flask and PostgreSQL provide authentication, persistent carts, checkout, inventory, fulfillment, user management, and managed image uploads. See the [teammate guide](teammate-guide.md), [README](../README.md), [API contract](api-contract.md), and [frontend migration](frontend-migration.md).
 
-## Verified
+Production configuration includes CSP, secure cookies, origin checks, upload/body limits, shared rate limits, static caching, request IDs, a Docker image, Render Blueprint, CI checks, and a disposable production smoke stack. The [deployment runbook](render-deployment.md) describes hosting, backups, migrations, image cleanup, and rollback.
 
-| Check                                                   | Result                                                                                                                                                              |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run check`                                         | Passed                                                                                                                                                              |
-| Python integration/security/concurrency/migration tests | 95 passed                                                                                                                                                           |
-| React component/query/theme tests                       | 65 passed                                                                                                                                                           |
-| Playwright Chromium journeys                            | 5 passed; 1 intentionally skipped duplicate viewport matrix on mobile                                                                                               |
-| Customer/admin browser flows                            | Registration, profile image upload/removal, purchase, confirmation, permissions, admin stock/image changes, status update, login/logout, customer status visibility |
-| Responsive catalog                                      | No horizontal overflow at 320, 390, 768, 1024, 1280, and 1440px in light and dark themes                                                                            |
-| Automated accessibility                                 | No serious/critical WCAG 2 A/AA axe findings on the tested catalog in either theme; mobile drawer Escape/focus return checked with reduced motion                   |
-| Docker                                                  | Linux production image built; application ran with real PostgreSQL 16 and Redis 7                                                                                   |
-| Production smoke                                        | Health, catalog, SPA deep links, theme script, admin denial, registration/session, Secure/HttpOnly/SameSite cookies, and HSTS passed                                |
-| Dependency audits                                       | npm audit and pip-audit reported no known vulnerabilities in the checked dependency sets                                                                            |
-| Source credential scan                                  | No high-confidence matches; limited pattern scan, not an exhaustive secret audit                                                                                    |
-| Render Blueprint                                        | Validated against `https://render.com/schema/render.yaml.json`                                                                                                      |
+## Current local verification
 
-The smoke stack and its disposable data were removed after verification. Browser screenshots/traces are local ignored artifacts under `test-results/`; CI uploads failure artifacts.
+- Lint, formatting, production build, and credential scan pass.
+- Native frontend tests: 8 passed.
+- PostgreSQL backend tests: 137 passed.
+- Desktop/mobile browser journeys: 25 passed; one duplicate mobile viewport matrix intentionally skipped.
+- Static checks validate all 18 HTML documents, unique IDs, labels, landmarks, and local script/style references. JavaScript-disabled browser checks verify headings and forms already exist in the HTML response.
+- Forty storefront/administrator screenshots cover both themes and desktop/mobile layouts. Representative catalog/admin layouts were visually compared with the React reference. Native controls and differing test data account for visible differences; this rewrite does not claim pixel identity.
+- Browser checks cover catalog accessibility and responsive widths, drawer focus, authentication, customer purchases, stock conflicts, retry idempotency after a committed order's response is lost, uploads, inventory, fulfillment, categories, and user access management.
+
+See [migration validation](frontend-migration.md) for details and test boundaries. Tests use isolated PostgreSQL schemas; Cloudinary network calls are stubbed. The production Docker/Render configuration predates the frontend migration and requires another hosted smoke check with the current build before release.
 
 ## Before accepting production traffic
 

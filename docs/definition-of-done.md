@@ -1,13 +1,13 @@
 # Feature Definition of Done
 
-This checklist applies to every Floréa Haven feature. A phase is complete only when every applicable item is satisfied; an item may be marked not applicable only with a reason in the implementation plan or review notes.
+This checklist applies to every Floréa Haven feature. A feature is complete only when every applicable item is satisfied; an item may be marked not applicable only with a reason in the review notes.
 
 ## Scope and contract
 
 - Acceptance criteria describe the user-visible result and important failure cases.
 - The work stays within the accepted MVP decision record or records an approved scope change.
 - API requests, responses, validation, authorization, and error behavior match the API contract.
-- No unresolved decision remains for a dependent phase.
+- No unresolved decision remains for dependent features.
 
 ## Data and backend
 
@@ -35,11 +35,11 @@ This checklist applies to every Floréa Haven feature. A phase is complete only 
 - Environment variables, migrations, seed behavior, setup instructions, and operational notes are updated when affected.
 - The default branch remains deployable and another developer can verify the feature from documented steps.
 
-## Phase gate
+## Review gate
 
-Before a phase is marked complete:
+Before a feature is marked complete:
 
 1. Its task checklist and exit criteria are reviewed against the working application.
 2. Automated checks pass from the repository root.
-3. Required manual and persistent-database checks are recorded in the progress tracker.
-4. Known follow-up work is explicitly deferred to a later phase rather than silently omitted.
+3. Required manual and persistent-database checks are recorded in the review notes.
+4. Known follow-up work is recorded explicitly.

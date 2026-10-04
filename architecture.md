@@ -1,489 +1,109 @@
-# Floréa Haven — System Architecture
+# Floréa Haven architecture
 
-## 1. Project Overview
+Floréa Haven sells seeds, flowers, and botanical perfumes. The storefront and administrator screens are standalone HTML documents with plain CSS and native JavaScript. Flask owns authentication, catalog changes, carts, purchasing, fulfillment, user management, and managed images. PostgreSQL stores the data.
 
-**Floréa Haven** is a small e-commerce web application for selling seeds, flowers, and perfumes. The system allows customers to browse products, search and filter items, manage a shopping cart, place orders, and view their order history. Administrators can manage products, inventory, and orders, including the customer details needed for fulfillment.
+## Request flow
 
-The architecture is intentionally kept simple and suitable for a student project while following a clear separation between the frontend, backend, and database.
-
----
-
-## 2. Technology Stack
-
-| Layer | Technology | Purpose |
-|---|---|---|
-| Frontend | React.js | Build the interactive user interface |
-| Styling | Tailwind CSS | Responsive and aesthetic UI styling |
-| Backend | Python + Flask | REST API and server-side business logic |
-| Database | PostgreSQL | Store users, products, orders, and related data |
-| Hosting | Python WSGI host + HTTPS proxy | Serve Flask and the built React application |
-| API Communication | REST API / JSON | Communication between React and Flask |
-| Authentication | JWT | Secure user authentication and authorization |
-| Version Control | Git + GitHub | Source-code management and collaboration |
-
-> **Backend migration:** [ADR 0002](docs/decisions/0002-python-flask-backend.md) replaces Express with Flask and Psycopg. React and the PostgreSQL schema are retained. PostgreSQL is required for development and tests.
-
----
-
-## 3. High-Level Architecture
-
-```text
-                         ┌──────────────────────┐
-                         │       Customer       │
-                         │      / Admin         │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │      React.js        │
-                         │    + Tailwind CSS    │
-                         │      Frontend        │
-                         └──────────┬───────────┘
-                                    │
-                              HTTPS / REST
-                               JSON Requests
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │   Python + Flask     │
-                         │      REST API        │
-                         └──────────┬───────────┘
-                                    │
-                                    │ SQL / Psycopg
-                                    ▼
-                         ┌──────────────────────┐
-                         │     PostgreSQL       │
-                         │       Database       │
-                         └──────────────────────┘
+```mermaid
+flowchart LR
+    Browser[Browser] -->|Page URL| Flask[Flask / Waitress]
+    Flask -->|HTML document, CSS, JS| Browser
+    Browser -->|Same-origin /api requests| Flask
+    Flask --> PostgreSQL[(PostgreSQL)]
+    Flask -->|Validated image uploads| Cloudinary[Cloudinary]
+    Browser -->|Image URLs| Cloudinary
 ```
 
----
+Clicking a navigation link loads another HTML document. The page's JavaScript requests live data, updates labeled text or attributes, and clones row/dialog markup from native HTML templates. There is no React, JavaScript page renderer, client router, application bundle, or Tailwind compiler. Browser history supports back/forward navigation.
 
-## 4. Frontend Architecture
+See [ADR 0005](docs/decisions/0005-plain-html-pages.md) and [the teammate guide](docs/teammate-guide.md) for the decision and page-by-page file map.
 
-The React application is responsible for the user interface and client-side interactions.
-
-### Main Frontend Modules
+## Files and responsibilities
 
 ```text
-src/
-├── components/
-│   ├── Navbar
-│   ├── Footer
-│   ├── ProductCard
-│   ├── ProductGrid
-│   ├── SearchBar
-│   └── CartItem
-│
-├── pages/
-│   ├── Home
-│   ├── Products
-│   ├── ProductDetails
-│   ├── Cart
-│   ├── Checkout
-│   ├── Orders
-│   ├── Login
-│   ├── Register
-│   └── Admin
-│
-├── layouts/
-│   ├── CustomerLayout
-│   └── AdminLayout
-│
-├── services/
-│   └── api
-│
-├── context/
-│   ├── AuthContext
-│   └── CartContext
-│
-├── hooks/
-│
-├── utils/
-│
-└── App.jsx
-```
-
-### Frontend Responsibilities
-
-- Display products and categories.
-- Provide product search and filtering.
-- Manage the shopping cart.
-- Handle customer authentication.
-- Submit checkout information.
-- Display order history and status.
-- Provide an admin interface.
-- Communicate with the backend REST API.
-- Provide responsive styling using Tailwind CSS.
-
----
-
-## 5. Backend Architecture
-
-The Python Flask backend provides the REST API and contains the application's business logic.
-
-The implemented backend is organized by feature:
-
-```text
+client/
+  index.html           Home document
+  pages/               Catalog, product, auth, account, cart, checkout, orders
+  admin/               Dashboard, catalog, categories, users, fulfillment
+  css/styles.css       Ordinary CSS, responsive rules, animations, themes
+  js/
+    api.js             Same-origin fetch/XHR API methods and structured errors
+    common.js          Session display, access redirects, navigation, theme, cart badge
+    helpers.js         Native DOM operations, text filling, template cloning, focus
+    catalog.js         Catalog data, filters, sorting, product availability
+    auth.js            Login and registration submissions
+    cart.js            Cart display, quantity changes, removal
+    checkout.js        Delivery form, current-cart checks, checkout retries
+    purchase.js        Buy-now dialog actions and direct checkout
+    orders.js          Customer history/details and shared detail filling
+    admin-*.js         Administrator forms, catalog, users, and fulfillment
+    upload.js          File selection, preview, progress, upload/removal
+  public/              Theme initialization and fallback image
+  licenses/            Preserved CSS and SVG attribution
+  dist/                Generated release copy
 backend/
   florea/
-    __init__.py     Flask factory, JSON handling, security headers, frontend serving
-    auth.py         Passwords, JWT cookies, roles, authentication rate limits
-    catalog.py      Public catalog and administrator category/product operations
-    cart.py         Persistent cart and revision calculation
-    orders.py       Checkout, customer history, fulfillment, transactional cancellation
-    validation.py  Request validation and normalized inputs
-    db.py          Psycopg connections and transaction helpers
-    errors.py      API error envelope helpers
-  migrations/      Ordered SQL files and existing migration ledger
-  seeds/           Catalog seed data
-  tests/           PostgreSQL integration and compatibility tests
-  manage.py        Server and database commands
+    __init__.py        Flask factory, request policies, errors, static file serving
+    frontend.py        Clean website URL → HTML document mapping
+    auth.py            Cookie sessions, password hashing, authentication guards
+    catalog.py         Public catalog and admin products/categories
+    cart.py            Per-user carts and revision checks
+    orders.py          Purchases, history, fulfillment, cancellation
+    users.py           Administrator account management
+    images.py          Managed upload/removal and durable cleanup
+    db.py              PostgreSQL access and transactions
+  migrations/          Existing ordered SQL migrations
+  seeds/               Repeatable development catalog
+  tests/               Integration, compatibility, and concurrency tests
+  manage.py            Development/production serving and database commands
+scripts/
+  backend.mjs          Optional npm wrapper around Python commands
+  build-frontend.mjs   Copy website files to client/dist; exclude unit tests
+  e2e.py               Test server with an isolated PostgreSQL schema
 ```
 
-### Backend Responsibilities
-
-- Receive and validate API requests.
-- Authenticate users.
-- Authorize administrator functions.
-- Retrieve and modify product data.
-- Manage inventory.
-- Create and update orders.
-- Validate checkout information.
-- Communicate with PostgreSQL.
-- Return JSON responses to the React frontend.
-- Handle API errors consistently.
-
----
-
-## 6. REST API Structure
-
-The API can be organized around the main resources of the application.
-
-### Authentication
-
-```text
-POST   /api/auth/register
-POST   /api/auth/login
-GET    /api/auth/me
-```
-
-### Products
-
-```text
-GET    /api/products
-GET    /api/products/:id
-POST   /api/products
-PUT    /api/products/:id
-DELETE /api/products/:id
-```
-
-### Categories
-
-```text
-GET    /api/categories
-POST   /api/categories
-PUT    /api/categories/:id
-DELETE /api/categories/:id
-```
-
-### Cart
-
-```text
-GET    /api/cart
-POST   /api/cart/items
-PUT    /api/cart/items/:id
-DELETE /api/cart/items/:id
-```
-
-### Orders
-
-```text
-POST   /api/orders
-POST   /api/orders/buy-now
-GET    /api/orders
-GET    /api/orders/:id
-GET    /api/admin/orders
-GET    /api/admin/orders/:id
-PUT    /api/admin/orders/:id/status
-```
-
-Administrator-only endpoints should be protected using authentication and role-based authorization middleware.
-
----
-
-## 7. Database Architecture
-
-PostgreSQL will store the application's persistent data.
-
-### Main Tables
-
-```text
-users
-├── id
-├── name
-├── email
-├── password_hash
-├── role
-└── created_at
-
-categories
-├── id
-├── name
-└── description
-
-products
-├── id
-├── category_id
-├── name
-├── description
-├── price
-├── stock_quantity
-├── image_url
-└── created_at
-
-cart_items
-├── id
-├── user_id
-├── product_id
-└── quantity
-
-orders
-├── id
-├── user_id
-├── idempotency_key
-├── subtotal
-├── total_amount
-├── status
-├── status_updated_at
-├── payment_method
-├── delivery_address
-├── created_at
-└── updated_at
-
-order_items
-├── id
-├── order_id
-├── product_id
-├── product_name
-├── sku
-├── quantity
-└── unit_price
-```
-
-### Basic Relationships
-
-```text
-users
-  │
-  ├──────────< cart_items >────────── products
-  │                                      │
-  │                                      │
-  └──────────< orders >──────< order_items
-                                  │
-                                  └──── products
-
-categories
-  │
-  └──────────< products
-```
-
-The product name, SKU, and unit price stored in `order_items` are purchase-time snapshots. This prevents historical orders from changing when current product data is updated.
-
----
-
-## 8. Authentication and Authorization
-
-The application uses JWT-based authentication. Browser sessions are transported in an HTTP-only, same-site cookie rather than JavaScript-accessible storage.
-
-### Customer Flow
-
-```text
-Register/Login
-      │
-      ▼
-Backend validates credentials
-      │
-      ▼
-JWT generated
-      │
-      ▼
-Backend sets secure session cookie
-      │
-      ▼
-Browser includes cookie with protected API requests
-```
-
-State-changing requests verify the request origin as an additional CSRF control. Production serves the frontend and `/api` from the same public origin.
-
-### Roles
-
-Two basic roles are sufficient:
-
-- **Customer** — browse products, manage cart, place orders, and view their own orders.
-- **Admin** — manage products, categories, inventory, and customer orders.
-
-Passwords must never be stored as plain text. They should be hashed before being stored in PostgreSQL.
-
----
-
-## 9. Main Application Flow
-
-### Product Browsing
-
-```text
-Customer
-   │
-   ▼
-React Products Page
-   │
-   ▼
-GET /api/products
-   │
-   ▼
-Python / Flask
-   │
-   ▼
-PostgreSQL
-   │
-   ▼
-Product Data
-   │
-   ▼
-React Product Cards
-```
-
-### Checkout
-
-```text
-Customer
-   │
-   ▼
-Shopping Cart
-   │
-   ▼
-Checkout
-   │
-   ▼
-POST /api/orders
-   │
-   ▼
-Backend validates stock
-   │
-   ▼
-Create Order + Order Items
-   │
-   ▼
-Update Product Stock
-   │
-   ▼
-PostgreSQL
-   │
-   ▼
-Order Confirmation
-```
-
-Checkout uses Cash on Delivery for the MVP and creates a `pending` order. Administrators progress it through `confirmed`, `preparing`, `shipped`, and `delivered`; cancellation is allowed only while pending or confirmed and restores stock transactionally.
-
----
-
-## 10. Deployment Architecture
-
-The production application uses one public origin. Waitress serves Flask, which handles `/api` and serves the static React build and client-side deep links. Node.js is used to build React, not to run the production API. An HTTPS reverse proxy or hosting platform terminates TLS.
-
-```text
-Browser -> HTTPS host/proxy -> Waitress / Flask -> PostgreSQL
-                                  |
-                                  +-> client/dist (React assets and deep links)
-```
-
-During development, Vite runs on port 5173 and proxies `/api` to Flask on port 4000. PostgreSQL runs persistently; tests use separate random schemas. Existing schema migrations are reused unchanged.
-
-Set `APP_ENV=production`, a stable `JWT_SECRET`, the public `CLIENT_ORIGIN`, and `DATABASE_URL`. The initial deployment uses one Waitress process because authentication limits default to process memory. Multiple instances require shared limiter storage. See the README for commands and verified TLS configuration.
-
-### Environment Variables
-
-Sensitive configuration should be stored as environment variables rather than committed to Git.
-
-Example:
-
-```text
-DATABASE_URL=...
-JWT_SECRET=...
-```
-
-The actual values must not be placed in the source code or committed to GitHub.
-
----
-
-## 11. Security Considerations
-
-The project only needs basic security appropriate for a student e-commerce application:
-
-- Hash user passwords.
-- Use JWT authentication for protected requests.
-- Store browser JWTs only in secure, HTTP-only, same-site cookies and verify origins on state-changing requests.
-- Protect admin routes with role-based authorization.
-- Validate user input on the backend.
-- Use parameterized Psycopg queries to prevent SQL injection.
-- Never expose database credentials to the frontend.
-- Use HTTPS in production.
-- Store secrets in environment variables.
-- Validate product stock before creating an order.
-
----
-
-## 12. Recommended Project Structure
-
-```text
-florea-haven/
-  client/                 React application
-  backend/                Python Flask application, SQL migrations, pytest tests
-  scripts/backend.mjs     Cross-platform Python launcher for npm commands
-  docker-compose.yml      Local PostgreSQL
-  docs/                   API contract and architecture decisions
-  README.md
-  package.json            Frontend and development orchestration
-```
-
----
-
-## 13. Scope Control
-
-To keep the project feasible, the first version should focus on:
-
-- Product catalog
-- Product categories
-- Search and filtering
-- User registration and login
-- Shopping cart
-- Checkout
-- Order history
-- Order status
-- Inventory management
-- Admin product management
-
-The following are **not required** for the initial student-project version:
-
-- AI product recommendations
-- Real-time courier GPS tracking
-- Complex payment gateway integrations
-- Microservices
-- Real-time chat
-- Advanced analytics
-- Multiple external APIs
-- Automated delivery integration
-
-These can be added later if there is enough development time, ensure scalability and maintainability.
-
----
-
-## 14. Architecture Summary
-
-Floréa Haven follows a straightforward **three-layer architecture**:
-
-1. **Presentation Layer** — React + Tailwind CSS provides the customer and administrator interfaces.
-2. **Application Layer** — Python + Flask handles authentication, business logic, validation, and REST API requests.
-3. **Data Layer** — PostgreSQL stores users, products, inventory, carts, and orders.
-
-This architecture is simple enough for a student project while remaining organized, maintainable, and suitable for deployment on a Python WSGI host.
+Each HTML file contains its own header, footer, and drawer. Shared markup is deliberately repeated so a teammate can inspect the full screen in one file. IDs and `data-*` attributes connect elements to action handlers. API values are inserted with `textContent`; product/order data does not become executable markup. Native forms provide labels, named inputs, and browser validation.
+
+## Development and production
+
+`npm run dev` runs Flask at **http://localhost:4000**, serving editable files from `client/` and APIs from `/api`. Save and refresh to see edits. PostgreSQL must be running separately. There is no development proxy or frontend server.
+
+`npm run build` copies HTML, CSS, JavaScript, licenses, and public assets into `client/dist`. No page markup is compiled. Production serves this directory through Flask/Waitress on the same HTTPS origin as the API. The production runtime requires Python, not Node. Unversioned website assets use `Cache-Control: no-cache` so the browser revalidates them after a deployment.
+
+The Docker/Render setup also supports a private PostgreSQL database and shared rate limiting. See [the deployment runbook](docs/render-deployment.md) for migrations, secrets, backups, cleanup, and rollback. SQL migrations and established data remain unchanged by the HTML rewrite.
+
+## Authentication and permissions
+
+Login and registration call existing JSON endpoints. Flask hashes passwords with bcrypt and sets an HS256 JWT in an HTTP-only, same-site session cookie. Production adds the Secure attribute. The browser automatically sends the cookie with same-origin API requests; JavaScript does not store authentication tokens.
+
+`common.js` calls `/api/auth/me`, updates account labels, and redirects visitors when a screen requires a member or administrator. These redirects are for the interface. Flask independently enforces authentication, ownership, roles, request origins, and rate limits on the APIs. Viewing an HTML document does not grant access to protected data.
+
+Customers manage their own carts and orders. Administrators manage products, categories, accounts, stock, and fulfillment. Deactivation preserves history and revokes existing sessions. Backend rules block self-deactivation/demotion and losing the last administrator.
+
+## Catalog and cart
+
+The catalog requests `/api/categories` and `/api/products`; query strings carry category, search, price, sort, and page filters. Product rows are cloned from `product-card-template` and filled with live names, prices, images, and stock. Product-detail URLs use the same HTML document with a different API ID.
+
+Cart mutations update persistent PostgreSQL records. The API returns the current cart and summary; the page updates row templates and the header count. Availability refreshes while pages are visible and after focus/reconnect. Checkout keeps delivery inputs in place while refreshing its item summary, so background checks do not replace the form being edited.
+
+## Purchasing and fulfillment
+
+Cart checkout rechecks availability and cart revision before sending the delivery address, payment method, and expected revision. Buy-now submits a selected product, quantity, and expected unit price without consuming the cart.
+
+Both flows keep an idempotency key for retries of the same input. If a purchase succeeds but its response is lost, submitting unchanged input replays the original order. Changed input gets a new key. Stock/price conflicts show the server's error and require review of current data.
+
+Flask purchases use database transactions, row locks, stock validation, immutable order-item snapshots, and rollback on failure. Historical names, SKUs, and prices remain unchanged when products are edited. The MVP accepts **Cash on Delivery**.
+
+Order transitions are `pending → confirmed → preparing → shipped → delivered`. Only pending or confirmed orders can be cancelled. The API validates transitions and restores stock exactly once on cancellation. Customer endpoints enforce ownership; administrator endpoints provide fulfillment/customer details.
+
+## Data and images
+
+The main tables are `users`, `categories`, `products`, `cart_items`, `orders`, and `order_items`. Users own carts/orders; products belong to categories; orders have purchase-time item snapshots. Migration-ledger, session-revocation, cart-revision, idempotency, and image-cleanup records support the backend rules. Consult the SQL migrations and [API contract](docs/api-contract.md) for exact fields.
+
+Uploads use authenticated multipart endpoints. Flask validates decoded bytes, declared type, dimensions, animation, and size; removes metadata; re-encodes to WebP; and uploads to Cloudinary with server-only credentials. PostgreSQL stores image metadata, not bytes. A durable cleanup queue handles abandoned/replaced assets. Upload failures retain the previous image. Native file inputs, previews, progress, and removal controls are defined in HTML.
+
+## Verification
+
+Vitest checks API transport, safe text/template operations, return paths, and themes. PostgreSQL tests cover permissions, compatibility, transactions, concurrent stock purchases, retries, uploads, and user management. Playwright checks customer/admin journeys, responsive layouts, themes, keyboard interactions, accessibility, and HTML availability before JavaScript runs.
+
+Tests use isolated schemas and stub Cloudinary calls. Hosted HTTPS and real provider delivery need staging verification. See [the migration record](docs/frontend-migration.md) and [release status](docs/release-status.md).

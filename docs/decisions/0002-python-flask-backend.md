@@ -1,5 +1,7 @@
 # ADR 0002: Python Flask backend
 
+Frontend choice superseded in this fork by [ADR 0005](0005-plain-html-pages.md); this record preserves the original backend decision.
+
 - Status: Accepted and implemented
 - Date: 2026-09-28
 - Supersedes: ADR 0001's Express runtime, JavaScript database adapter, in-memory fallback, and deployment assumptions
