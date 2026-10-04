@@ -1,0 +1,133 @@
+# Floréa Haven
+
+Floréa Haven is a storefront for seeds, flowers, and botanical perfumes. **React + Tailwind provide the interface; Python Flask provides the entire backend; PostgreSQL stores the data.**
+
+Implemented features include the public catalog, cookie authentication, persistent carts, Cash on Delivery checkout, customer order history, administrator catalog, inventory, order and user management, and managed profile/product image uploads.
+
+## Requirements
+
+- Python 3.12 or newer (verified locally with Python 3.14)
+- Node.js 22+ and npm 10+ for frontend development/build tooling
+- PostgreSQL 16+ (Docker Compose configuration included)
+
+## Local setup
+
+```bash
+npm install
+npm run backend:setup
+```
+
+Copy `.env.example` to `.env` only if you do not already have a configured `.env`. Set a stable, random `JWT_SECRET`; generate one with `python -c "import secrets; print(secrets.token_urlsafe(48))"`.
+
+For a new Docker database, start Docker Desktop and run:
+
+```bash
+npm run db:setup
+npm run dev
+```
+
+The storefront is at `http://localhost:5173`; Flask is at `http://localhost:4000`. Vite forwards `/api` to Flask. PostgreSQL is published on port **5433** to coexist with a native PostgreSQL installation on port 5432.
+
+For an existing database, configure `DATABASE_URL` and run `npm run db:migrate` before `npm run dev`. Seeding refreshes sample catalog records, so use `npm run db:seed` only when you want that sample data refreshed.
+
+PostgreSQL is required. The old JavaScript in-memory database and `USE_IN_MEMORY_DB` setting are no longer used. `npm run dev` starts Flask and React; it does not start the database.
+
+The setup command creates `backend/.venv` without requiring shell activation. Set `PYTHON` to a Python executable if the default `python` (Windows) or `python3` (other platforms) is not the intended installation. Runtime dependencies are in `backend/requirements.txt`; the tested dependency versions are pinned in `backend/constraints.txt`.
+
+## Initial administrator
+
+Set `ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` in your uncommitted `.env`, then run:
+
+```bash
+npm run admin:create
+```
+
+This creates the administrator or updates the name, password, and role of the account with that email. It does not print credentials. Run migrations first.
+
+## User management
+
+Open **Admin → Users** (`/admin/users`) to search accounts by name or email, filter by role/status, create customers or administrators, edit names/emails/roles, and deactivate or reactivate accounts. Deactivation preserves carts and order history, blocks login, and permanently revokes existing sessions. Reactivated users must sign in again. Administrators cannot demote or deactivate their own account; concurrent changes also preserve administrator access.
+
+Apply migration `007_user_management.sql` with `npm run db:migrate` before starting the updated app. Existing accounts remain active and existing sessions remain compatible until the account is deactivated.
+
+## Commands
+
+| Command                  | Purpose                                                  |
+| ------------------------ | -------------------------------------------------------- |
+| `npm run backend:setup`  | Create the Python environment and install dependencies   |
+| `npm run dev`            | Run React and Flask together                             |
+| `npm run dev:backend`    | Run Flask with development reload                        |
+| `npm run build`          | Build the React app into `client/dist`                   |
+| `npm start`              | Serve Flask and the built React app with Waitress        |
+| `npm test`               | Run PostgreSQL backend tests and existing frontend tests |
+| `npm run test:backend`   | Run Python tests                                         |
+| `npm run lint`           | Check Python formatting/lint and frontend lint           |
+| `npm run format:backend` | Format Python source with Ruff                           |
+| `npm run db:up`          | Start Docker PostgreSQL and wait for health              |
+| `npm run db:down`        | Stop Docker PostgreSQL without deleting its volume       |
+| `npm run db:setup`       | Start PostgreSQL, migrate, and seed the sample catalog   |
+| `npm run db:migrate`     | Apply pending SQL migrations with Python                 |
+| `npm run db:seed`        | Refresh sample catalog records                           |
+| `npm run admin:create`   | Create or update the initial administrator               |
+
+## Testing
+
+Tests use `TEST_DATABASE_URL`, falling back to `DATABASE_URL`. The database user needs permission to create schemas. Each test creates a random `florea_test_...` schema, applies migrations and seeds there, and removes only that schema afterward. Existing application tables are never truncated.
+
+```powershell
+# Optional: use a separate database for tests.
+$env:TEST_DATABASE_URL = 'postgresql://florea:florea@localhost:5433/florea_haven'
+npm test
+npm run lint
+npm run build
+```
+
+Tests cover sessions, permissions, catalog administration, cart ownership, checkout, immutable order snapshots, status transitions, concurrent purchases, duplicate submissions, cancellation, and transaction rollback. Compatibility fixtures verify password hashes, JWTs, cart revisions, and order fingerprints generated by the original Express backend.
+
+## Production serving
+
+Build the frontend, install Python dependencies, apply migrations, and run Waitress. The production process does not need Node.js; npm is an optional command wrapper.
+
+```bash
+npm run build
+python -m pip install -r backend/requirements.txt
+python backend/manage.py migrate
+python backend/manage.py serve
+```
+
+Set `APP_ENV=production`, `DATABASE_URL`, a stable `JWT_SECRET`, and `CLIENT_ORIGIN` to the public HTTPS origin. `PORT` defaults to 4000. Place the service behind a TLS-terminating host or reverse proxy. Flask serves the built assets and React deep links; `/api` remains on the same origin. Waitress is the production server; Flask's development server is for local work.
+
+Set `DATABASE_SSL=true` when the database requires TLS. This uses certificate and hostname verification; configure `PGSSLROOTCERT` if the provider requires a custom CA. A PostgreSQL connection URL can also specify its own SSL settings.
+
+The default authentication rate limiter uses process memory. Use one Waitress process initially. Before scaling to multiple processes/instances, configure `RATELIMIT_STORAGE_URI` to shared storage and install its corresponding storage dependency. If configuring forwarded client IPs, trust only the actual reverse proxy.
+
+## Migration from Express
+
+The five existing SQL migrations and seed file are preserved under `backend/`. Migration names and the database ledger are unchanged: existing accounts, products, carts, and orders do not require conversion. Preserve your `DATABASE_URL` and `JWT_SECRET` to retain data and existing sessions.
+
+The `florea_session` cookie, bcrypt hashes, HS256 JWTs, API routes, JSON envelopes, and client API calls remain compatible. The retired Express implementation is available in Git history. Your React components, styling, themes, and UI/UX work remain in place.
+
+## Project structure
+
+```text
+client/                 React, Tailwind, React Query, and frontend tests
+backend/
+  florea/               Flask factory, auth, catalog, cart, orders, validation, database
+  migrations/           Existing ordered PostgreSQL schema changes
+  seeds/                Repeatable development catalog data
+  tests/                pytest integration, concurrency, and compatibility tests
+  manage.py             Development/production serving and database commands
+scripts/backend.mjs     Cross-platform npm launcher for the Python environment
+```
+
+See the [API contract](docs/api-contract.md), [Python backend decision](docs/decisions/0002-python-flask-backend.md), [architecture](architecture.md), and [implementation plan](implementation-plan.md).
+
+## Render release
+
+Use [the Render deployment runbook](docs/render-deployment.md) with [render.yaml](render.yaml). It provisions a paid Docker web service, private PostgreSQL, and shared rate limiting in Singapore. The build serves React and Flask on one HTTPS origin; migrations run before deployment. Set the three server-only `CLOUDINARY_*` credentials in Render. No production resources have been provisioned by the repository setup.
+
+`npm run check` runs lint, backend/component tests, the production build, and desktop/mobile browser journeys. Install Chromium first with `npx playwright install chromium`. Browser tests create and drop an isolated PostgreSQL schema; Cloudinary calls are stubbed. `compose.smoke.yml` provides a disposable Linux production stack with real PostgreSQL and Redis; see the runbook for commands.
+
+Image uploads use authenticated multipart endpoints, byte-level validation, metadata stripping, responsive Cloudinary delivery, and a durable cleanup queue. Run `npm run images:cleanup` locally or `python backend/manage.py cleanup-images` on the host daily. See [ADR 0003](docs/decisions/0003-managed-images-and-render.md) for the upload protocol decision and [release status](docs/release-status.md) for verification and launch prerequisites.
+
+Never commit `.env` or production credentials. Real Cloudinary delivery, Render HTTPS, backups, and hosted smoke tests must be verified in staging before launch. Figma comparison and full assistive-technology review remain separate release-review items.
