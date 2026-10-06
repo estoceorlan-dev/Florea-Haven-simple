@@ -1,0 +1,23 @@
+/* #region HTML states */
+[hidden] {
+  display: none !important;
+}
+.plain-select {
+  appearance: auto;
+  cursor: pointer;
+}
+#page-error,
+#page-notice {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+[data-field='delivery-address'] {
+  white-space: pre-line;
+}
+
+[data-active='false'] {
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-muted);
+}
+/* #endregion */

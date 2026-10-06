@@ -116,7 +116,10 @@ client/
   index.html            Home page
   pages/                Storefront, login, account, cart, checkout, and order HTML
   admin/                Administrator HTML pages
-  css/styles.css        Plain CSS, responsive layouts, animations, and themes
+  css/styles.css        Imports the CSS category files in order
+  css/core/             Shared defaults and theme variables
+  css/components/       Buttons, navigation, products, forms, and other components
+  css/*.css             Fonts, utilities, dark theme, responsive rules, and animations
   js/                   API calls and event handlers; no page markup
   public/               Theme startup and fallback image
   licenses/             Preserved CSS and SVG attribution

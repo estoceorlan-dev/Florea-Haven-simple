@@ -1,0 +1,46 @@
+@layer components {
+  /* #region Cart availability */
+  .cart-stock-status,
+  .availability-status {
+    min-height: 1.75rem;
+    color: var(--color-text-muted);
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    display: flex;
+  }
+  .cart-stock-status[data-stock-state='low'] {
+    color: var(--color-warning);
+  }
+  .cart-stock-status[data-stock-state='unavailable'] {
+    color: var(--color-danger);
+  }
+  .availability-status-dot {
+    background: var(--color-success);
+    border-radius: 999px;
+    flex: none;
+    width: 0.45rem;
+    height: 0.45rem;
+  }
+  .cart-line-changed {
+    border-color: #bfa085;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .cart-line-changed {
+      border-color: color-mix(in srgb, var(--color-warning) 45%, var(--color-border));
+    }
+  }
+  .cart-line-changed {
+    background: #f7f3ef;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .cart-line-changed {
+      background: color-mix(in srgb, var(--color-warning) 7%, var(--color-surface));
+    }
+  }
+  .cart-line-changed {
+    animation: cart-line-change var(--motion-slow) var(--ease-enter) both;
+  }
+  /* #endregion */
+}

@@ -1,0 +1,288 @@
+/* #region CSS properties */
+@property --ui-translate-x {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0;
+}
+@property --ui-translate-y {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0;
+}
+@property --ui-translate-z {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0;
+}
+@property --ui-space-y-reverse {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0;
+}
+@property --ui-divide-y-reverse {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0;
+}
+@property --ui-border-style {
+  syntax: '*';
+  inherits: false;
+  initial-value: solid;
+}
+@property --ui-gradient-position {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-gradient-from {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #0000;
+}
+@property --ui-gradient-via {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #0000;
+}
+@property --ui-gradient-to {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #0000;
+}
+@property --ui-gradient-stops {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-gradient-via-stops {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-gradient-from-position {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+@property --ui-gradient-via-position {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 50%;
+}
+@property --ui-gradient-to-position {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 100%;
+}
+@property --ui-leading {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-font-weight {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-tracking {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-ordinal {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-slashed-zero {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-numeric-figure {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-numeric-spacing {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-numeric-fraction {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-shadow {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --ui-shadow-color {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-shadow-alpha {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 100%;
+}
+@property --ui-inset-shadow {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --ui-inset-shadow-color {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-inset-shadow-alpha {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 100%;
+}
+@property --ui-ring-color {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-ring-shadow {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --ui-inset-ring-color {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-inset-ring-shadow {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --ui-ring-inset {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-ring-offset-width {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0;
+}
+@property --ui-ring-offset-color {
+  syntax: '*';
+  inherits: false;
+  initial-value: #fff;
+}
+@property --ui-ring-offset-shadow {
+  syntax: '*';
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --ui-blur {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-brightness {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-contrast {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-grayscale {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-hue-rotate {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-invert {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-opacity {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-saturate {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-sepia {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-drop-shadow {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-drop-shadow-color {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-drop-shadow-alpha {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 100%;
+}
+@property --ui-drop-shadow-size {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-backdrop-blur {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-backdrop-brightness {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-backdrop-contrast {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-backdrop-grayscale {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-backdrop-hue-rotate {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-backdrop-invert {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-backdrop-opacity {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-backdrop-saturate {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-backdrop-sepia {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-duration {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-ease {
+  syntax: '*';
+  inherits: false;
+}
+@property --ui-scale-x {
+  syntax: '*';
+  inherits: false;
+  initial-value: 1;
+}
+@property --ui-scale-y {
+  syntax: '*';
+  inherits: false;
+  initial-value: 1;
+}
+@property --ui-scale-z {
+  syntax: '*';
+  inherits: false;
+  initial-value: 1;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* #endregion */

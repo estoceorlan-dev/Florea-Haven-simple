@@ -1,0 +1,36 @@
+/* #region Dark theme */
+:root[data-theme='dark'] {
+  --lightningcss-light: ;
+  --lightningcss-dark: initial;
+  color-scheme: dark;
+  --color-canvas: #211820;
+  --color-surface: #2b2028;
+  --color-surface-muted: #35262f;
+  --color-text: #fff7f2;
+  --color-text-muted: #d8bbc5;
+  --color-brand: #f2a9bd;
+  --color-brand-soft: #4a2f3a;
+  --color-brand-strong: #ffd1dc;
+  --color-floral-accent: #e58da7;
+  --color-success: #83c9a9;
+  --color-warning: #e5b76e;
+  --color-danger: #f295b2;
+  --color-border: #523a47;
+  --color-border-strong: #73505f;
+  --color-backdrop: #0b070ab8;
+  --color-skeleton: #493440;
+  --color-skeleton-highlight: #674654;
+  --color-image-overlay: #160f14;
+  --color-ivory: var(--color-canvas);
+  --color-mist: var(--color-surface-muted);
+  --color-sage: var(--color-brand-soft);
+  --color-leaf: var(--color-floral-accent);
+  --color-evergreen: var(--color-brand);
+  --color-clay: var(--color-floral-accent);
+  --color-blush: var(--color-brand-soft);
+  --color-ink: var(--color-text);
+  --shadow-low: 0 1px 2px #0805073d, 0 8px 24px #0805072e;
+  --shadow-medium: 0 16px 40px #08050752;
+  --shadow-overlay: 0 24px 64px #08050785;
+}
+/* #endregion */

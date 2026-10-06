@@ -7,7 +7,7 @@
 - `client/index.html`: home page.
 - `client/pages/*.html`: catalog/product, login/register, account, cart/checkout, customer orders, confirmation, and missing-page documents.
 - `client/admin/*.html`: dashboard, products, categories, users, and orders/detail documents.
-- `client/css/styles.css`: preserved ordinary CSS, utility selectors, typography, responsive rules, animations, and both themes. No Tailwind directives/compiler.
+- `client/css/styles.css`: imports ordinary CSS category files from `client/css/`, `core/`, and `components/` in their original order. Utility selectors, typography, responsive rules, animations, and both themes are preserved. No Tailwind directives/compiler.
 - `client/js/*.js`: API methods, native form handlers, session display, availability checks, uploads, and dialog interactions. Page markup is entirely in HTML; JavaScript does not generate HTML strings.
 - `client/public/`: early theme initialization and a fallback image.
 - `backend/florea/frontend.py`: clean URL mapping to HTML documents.

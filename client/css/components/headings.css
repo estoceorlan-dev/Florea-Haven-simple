@@ -1,0 +1,18 @@
+@layer components {
+  /* #region Section headings */
+  .eyebrow {
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    font-weight: 800;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    letter-spacing: -0.055em;
+    color: var(--color-evergreen);
+    text-wrap: balance;
+    font-size: clamp(2.55rem, 5vw, 4.75rem);
+    line-height: 1.05;
+  }
+  /* #endregion */
+}

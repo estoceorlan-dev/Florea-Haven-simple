@@ -1,0 +1,121 @@
+@layer components {
+  /* #region Category and product cards */
+  .category-card {
+    aspect-ratio: 5/4;
+    background: var(--color-sage);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-low);
+    isolation: isolate;
+    position: relative;
+    overflow: hidden;
+  }
+  .product-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    min-width: 0;
+    box-shadow: var(--shadow-low);
+    transition:
+      border-color var(--motion-standard) var(--ease-standard),
+      box-shadow var(--motion-standard) var(--ease-standard),
+      transform var(--motion-standard) var(--ease-standard);
+    flex-direction: column;
+    display: flex;
+    overflow: clip;
+  }
+  .product-card:hover,
+  .product-card:focus-within {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-3px);
+  }
+  /* #endregion */
+  /* #region Stock indicators */
+  .stock-indicator {
+    border-radius: var(--radius-control);
+    border: 1px solid #0000;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 1.75rem;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.25;
+    display: inline-flex;
+  }
+  .stock-indicator[data-updating='true'] .stock-indicator-dot,
+  .animate-stock-refresh {
+    animation: stock-refresh 1s var(--ease-standard) infinite alternate;
+  }
+  .stock-indicator-dot {
+    background: currentColor;
+    border-radius: 999px;
+    flex: none;
+    width: 0.42rem;
+    height: 0.42rem;
+  }
+  .stock-indicator[data-stock-state='available'] {
+    border-color: #39705a2e;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .stock-indicator[data-stock-state='available'] {
+      border-color: color-mix(in srgb, var(--color-success) 18%, transparent);
+    }
+  }
+  .stock-indicator[data-stock-state='available'] {
+    background: #39705a12;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .stock-indicator[data-stock-state='available'] {
+      background: color-mix(in srgb, var(--color-success) 7%, transparent);
+    }
+  }
+  .stock-indicator[data-stock-state='available'] {
+    color: var(--color-success);
+  }
+  .stock-indicator[data-stock-state='low'] {
+    border-color: #8a5a1833;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .stock-indicator[data-stock-state='low'] {
+      border-color: color-mix(in srgb, var(--color-warning) 20%, transparent);
+    }
+  }
+  .stock-indicator[data-stock-state='low'] {
+    background: #8a5a1814;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .stock-indicator[data-stock-state='low'] {
+      background: color-mix(in srgb, var(--color-warning) 8%, transparent);
+    }
+  }
+  .stock-indicator[data-stock-state='low'] {
+    color: var(--color-warning);
+  }
+  .stock-indicator[data-stock-state='unavailable'] {
+    border-color: #9b405f2e;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .stock-indicator[data-stock-state='unavailable'] {
+      border-color: color-mix(in srgb, var(--color-danger) 18%, transparent);
+    }
+  }
+  .stock-indicator[data-stock-state='unavailable'] {
+    background: #9b405f12;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .stock-indicator[data-stock-state='unavailable'] {
+      background: color-mix(in srgb, var(--color-danger) 7%, transparent);
+    }
+  }
+  .stock-indicator[data-stock-state='unavailable'] {
+    color: var(--color-danger);
+  }
+  .stock-indicator[data-stock-state='loading'] {
+    border-color: var(--color-border);
+    background: var(--color-surface-muted);
+    color: var(--color-text-muted);
+  }
+  /* #endregion */
+}

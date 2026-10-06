@@ -1,0 +1,58 @@
+@layer components {
+  /* #region Order status badges */
+  .order-status-badge {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-muted);
+    color: var(--color-text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.62rem;
+    font-weight: 800;
+    display: inline-flex;
+  }
+  .order-status-badge[data-status='pending'],
+  .order-status-badge[data-status='preparing'] {
+    border-color: #d3bbaf;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .order-status-badge[data-status='pending'],
+    .order-status-badge[data-status='preparing'] {
+      border-color: color-mix(in srgb, var(--color-warning) 24%, var(--color-border));
+    }
+  }
+  .order-status-badge[data-status='pending'],
+  .order-status-badge[data-status='preparing'] {
+    color: var(--color-warning);
+  }
+  .order-status-badge[data-status='confirmed'],
+  .order-status-badge[data-status='shipped'],
+  .order-status-badge[data-status='delivered'] {
+    border-color: #c0c0bf;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .order-status-badge[data-status='confirmed'],
+    .order-status-badge[data-status='shipped'],
+    .order-status-badge[data-status='delivered'] {
+      border-color: color-mix(in srgb, var(--color-success) 24%, var(--color-border));
+    }
+  }
+  .order-status-badge[data-status='confirmed'],
+  .order-status-badge[data-status='shipped'],
+  .order-status-badge[data-status='delivered'] {
+    color: var(--color-success);
+  }
+  .order-status-badge[data-status='cancelled'] {
+    border-color: #d7b4c0;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .order-status-badge[data-status='cancelled'] {
+      border-color: color-mix(in srgb, var(--color-danger) 24%, var(--color-border));
+    }
+  }
+  .order-status-badge[data-status='cancelled'] {
+    color: var(--color-danger);
+  }
+  /* #endregion */
+}

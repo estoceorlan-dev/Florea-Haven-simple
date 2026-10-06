@@ -1,0 +1,76 @@
+/* #region Utility defaults */
+@layer properties {
+  @supports (((-webkit-hyphens: none)) and (not (margin-trim: inline))) or
+    ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+    *,
+    :before,
+    :after,
+    ::backdrop {
+      --ui-translate-x: 0;
+      --ui-translate-y: 0;
+      --ui-translate-z: 0;
+      --ui-space-y-reverse: 0;
+      --ui-divide-y-reverse: 0;
+      --ui-border-style: solid;
+      --ui-gradient-position: initial;
+      --ui-gradient-from: #0000;
+      --ui-gradient-via: #0000;
+      --ui-gradient-to: #0000;
+      --ui-gradient-stops: initial;
+      --ui-gradient-via-stops: initial;
+      --ui-gradient-from-position: 0%;
+      --ui-gradient-via-position: 50%;
+      --ui-gradient-to-position: 100%;
+      --ui-leading: initial;
+      --ui-font-weight: initial;
+      --ui-tracking: initial;
+      --ui-ordinal: initial;
+      --ui-slashed-zero: initial;
+      --ui-numeric-figure: initial;
+      --ui-numeric-spacing: initial;
+      --ui-numeric-fraction: initial;
+      --ui-shadow: 0 0 #0000;
+      --ui-shadow-color: initial;
+      --ui-shadow-alpha: 100%;
+      --ui-inset-shadow: 0 0 #0000;
+      --ui-inset-shadow-color: initial;
+      --ui-inset-shadow-alpha: 100%;
+      --ui-ring-color: initial;
+      --ui-ring-shadow: 0 0 #0000;
+      --ui-inset-ring-color: initial;
+      --ui-inset-ring-shadow: 0 0 #0000;
+      --ui-ring-inset: initial;
+      --ui-ring-offset-width: 0px;
+      --ui-ring-offset-color: #fff;
+      --ui-ring-offset-shadow: 0 0 #0000;
+      --ui-blur: initial;
+      --ui-brightness: initial;
+      --ui-contrast: initial;
+      --ui-grayscale: initial;
+      --ui-hue-rotate: initial;
+      --ui-invert: initial;
+      --ui-opacity: initial;
+      --ui-saturate: initial;
+      --ui-sepia: initial;
+      --ui-drop-shadow: initial;
+      --ui-drop-shadow-color: initial;
+      --ui-drop-shadow-alpha: 100%;
+      --ui-drop-shadow-size: initial;
+      --ui-backdrop-blur: initial;
+      --ui-backdrop-brightness: initial;
+      --ui-backdrop-contrast: initial;
+      --ui-backdrop-grayscale: initial;
+      --ui-backdrop-hue-rotate: initial;
+      --ui-backdrop-invert: initial;
+      --ui-backdrop-opacity: initial;
+      --ui-backdrop-saturate: initial;
+      --ui-backdrop-sepia: initial;
+      --ui-duration: initial;
+      --ui-ease: initial;
+      --ui-scale-x: 1;
+      --ui-scale-y: 1;
+      --ui-scale-z: 1;
+    }
+  }
+}
+/* #endregion */

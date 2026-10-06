@@ -1,0 +1,91 @@
+@layer components {
+  /* #region Forms */
+  .form-field {
+    color: var(--color-evergreen);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    gap: 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    display: grid;
+  }
+  .form-input {
+    border-radius: var(--radius-control);
+    border: 1px solid #9851682e;
+    width: 100%;
+    min-height: 3rem;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .form-input {
+      border: 1px solid color-mix(in srgb, var(--color-evergreen) 18%, transparent);
+    }
+  }
+  .form-input {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    letter-spacing: normal;
+    text-transform: none;
+    outline: none;
+    padding: 0.8rem 0.9rem;
+    font-size: 1rem;
+    font-weight: 400;
+    transition:
+      border-color 0.16s,
+      box-shadow 0.16s;
+  }
+  .form-input:focus {
+    border-color: var(--color-evergreen);
+    box-shadow: 0 0 0 3px #f5dce4a6;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .form-input:focus {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-sage) 65%, transparent);
+    }
+  }
+  .form-input[aria-invalid='true'] {
+    border-color: var(--color-clay);
+  }
+  .form-hint,
+  .form-field-error {
+    letter-spacing: normal;
+    text-transform: none;
+    font-size: 0.72rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .form-hint {
+    color: #3d2a3180;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .form-hint {
+      color: color-mix(in srgb, var(--color-ink) 50%, transparent);
+    }
+  }
+  .form-field-error {
+    color: var(--color-clay);
+  }
+  .form-alert {
+    border-radius: var(--radius-control);
+    border: 1px solid #a64f6c47;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .form-alert {
+      border: 1px solid color-mix(in srgb, var(--color-clay) 28%, transparent);
+    }
+  }
+  .form-alert {
+    background: #fcf3f6;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .form-alert {
+      background: color-mix(in srgb, var(--color-blush) 45%, var(--color-surface));
+    }
+  }
+  .form-alert {
+    color: var(--color-ink);
+    padding: 0.85rem 1rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+  /* #endregion */
+}

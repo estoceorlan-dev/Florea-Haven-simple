@@ -1,0 +1,127 @@
+@layer components {
+  /* #region Buttons */
+  /* #region Button layout */
+  .button-primary,
+  .button-secondary,
+  .button-danger,
+  .button-quiet {
+    min-height: calc(var(--spacing) * 12);
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    gap: calc(var(--spacing) * 2.5);
+    max-width: 100%;
+    padding-inline: calc(var(--spacing) * 6);
+    padding-block: calc(var(--spacing) * 3);
+    text-align: center;
+    font-size: var(--text-sm);
+    line-height: var(--ui-leading, var(--text-sm--line-height));
+    --ui-leading: calc(var(--spacing) * 5);
+    line-height: calc(var(--spacing) * 5);
+    --ui-font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-semibold);
+    transition:
+      background var(--motion-fast) var(--ease-standard),
+      color var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      box-shadow var(--motion-fast) var(--ease-standard),
+      transform var(--motion-fast) var(--ease-standard);
+    border-radius: 2147483647px;
+    display: inline-flex;
+  }
+  .button-primary:active:not(:disabled),
+  .button-secondary:active:not(:disabled),
+  .button-danger:active:not(:disabled),
+  .button-quiet:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+  }
+  .button-primary svg,
+  .button-secondary svg,
+  .button-danger svg,
+  .button-quiet svg {
+    flex-shrink: 0;
+  }
+  /* #endregion */
+  /* #region Buy Now button */
+  .button-primary {
+    border: 1px solid var(--color-evergreen);
+    background: var(--color-evergreen);
+    color: var(--color-canvas);
+    box-shadow: 0 4px 12px #9851682e;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .button-primary {
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--color-brand) 18%, transparent);
+    }
+  }
+  .button-primary:hover:not(:disabled) {
+    border-color: var(--color-brand-strong);
+    background: var(--color-brand-strong);
+  }
+  /* #endregion */
+  /* #region Disabled buttons */
+  .button-primary:disabled,
+  .button-secondary:disabled,
+  .button-danger:disabled,
+  .button-quiet:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+  }
+  /* #endregion */
+  /* #region Add to Cart button */
+  .button-secondary {
+    border: 1px solid #9851684d;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .button-secondary {
+      border: 1px solid color-mix(in srgb, var(--color-evergreen) 30%, transparent);
+    }
+  }
+  .button-secondary {
+    color: var(--color-evergreen);
+    background: var(--color-surface);
+  }
+  .button-secondary:hover:not(:disabled) {
+    border-color: var(--color-evergreen);
+    background: var(--color-evergreen);
+    color: var(--color-canvas);
+  }
+  /* #endregion */
+  /* #region Confirm button */
+  .button-danger {
+    border: 1px solid var(--color-danger);
+    background: var(--color-danger);
+    color: var(--color-canvas);
+  }
+  .button-danger:hover:not(:disabled) {
+    border-color: var(--color-brand-strong);
+    background: var(--color-brand-strong);
+  }
+  /* #endregion */
+  /* #region Back to selection button */
+  .button-quiet {
+    border: 1px solid #98516840;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .button-quiet {
+      border: 1px solid color-mix(in srgb, var(--color-evergreen) 25%, transparent);
+    }
+  }
+  .button-quiet {
+    color: var(--color-evergreen);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .button-quiet:hover:not(:disabled) {
+    border-color: var(--color-evergreen);
+    background: #ffffff59;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .button-quiet:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--color-surface) 35%, transparent);
+    }
+  }
+  /* #endregion */
+  /* #endregion */
+}

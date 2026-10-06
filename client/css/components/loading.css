@@ -1,0 +1,41 @@
+@layer components {
+  /* #region Loading skeletons */
+  .skeleton {
+    background: var(--color-skeleton);
+    position: relative;
+    overflow: hidden;
+  }
+  .skeleton:after {
+    background: linear-gradient(90deg, #0000, #fffaf8b8, #0000);
+    position: absolute;
+    inset: 0;
+    transform: translate(-100%);
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .skeleton:after {
+      background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in srgb, var(--color-skeleton-highlight) 72%, transparent),
+        transparent
+      );
+    }
+  }
+  .skeleton:after {
+    content: '';
+    animation: skeleton-shimmer 1.65s var(--ease-standard) infinite;
+  }
+  /* #endregion */
+  /* #region Motion lift */
+  .motion-lift {
+    transition:
+      transform var(--motion-standard) var(--ease-standard),
+      box-shadow var(--motion-standard) var(--ease-standard),
+      border-color var(--motion-standard) var(--ease-standard);
+  }
+  .motion-lift:hover,
+  .motion-lift:focus-within {
+    transform: translateY(-3px);
+  }
+  /* #endregion */
+}

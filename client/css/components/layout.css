@@ -1,0 +1,29 @@
+@layer components {
+  /* #region Page containers */
+  .page-shell {
+    width: min(100% - (var(--page-gutter) * 2), var(--content-storefront));
+    margin-inline: auto;
+  }
+  .admin-content-shell {
+    width: min(100% - (var(--page-gutter) * 2), var(--container-admin));
+    margin-inline: auto;
+  }
+  /* #endregion */
+  /* #region Skip link */
+  .skip-link {
+    z-index: 100;
+    background: var(--color-evergreen);
+    border-radius: var(--radius-control);
+    color: var(--color-canvas);
+    padding: 0.75rem 1rem;
+    transition: transform 0.16s;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    transform: translateY(-200%);
+  }
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+  /* #endregion */
+}

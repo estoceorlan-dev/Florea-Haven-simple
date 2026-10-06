@@ -1,0 +1,32 @@
+@layer components {
+  /* #region Text links */
+  .text-link {
+    cursor: pointer;
+    border-bottom: 1px solid #9851684d;
+    align-items: center;
+    gap: 0.4rem;
+    display: inline-flex;
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .text-link {
+      border-bottom: 1px solid
+        color-mix(in srgb, var(--color-evergreen) 30%, transparent);
+    }
+  }
+  .text-link {
+    color: var(--color-evergreen);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition:
+      color var(--motion-standard) var(--ease-standard),
+      gap var(--motion-standard) var(--ease-standard);
+    padding-bottom: 0.18rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+  .text-link:hover {
+    color: var(--color-brand-strong);
+    gap: 0.65rem;
+  }
+  /* #endregion */
+}

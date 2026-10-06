@@ -1,0 +1,96 @@
+/* #region Theme tokens */
+@layer theme {
+  :root,
+  :host {
+    --font-sans: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    --font-mono:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+      'Courier New', monospace;
+    --color-white: #fff;
+    --spacing: 0.25rem;
+    --container-sm: 24rem;
+    --container-md: 28rem;
+    --container-lg: 32rem;
+    --container-xl: 36rem;
+    --container-2xl: 42rem;
+    --container-3xl: 48rem;
+    --text-xs: 0.75rem;
+    --text-xs--line-height: calc(1 / 0.75);
+    --text-sm: 0.875rem;
+    --text-sm--line-height: calc(1.25 / 0.875);
+    --text-base: 1rem;
+    --text-base--line-height: calc(1.5 / 1);
+    --text-lg: 1.125rem;
+    --text-lg--line-height: calc(1.75 / 1.125);
+    --text-xl: 1.25rem;
+    --text-xl--line-height: calc(1.75 / 1.25);
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: calc(2 / 1.5);
+    --text-3xl: 1.875rem;
+    --text-3xl--line-height: calc(2.25 / 1.875);
+    --text-4xl: 2.25rem;
+    --text-4xl--line-height: calc(2.5 / 2.25);
+    --text-5xl: 3rem;
+    --text-5xl--line-height: 1;
+    --text-6xl: 3.75rem;
+    --text-6xl--line-height: 1;
+    --text-7xl: 4.5rem;
+    --text-7xl--line-height: 1;
+    --text-8xl: 6rem;
+    --text-8xl--line-height: 1;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --tracking-tight: -0.025em;
+    --leading-tight: 1.25;
+    --leading-snug: 1.375;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --animate-spin: spin 1s linear infinite;
+    --blur-sm: 8px;
+    --blur-md: 12px;
+    --blur-xl: 24px;
+    --default-transition-duration: 0.15s;
+    --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
+    --color-canvas: #fffaf8;
+    --color-surface: #fff;
+    --color-surface-muted: #fff1f5;
+    --color-text: #3d2a31;
+    --color-text-muted: #705b63;
+    --color-brand: #985168;
+    --color-brand-soft: #f8e4ea;
+    --color-brand-strong: #74374d;
+    --color-floral-accent: #a64f6c;
+    --color-success: #39705a;
+    --color-warning: #8a5a18;
+    --color-danger: #9b405f;
+    --color-border: #ead9df;
+    --color-border-strong: #d6b6c1;
+    --color-backdrop: #3d2a317a;
+    --color-skeleton: #f4e3e8;
+    --color-skeleton-highlight: #fffaf8;
+    --color-image-overlay: #3d2a31;
+    --color-ivory: #fffaf8;
+    --color-sage: #f5dce4;
+    --color-leaf: #ca879b;
+    --color-evergreen: #985168;
+    --color-clay: #a64f6c;
+    --color-blush: #f8e4ea;
+    --color-ink: #3d2a31;
+    --font-display: var(--font-sans);
+    --container-admin: 90rem;
+    --radius-control: 0.875rem;
+    --radius-card: 1.5rem;
+    --radius-overlay: 1.75rem;
+    --animate-reveal: reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --shadow-low: 0 1px 2px #3d2a310a, 0 8px 24px #9851680d;
+    --shadow-medium: 0 16px 40px #3d2a311c;
+    --shadow-overlay: 0 24px 64px #3d2a312e;
+  }
+}
+/* #endregion */

@@ -56,7 +56,7 @@ Reusable markup lives in a standard HTML `<template>` near the bottom of a page.
 
 Headers, footers, and drawers are deliberately present in each HTML document. A shared navigation edit must be repeated on the pages that use it. There is no component system or hidden build step.
 
-All styles live in [client/css/styles.css](../client/css/styles.css). The original utility names such as `text-evergreen` and `rounded-card` remain ordinary CSS selectors. Search that file for a class to see its rule. The `:root` and `.dark` color variables control the palettes. Preserve responsive rules when changing spacing; check desktop and mobile after an edit.
+[client/css/styles.css](../client/css/styles.css) imports the category files in order. Edit component styles in `client/css/components/` (for example, `buttons.css`, `navigation.css`, and `forms.css`). Shared defaults and theme variables live in `client/css/core/`; fonts, utilities, dark theme, responsive rules, animations, and HTML states have separate files in `client/css/`. Search that folder for a class to see its rule. The `:root` and `:root[data-theme='dark']` variables control the palettes. Preserve responsive rules when changing spacing; check desktop and mobile after an edit.
 
 ## Find the cause of a problem
 
@@ -65,7 +65,7 @@ Open browser developer tools with **F12**:
 | Symptom                                            | First place to check                                                               |
 | -------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | Wrong wording, missing label, or misplaced element | **Elements** and that page's HTML file                                             |
-| Wrong color, spacing, or mobile layout             | **Elements → Styles / Computed** and `css/styles.css`                              |
+| Wrong color, spacing, or mobile layout             | **Elements → Styles / Computed** and the relevant file in `css/`                   |
 | Button does nothing                                | **Console** for an error; then the page's JavaScript file                          |
 | Products do not load or a form fails               | **Network**, filter by `/api`, open the failed request and its **Response**        |
 | Sign in or permissions fail                        | `/api/auth/me` response, login response, and Flask's terminal output               |

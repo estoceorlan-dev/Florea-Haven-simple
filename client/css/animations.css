@@ -1,0 +1,80 @@
+/* #region Motion and accessibility */
+/* #region Button hover */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .button-primary:hover:not(:disabled),
+  .button-secondary:hover:not(:disabled),
+  .button-quiet:hover:not(:disabled) {
+    box-shadow: var(--shadow-low);
+    transform: translateY(-2px);
+  }
+}
+/* #endregion */
+/* #region Component animations */
+@keyframes reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes stock-refresh {
+  to {
+    opacity: 0.4;
+    transform: scale(1.25);
+  }
+}
+@keyframes cart-line-change {
+  0% {
+    opacity: 0.72;
+    transform: translateY(3px);
+  }
+}
+@keyframes confirmation-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.98);
+  }
+}
+@keyframes skeleton-shimmer {
+  to {
+    transform: translate(100%);
+  }
+}
+@keyframes drawer-backdrop-enter {
+  0% {
+    opacity: 0;
+  }
+}
+@keyframes drawer-left-enter {
+  0% {
+    transform: translate(-100%);
+  }
+}
+@keyframes drawer-right-enter {
+  0% {
+    transform: translate(100%);
+  }
+}
+/* #endregion */
+/* #region Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  :before,
+  :after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .product-card:hover,
+  .product-card:focus-within,
+  .motion-lift:hover,
+  .motion-lift:focus-within {
+    transform: none;
+  }
+}
+/* #endregion */
+/* #endregion */
