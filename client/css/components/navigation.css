@@ -40,7 +40,7 @@
     cursor: pointer;
     width: 2.75rem;
     height: 2.75rem;
-    color: var(--color-evergreen);
+    color: var(--color-floral-pink);
     transition:
       background var(--motion-standard) var(--ease-standard),
       transform var(--motion-standard) var(--ease-standard);
@@ -54,7 +54,7 @@
   }
   @supports (color: color-mix(in lab, red, red)) {
     .icon-button:hover {
-      background: color-mix(in srgb, var(--color-evergreen) 7%, transparent);
+      background: color-mix(in srgb, var(--color-floral-pink) 7%, transparent);
     }
   }
   .icon-button:active {
@@ -63,7 +63,7 @@
   .account-link {
     min-width: 2.75rem;
     min-height: 2.75rem;
-    color: var(--color-evergreen);
+    color: var(--color-floral-pink);
     transition: background var(--motion-fast) var(--ease-standard);
     border-radius: 999px;
     justify-content: center;
@@ -77,7 +77,7 @@
   }
   @supports (color: color-mix(in lab, red, red)) {
     .account-link:hover {
-      background: color-mix(in srgb, var(--color-evergreen) 7%, transparent);
+      background: color-mix(in srgb, var(--color-floral-pink) 7%, transparent);
     }
   }
   /* #endregion */

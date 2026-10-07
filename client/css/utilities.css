@@ -769,20 +769,20 @@
   .border-brand {
     border-color: var(--color-brand);
   }
-  .border-evergreen\/12 {
+  .border-floral-pink\/12 {
     border-color: #9851681f;
   }
   @supports (color: color-mix(in lab, red, red)) {
-    .border-evergreen\/12 {
-      border-color: color-mix(in oklab, var(--color-evergreen) 12%, transparent);
+    .border-floral-pink\/12 {
+      border-color: color-mix(in oklab, var(--color-floral-pink) 12%, transparent);
     }
   }
-  .border-evergreen\/20 {
+  .border-floral-pink\/20 {
     border-color: #98516833;
   }
   @supports (color: color-mix(in lab, red, red)) {
-    .border-evergreen\/20 {
-      border-color: color-mix(in oklab, var(--color-evergreen) 20%, transparent);
+    .border-floral-pink\/20 {
+      border-color: color-mix(in oklab, var(--color-floral-pink) 20%, transparent);
     }
   }
   .border-ivory\/25 {
@@ -858,15 +858,15 @@
   .bg-clay {
     background-color: var(--color-clay);
   }
-  .bg-evergreen {
-    background-color: var(--color-evergreen);
+  .bg-floral-pink {
+    background-color: var(--color-floral-pink);
   }
-  .bg-evergreen\/12 {
-    background-color: #9851681f;
+  .bg-floral-pink\/12 {
+    background-color: #0504551f;
   }
   @supports (color: color-mix(in lab, red, red)) {
-    .bg-evergreen\/12 {
-      background-color: color-mix(in oklab, var(--color-evergreen) 12%, transparent);
+    .bg-floral-pink\/12 {
+      background-color: color-mix(in oklab, var(--color-floral-pink) 12%, transparent);
     }
   }
   .bg-ivory\/95 {
@@ -1535,15 +1535,15 @@
   .text-danger {
     color: var(--color-danger);
   }
-  .text-evergreen {
-    color: var(--color-evergreen);
+  .text-floral-pink {
+    color: var(--color-floral-pink);
   }
-  .text-evergreen\/45 {
+  .text-floral-pink\/45 {
     color: #98516873;
   }
   @supports (color: color-mix(in lab, red, red)) {
-    .text-evergreen\/45 {
-      color: color-mix(in oklab, var(--color-evergreen) 45%, transparent);
+    .text-floral-pink\/45 {
+      color: color-mix(in oklab, var(--color-floral-pink) 45%, transparent);
     }
   }
   .text-floral-accent {
@@ -1611,29 +1611,29 @@
   .underline {
     text-decoration-line: underline;
   }
-  .decoration-evergreen\/25 {
+  .decoration-floral-pink\/25 {
     text-decoration-color: #98516840;
   }
   @supports (color: color-mix(in lab, red, red)) {
-    .decoration-evergreen\/25 {
+    .decoration-floral-pink\/25 {
       -webkit-text-decoration-color: color-mix(
         in oklab,
-        var(--color-evergreen) 25%,
+        var(--color-floral-pink) 25%,
         transparent
       );
       -webkit-text-decoration-color: color-mix(
         in oklab,
-        var(--color-evergreen) 25%,
+        var(--color-floral-pink) 25%,
         transparent
       );
       -webkit-text-decoration-color: color-mix(
         in oklab,
-        var(--color-evergreen) 25%,
+        var(--color-floral-pink) 25%,
         transparent
       );
       text-decoration-color: color-mix(
         in oklab,
-        var(--color-evergreen) 25%,
+        var(--color-floral-pink) 25%,
         transparent
       );
     }
@@ -1865,8 +1865,8 @@
     .hover\:text-danger:hover {
       color: var(--color-danger);
     }
-    .hover\:text-evergreen:hover {
-      color: var(--color-evergreen);
+    .hover\:text-floral-pink:hover {
+      color: var(--color-floral-pink);
     }
   }
   .focus-visible\:ring-2:focus-visible {

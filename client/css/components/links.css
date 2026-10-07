@@ -10,11 +10,11 @@
   @supports (color: color-mix(in lab, red, red)) {
     .text-link {
       border-bottom: 1px solid
-        color-mix(in srgb, var(--color-evergreen) 30%, transparent);
+        color-mix(in srgb, var(--color-floral-pink) 30%, transparent);
     }
   }
   .text-link {
-    color: var(--color-evergreen);
+    color: var(--color-floral-pink);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     transition:

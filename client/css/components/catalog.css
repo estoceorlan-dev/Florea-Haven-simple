@@ -122,17 +122,17 @@
   }
   @supports (color: color-mix(in lab, red, red)) {
     .pagination-button {
-      border: 1px solid color-mix(in srgb, var(--color-evergreen) 18%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-floral-pink) 18%, transparent);
     }
   }
   .pagination-button {
-    color: var(--color-evergreen);
+    color: var(--color-floral-pink);
     padding: 0.7rem 1rem;
     font-size: 0.72rem;
     font-weight: 700;
   }
   .pagination-button:hover:not(:disabled) {
-    border-color: var(--color-evergreen);
+    border-color: var(--color-floral-pink);
   }
   .pagination-button:disabled {
     cursor: not-allowed;

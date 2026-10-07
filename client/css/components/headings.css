@@ -9,7 +9,7 @@
   .section-title {
     font-family: var(--font-display);
     letter-spacing: -0.055em;
-    color: var(--color-evergreen);
+    color: var(--color-floral-pink);
     text-wrap: balance;
     font-size: clamp(2.55rem, 5vw, 4.75rem);
     line-height: 1.05;

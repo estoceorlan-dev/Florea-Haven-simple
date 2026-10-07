@@ -1,7 +1,7 @@
 @layer components {
   /* #region Forms */
   .form-field {
-    color: var(--color-evergreen);
+    color: var(--color-floral-pink);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     gap: 0.5rem;
@@ -17,7 +17,7 @@
   }
   @supports (color: color-mix(in lab, red, red)) {
     .form-input {
-      border: 1px solid color-mix(in srgb, var(--color-evergreen) 18%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-floral-pink) 18%, transparent);
     }
   }
   .form-input {
@@ -34,7 +34,7 @@
       box-shadow 0.16s;
   }
   .form-input:focus {
-    border-color: var(--color-evergreen);
+    border-color: var(--color-floral-pink);
     box-shadow: 0 0 0 3px #f5dce4a6;
   }
   @supports (color: color-mix(in lab, red, red)) {

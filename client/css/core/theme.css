@@ -6,7 +6,7 @@
     --font-mono:
       ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
       'Courier New', monospace;
-    --color-white: #fff;
+    --color-white: #fff; /* Image text, white borders, and photo overlays */
     --spacing: 0.25rem;
     --container-sm: 24rem;
     --container-md: 28rem;
@@ -57,31 +57,32 @@
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
-    --color-canvas: #fffaf8;
-    --color-surface: #fff;
-    --color-surface-muted: #fff1f5;
-    --color-text: #3d2a31;
-    --color-text-muted: #705b63;
-    --color-brand: #985168;
-    --color-brand-soft: #f8e4ea;
-    --color-brand-strong: #74374d;
-    --color-floral-accent: #a64f6c;
-    --color-success: #39705a;
-    --color-warning: #8a5a18;
-    --color-danger: #9b405f;
-    --color-border: #ead9df;
-    --color-border-strong: #d6b6c1;
-    --color-backdrop: #3d2a317a;
-    --color-skeleton: #f4e3e8;
-    --color-skeleton-highlight: #fffaf8;
-    --color-image-overlay: #3d2a31;
-    --color-ivory: #fffaf8;
-    --color-sage: #f5dce4;
-    --color-leaf: #ca879b;
-    --color-evergreen: #985168;
-    --color-clay: #a64f6c;
-    --color-blush: #f8e4ea;
-    --color-ink: #3d2a31;
+    --color-canvas: #fffff8; /* Page backgrounds and button text */
+    --color-surface: #fff; /* Cards, forms, and dialogs */
+    --color-surface-muted: #fff1f5; /* Filters, empty states, and inactive items */
+    --color-text: #3d2a31; /* Body text, forms, and navigation */
+    --color-text-muted: #705b63; /* Descriptions, placeholders, and inactive links */
+    --color-brand: #985168; /* Active navigation, field focus, and theme selector */
+    --color-brand-soft: #f8e4ea; /* Active filters, icon backgrounds, and focus rings */
+    --color-brand-strong: #74374d; /* Button hover and active link text */
+    --color-floral-accent: #a64f6c; /* Active admin borders and accent text */
+    --color-success: #39705a; /* Available stock, completed orders, and success notices */
+    --color-warning: #8a5a18; /* Low stock, pending orders, and cart changes */
+    --color-danger: #9b405f; /* Unavailable stock, cancelled orders, and error notices */
+    --color-border: #ead9df; /* Cards, fields, dialogs, and dividers */
+    --color-border-strong: #d6b6c1; /* Card hover, price fields, and empty states */
+    --color-backdrop: #3d2a317a; /* Drawer and dialog backdrops */
+    --color-skeleton: #f4e3e8; /* Loading placeholders */
+    --color-skeleton-highlight: #fffaf8; /* Loading shimmer */
+    --color-image-overlay: #3d2a31; /* Photo gradients behind text */
+    --color-ivory: #fffaf8; /* Banner and footer text; image badges */
+    --color-sage: #f5dce4; /* Logo icons, category cards, and form focus rings */
+    --color-leaf: #ca879b; /* Checkout and admin icons */
+    --color-floral-pink: #985168; /* Headings, banners, footers, and buttons */
+    --color-clay: #a64f6c; /* Logo accent, section labels, cart badges, and errors */
+    --color-esto: black; /* Unused */
+    --color-blush: #f8e4ea; /* Text selection and form alerts */
+    --color-ink: #3d2a31; /* Product descriptions and form text */
     --font-display: var(--font-sans);
     --container-admin: 90rem;
     --radius-control: 0.875rem;

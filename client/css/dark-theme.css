@@ -3,32 +3,36 @@
   --lightningcss-light: ;
   --lightningcss-dark: initial;
   color-scheme: dark;
-  --color-canvas: #211820;
-  --color-surface: #2b2028;
-  --color-surface-muted: #35262f;
-  --color-text: #fff7f2;
-  --color-text-muted: #d8bbc5;
-  --color-brand: #f2a9bd;
-  --color-brand-soft: #4a2f3a;
-  --color-brand-strong: #ffd1dc;
-  --color-floral-accent: #e58da7;
-  --color-success: #83c9a9;
-  --color-warning: #e5b76e;
-  --color-danger: #f295b2;
-  --color-border: #523a47;
-  --color-border-strong: #73505f;
-  --color-backdrop: #0b070ab8;
-  --color-skeleton: #493440;
-  --color-skeleton-highlight: #674654;
-  --color-image-overlay: #160f14;
-  --color-ivory: var(--color-canvas);
-  --color-mist: var(--color-surface-muted);
-  --color-sage: var(--color-brand-soft);
-  --color-leaf: var(--color-floral-accent);
-  --color-evergreen: var(--color-brand);
-  --color-clay: var(--color-floral-accent);
-  --color-blush: var(--color-brand-soft);
-  --color-ink: var(--color-text);
+  --color-canvas: #211820; /* Page backgrounds and button text */
+  --color-surface: #2b2028; /* Cards, forms, and dialogs */
+  --color-surface-muted: #35262f; /* Filters, empty states, and inactive items */
+  --color-text: #fff7f2; /* Body text, forms, and navigation */
+  --color-text-muted: #d8bbc5; /* Descriptions, placeholders, and inactive links */
+  --color-brand: #f2a9bd; /* Active navigation, field focus, and theme selector */
+  --color-brand-soft: #4a2f3a; /* Active filters, icon backgrounds, and focus rings */
+  --color-brand-strong: #ffd1dc; /* Button hover and active link text */
+  --color-floral-accent: #e58da7; /* Active admin borders and accent text */
+  --color-success: #83c9a9; /* Available stock, completed orders, and success notices */
+  --color-warning: #e5b76e; /* Low stock, pending orders, and cart changes */
+  --color-danger: #f295b2; /* Unavailable stock, cancelled orders, and error notices */
+  --color-border: #523a47; /* Cards, fields, dialogs, and dividers */
+  --color-border-strong: #73505f; /* Card hover, price fields, and empty states */
+  --color-backdrop: #0b070ab8; /* Drawer and dialog backdrops */
+  --color-skeleton: #493440; /* Loading placeholders */
+  --color-skeleton-highlight: #674654; /* Loading shimmer */
+  --color-image-overlay: #160f14; /* Photo gradients behind text */
+  --color-ivory: var(--color-canvas); /* Banner and footer text; image badges */
+  --color-mist: var(--color-surface-muted); /* Unused */
+  --color-sage: var(
+    --color-brand-soft
+  ); /* Logo icons, category cards, and form focus rings */
+  --color-leaf: var(--color-floral-accent); /* Checkout and admin icons */
+  --color-floral-pink: var(--color-brand); /* Headings, banners, footers, and buttons */
+  --color-clay: var(
+    --color-floral-accent
+  ); /* Logo accent, section labels, cart badges, and errors */
+  --color-blush: var(--color-brand-soft); /* Text selection and form alerts */
+  --color-ink: var(--color-text); /* Product descriptions and form text */
   --shadow-low: 0 1px 2px #0805073d, 0 8px 24px #0805072e;
   --shadow-medium: 0 16px 40px #08050752;
   --shadow-overlay: 0 24px 64px #08050785;

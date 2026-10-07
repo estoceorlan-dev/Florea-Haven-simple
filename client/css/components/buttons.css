@@ -44,8 +44,8 @@
   /* #endregion */
   /* #region Buy Now button */
   .button-primary {
-    border: 1px solid var(--color-evergreen);
-    background: var(--color-evergreen);
+    border: 1px solid var(--color-floral-pink);
+    background: var(--color-floral-pink);
     color: var(--color-canvas);
     box-shadow: 0 4px 12px #9851682e;
   }
@@ -75,16 +75,16 @@
   }
   @supports (color: color-mix(in lab, red, red)) {
     .button-secondary {
-      border: 1px solid color-mix(in srgb, var(--color-evergreen) 30%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-floral-pink) 30%, transparent);
     }
   }
   .button-secondary {
-    color: var(--color-evergreen);
+    color: var(--color-floral-pink);
     background: var(--color-surface);
   }
   .button-secondary:hover:not(:disabled) {
-    border-color: var(--color-evergreen);
-    background: var(--color-evergreen);
+    border-color: var(--color-floral-pink);
+    background: var(--color-floral-pink);
     color: var(--color-canvas);
   }
   /* #endregion */
@@ -105,16 +105,16 @@
   }
   @supports (color: color-mix(in lab, red, red)) {
     .button-quiet {
-      border: 1px solid color-mix(in srgb, var(--color-evergreen) 25%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-floral-pink) 25%, transparent);
     }
   }
   .button-quiet {
-    color: var(--color-evergreen);
+    color: var(--color-floral-pink);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
   }
   .button-quiet:hover:not(:disabled) {
-    border-color: var(--color-evergreen);
+    border-color: var(--color-floral-pink);
     background: #ffffff59;
   }
   @supports (color: color-mix(in lab, red, red)) {
