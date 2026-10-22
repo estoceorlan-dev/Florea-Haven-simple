@@ -12,7 +12,9 @@ function destination(user) {
     ? path
     : user.role === 'admin'
       ? '/admin'
-      : '/';
+      : user.role === 'staff'
+        ? '/admin/products'
+        : '/';
 }
 
 form.addEventListener('submit', async (event) => {

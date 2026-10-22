@@ -5,6 +5,7 @@ from datetime import date, datetime, timezone
 from decimal import Decimal
 from pathlib import Path
 from time import perf_counter
+from urllib.parse import urlsplit
 from uuid import UUID
 
 from dotenv import load_dotenv
@@ -75,8 +76,6 @@ def create_app(config=None):
     if app.config["APP_ENV"] == "production":
         if len(app.config["JWT_SECRET"].encode()) < 32:
             raise RuntimeError("JWT_SECRET must contain at least 32 bytes in production.")
-        from urllib.parse import urlsplit
-
         origin = urlsplit(app.config["CLIENT_ORIGIN"])
         if (
             origin.scheme != "https"
@@ -102,7 +101,18 @@ def create_app(config=None):
             request.max_content_length = 5 * 1024 * 1024 + 64 * 1024
         if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
             origin = request.headers.get("Origin")
-            if (origin and origin != app.config["CLIENT_ORIGIN"]) or request.headers.get(
+            allowed_origins = {app.config["CLIENT_ORIGIN"]}
+            if app.config["APP_ENV"] == "development":
+                configured_origin = urlsplit(app.config["CLIENT_ORIGIN"])
+                if configured_origin.hostname in {"localhost", "127.0.0.1"}:
+                    port = configured_origin.port or (
+                        443 if configured_origin.scheme == "https" else 80
+                    )
+                    allowed_origins.update(
+                        f"{configured_origin.scheme}://{hostname}:{port}"
+                        for hostname in ("localhost", "127.0.0.1")
+                    )
+            if (origin and origin not in allowed_origins) or request.headers.get(
                 "Sec-Fetch-Site"
             ) == "cross-site":
                 raise ApiError(403, "ORIGIN_NOT_ALLOWED", "This request origin is not allowed.")

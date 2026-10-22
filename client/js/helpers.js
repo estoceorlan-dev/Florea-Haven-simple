@@ -92,7 +92,7 @@ export function setBusy(form, busy) {
 export function setImage(image, url, alt = '') {
   if (!image) return;
   image.alt = alt;
-  const valid = typeof url === 'string' && /^https?:\/\//i.test(url);
+  const valid = typeof url === 'string' && /^(https?:\/\/|blob:)/i.test(url);
   image.src = valid ? url : '/image-placeholder.svg';
   image.onerror = () => {
     image.onerror = null;

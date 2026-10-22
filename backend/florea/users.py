@@ -18,7 +18,7 @@ COLUMNS = USER_COLUMNS + ", is_active, updated_at"
 def list_users():
     page, limit = v.pagination(request.args, 20, 100)
     search = v.string(request.args.get("search", ""), "search", 0, 254)
-    role = v.choice(request.args.get("role", "all"), "role", ["all", "admin", "customer"])
+    role = v.choice(request.args.get("role", "all"), "role", ["all", "admin", "staff", "customer"])
     status = v.choice(request.args.get("status", "all"), "status", ["all", "active", "inactive"])
     conditions, values = [], []
     if search:
@@ -49,7 +49,7 @@ def email_conflict():
 def create_user():
     data = v.body({"name", "email", "password", "role"})
     values = v.credentials(register=True)
-    role = v.choice(data.get("role", "customer"), "role", ["customer", "admin"])
+    role = v.choice(data.get("role", "customer"), "role", ["customer", "staff", "admin"])
     try:
         user = one(
             f"""INSERT INTO users (id, name, email, password_hash, role)
@@ -76,7 +76,7 @@ def update_user(user_id):
             data["email"], "email", 3, 254, r"[^\s@]+@[^\s@]+\.[^\s@]+"
         ).lower()
     if "role" in data:
-        values["role"] = v.choice(data["role"], "role", ["customer", "admin"])
+        values["role"] = v.choice(data["role"], "role", ["customer", "staff", "admin"])
     if "isActive" in data:
         values["is_active"] = v.boolean(data["isActive"], "isActive")
     try:

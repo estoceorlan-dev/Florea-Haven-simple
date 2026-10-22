@@ -200,7 +200,7 @@ def profile_image():
 
 
 @bp.route("/products/<product_id>/image", methods=["PUT", "DELETE"])
-@protected("admin")
+@protected("staff")
 @limiter.limit("60 per hour", key_func=lambda: str(g.user["id"]))
 @bounded_upload
 def product_image(product_id):

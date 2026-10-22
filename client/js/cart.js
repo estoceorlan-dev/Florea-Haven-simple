@@ -1,4 +1,5 @@
 import { cartApi } from './api.js';
+import { getDemoProductImage } from './demo-images.js';
 import { pageReady, refreshCartBadge, showPage } from './common.js';
 import {
   find,
@@ -23,11 +24,19 @@ export const availabilityMessage = (item) =>
 if (document.body.dataset.page === 'cart' && (await pageReady)) {
   const items = new Map();
   let busy = false;
-  function render(cart) {
+  async function render(cart) {
+    const itemsWithDemoImages = await Promise.all(cart.items.map(async (item) => ({
+      ...item,
+      product: {
+        ...item.product,
+        image_url:
+          (await getDemoProductImage(item.product.id)) ?? item.product.image_url,
+      },
+    })));
     const content = find('#cart-content');
     if (content) content.hidden = cart.items.length === 0;
     find('#cart-empty').hidden = cart.items.length !== 0;
-    const rows = cart.items.map((item) => {
+    const rows = itemsWithDemoImages.map((item) => {
       items.set(item.id, item);
       const row = copyTemplate('cart-item-template');
       row.dataset.itemId = item.id;
@@ -65,7 +74,7 @@ if (document.body.dataset.page === 'cart' && (await pageReady)) {
   async function load() {
     if (busy) return;
     try {
-      render((await cartApi.getCart()).data.cart);
+      await render((await cartApi.getCart()).data.cart);
       showError(null);
     } catch (error) {
       showError(error);
@@ -86,12 +95,12 @@ if (document.body.dataset.page === 'cart' && (await pageReady)) {
             item.id,
             item.quantity + (button.hasAttribute('data-cart-increase') ? 1 : -1),
           );
-      render(response.data.cart);
+      await render(response.data.cart);
       showError(null);
     } catch (error) {
       showError(error);
       try {
-        render((await cartApi.getCart()).data.cart);
+        await render((await cartApi.getCart()).data.cart);
       } catch {
         /* Keep the existing cart and error. */
       }

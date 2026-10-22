@@ -57,7 +57,7 @@ if (await pageReady) {
           fillText(row, {
             name: account.name + (self ? ' (You)' : ''),
             email: account.email,
-            role: account.role === 'admin' ? 'Administrator' : 'Customer',
+            role: ({ admin: 'Administrator', staff: 'Staff', customer: 'Customer' })[account.role],
             'active-status': account.is_active ? 'Active' : 'Inactive',
             joined: 'Joined ' + dateTime(account.created_at),
           });

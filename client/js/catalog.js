@@ -1,4 +1,5 @@
 import { catalogApi } from './api.js';
+import { getDemoProductImage } from './demo-images.js';
 import { pageReady } from './common.js';
 import { enablePurchases, openPurchase } from './purchase.js';
 import {
@@ -81,7 +82,11 @@ async function loadCatalog() {
         : { ...Object.fromEntries(query), limit: 9 };
     const result = await catalogApi.getProducts(params);
     const list = find('#product-list');
-    const rows = result.data.map((product) => {
+    const productsWithDemoImages = await Promise.all(result.data.map(async (product) => ({
+      ...product,
+      image_url: (await getDemoProductImage(product.id)) ?? product.image_url,
+    })));
+    const rows = productsWithDemoImages.map((product) => {
       const row = copyTemplate('product-card-template');
       fillProduct(row, product);
       return row;
@@ -178,7 +183,9 @@ if (await pageReady) {
     const id = /^\/products\/([^/]+)$/.exec(location.pathname)?.[1] ?? query.get('id');
     const loadProduct = async () => {
       try {
-        fillProduct(find('#product-details'), (await catalogApi.getProduct(id)).data);
+        const product = (await catalogApi.getProduct(id)).data;
+        product.image_url = (await getDemoProductImage(product.id)) ?? product.image_url;
+        fillProduct(find('#product-details'), product);
         showError(null);
       } catch (error) {
         showError(error);

@@ -69,8 +69,9 @@ def protected(role=None):
                 raise failure
             if payload.get("version", 0) != g.user.pop("session_version"):
                 raise failure
-            if role and g.user["role"] != role:
-                label = "Administrator" if role == "admin" else "Customer"
+            allowed_roles = {"admin", "staff"} if role == "staff" else {role}
+            if role and g.user["role"] not in allowed_roles:
+                label = "Administrator" if role == "admin" else "Staff"
                 raise ApiError(
                     403, f"{role.upper()}_ACCESS_REQUIRED", f"{label} access is required."
                 )

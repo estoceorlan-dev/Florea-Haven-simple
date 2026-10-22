@@ -14,7 +14,7 @@
     <script type="module" src="/js/common.js"></script>
     <script type="module" src="/js/admin-orders.js"></script>
   </head>
-  <body data-page="admin-orders" data-access="admin">
+  <body data-page="admin-orders" data-access="staff">
     <!-- The complete page layout is here. JavaScript only fills data and handles actions. -->
     <div class="min-h-screen bg-surface-muted text-text">
       <nav aria-label="Skip navigation">
@@ -48,7 +48,7 @@
         </div>
         <div class="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-5">
           <nav class="grid gap-1" aria-label="Administrator">
-            <a class="admin-nav-link" href="/admin">
+            <a class="admin-nav-link" href="/admin" data-admin-only>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
@@ -121,7 +121,7 @@
               </svg>
               <span>Products</span>
             </a>
-            <a class="admin-nav-link" href="/admin/categories">
+            <a class="admin-nav-link" href="/admin/categories" data-admin-only>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
@@ -145,7 +145,7 @@
               </svg>
               <span>Categories</span>
             </a>
-            <a class="admin-nav-link" href="/admin/users">
+            <a class="admin-nav-link" href="/admin/users" data-admin-only>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
@@ -681,7 +681,7 @@
                   </svg>
                   <span>Products</span>
                 </a>
-                <a class="admin-nav-link" href="/admin/categories">
+                <a class="admin-nav-link" href="/admin/categories" data-admin-only>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
@@ -705,7 +705,7 @@
                   </svg>
                   <span>Categories</span>
                 </a>
-                <a class="admin-nav-link" href="/admin/users">
+                <a class="admin-nav-link" href="/admin/users" data-admin-only>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"

@@ -276,19 +276,19 @@ def customer_order(order_id):
 
 
 @bp.get("/admin/orders")
-@protected("admin")
+@protected("staff")
 def admin_orders():
     return list_orders(True)
 
 
 @bp.get("/admin/orders/<order_id>")
-@protected("admin")
+@protected("staff")
 def admin_order(order_id):
     return jsonify(data=get_order(v.identifier(order_id), admin=True))
 
 
 @bp.put("/admin/orders/<order_id>/status")
-@protected("admin")
+@protected("staff")
 def update_status(order_id):
     order_id = v.identifier(order_id)
     status = v.choice(v.body({"status"}).get("status"), "status", TRANSITIONS)

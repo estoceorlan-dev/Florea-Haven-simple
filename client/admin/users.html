@@ -425,6 +425,7 @@
                   <select class="form-input" name="role">
                     <option value="all">All roles</option>
                     <option value="customer">Customers</option>
+                    <option value="staff">Staff</option>
                     <option value="admin">Administrators</option>
                   </select>
                 </label>
@@ -545,11 +546,12 @@
                         aria-describedby="user-role-hint"
                       >
                         <option value="customer">Customer</option>
+                        <option value="staff">Staff</option>
                         <option value="admin">Administrator</option>
                       </select>
                       <span id="user-role-hint" class="form-hint text-text-muted">
-                        Administrators can manage users, products, categories, and
-                        orders.
+                        Staff can manage products and orders. Administrators can also
+                        manage accounts and categories.
                       </span>
                     </label>
                     <button

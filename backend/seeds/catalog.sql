@@ -3,8 +3,7 @@ VALUES
   ('10000000-0000-4000-8000-000000000001', 'seeds', 'Seeds', 'Thoughtfully selected seeds for windowsills, balconies, and garden beds.'),
   ('10000000-0000-4000-8000-000000000002', 'flowers', 'Flowers', 'Fresh floral arrangements made for meaningful everyday moments.'),
   ('10000000-0000-4000-8000-000000000003', 'perfumes', 'Perfumes', 'Botanical fragrances inspired by gardens in bloom.')
-ON CONFLICT (id) DO UPDATE SET
-  slug = EXCLUDED.slug,
+ON CONFLICT (slug) DO UPDATE SET
   name = EXCLUDED.name,
   description = EXCLUDED.description,
   updated_at = CURRENT_TIMESTAMP;
@@ -16,7 +15,7 @@ INSERT INTO products (
 VALUES
   (
     '20000000-0000-4000-8000-000000000001',
-    '10000000-0000-4000-8000-000000000002',
+    (SELECT id FROM categories WHERE slug = 'flowers'),
     'blush-garden-bouquet',
     'FLW-BLS-001',
     'Blush Garden Bouquet',
@@ -29,7 +28,7 @@ VALUES
   ),
   (
     '20000000-0000-4000-8000-000000000002',
-    '10000000-0000-4000-8000-000000000002',
+    (SELECT id FROM categories WHERE slug = 'flowers'),
     'sunlit-daisy-wrap',
     'FLW-DSY-002',
     'Sunlit Daisy Wrap',
@@ -42,7 +41,7 @@ VALUES
   ),
   (
     '20000000-0000-4000-8000-000000000003',
-    '10000000-0000-4000-8000-000000000002',
+    (SELECT id FROM categories WHERE slug = 'flowers'),
     'wildflower-table-arrangement',
     'FLW-WLD-003',
     'Wildflower Table Arrangement',
@@ -55,7 +54,7 @@ VALUES
   ),
   (
     '20000000-0000-4000-8000-000000000004',
-    '10000000-0000-4000-8000-000000000001',
+    (SELECT id FROM categories WHERE slug = 'seeds'),
     'heirloom-zinnia-seeds',
     'SED-ZIN-001',
     'Heirloom Zinnia Seeds',
@@ -68,7 +67,7 @@ VALUES
   ),
   (
     '20000000-0000-4000-8000-000000000005',
-    '10000000-0000-4000-8000-000000000001',
+    (SELECT id FROM categories WHERE slug = 'seeds'),
     'sweet-basil-seeds',
     'SED-BSL-002',
     'Sweet Basil Seeds',
@@ -81,7 +80,7 @@ VALUES
   ),
   (
     '20000000-0000-4000-8000-000000000006',
-    '10000000-0000-4000-8000-000000000001',
+    (SELECT id FROM categories WHERE slug = 'seeds'),
     'moonflower-seeds',
     'SED-MNF-003',
     'Moonflower Seeds',
@@ -94,7 +93,7 @@ VALUES
   ),
   (
     '20000000-0000-4000-8000-000000000007',
-    '10000000-0000-4000-8000-000000000003',
+    (SELECT id FROM categories WHERE slug = 'perfumes'),
     'verdant-mist-eau-de-parfum',
     'PRF-VRD-001',
     'Verdant Mist Eau de Parfum',
@@ -107,7 +106,7 @@ VALUES
   ),
   (
     '20000000-0000-4000-8000-000000000008',
-    '10000000-0000-4000-8000-000000000003',
+    (SELECT id FROM categories WHERE slug = 'perfumes'),
     'rose-after-rain-eau-de-parfum',
     'PRF-RSE-002',
     'Rose After Rain Eau de Parfum',
@@ -120,7 +119,7 @@ VALUES
   ),
   (
     '20000000-0000-4000-8000-000000000009',
-    '10000000-0000-4000-8000-000000000003',
+    (SELECT id FROM categories WHERE slug = 'perfumes'),
     'amber-petal-eau-de-parfum',
     'PRF-AMB-003',
     'Amber Petal Eau de Parfum',

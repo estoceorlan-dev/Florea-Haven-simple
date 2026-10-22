@@ -20,6 +20,7 @@ import {
   updatePagination,
 } from './admin-helpers.js';
 import { enableUpload } from './upload.js';
+import { getDemoProductImage, saveDemoProductImage } from './demo-images.js';
 
 if (await pageReady) {
   const form = find('#product-form');
@@ -27,6 +28,8 @@ if (await pageReady) {
   let selected = null;
   let categories = [];
   let busy = false;
+  let demoImageFile = null;
+  let demoPreviewUrl = '';
   enableFilters();
   function edit(product = null) {
     selected = product;
@@ -66,8 +69,13 @@ if (await pageReady) {
     find('[data-cancel-editing]', form).hidden = !product;
     find('[data-edit-only]', form).hidden = !product;
     const uploader = find('#product-upload');
-    uploader.hidden = !product;
-    if (product)
+    uploader.hidden = false;
+    if (demoPreviewUrl) URL.revokeObjectURL(demoPreviewUrl);
+    demoPreviewUrl = '';
+    demoImageFile = null;
+    find('[data-upload-save]').textContent = 'Save with product';
+    if (product) {
+      find('#product-image').value = '';
       enableUpload(
         uploader,
         `/api/products/${product.id}/image`,
@@ -77,6 +85,21 @@ if (await pageReady) {
           void load();
         },
       );
+    } else {
+      find('#product-image').onchange = null;
+      find('[data-upload-save]', uploader).onclick = null;
+      find('[data-upload-remove]', uploader).onclick = null;
+      find('[data-upload-cancel]', uploader).onclick = null;
+      find('[data-upload-preview]', uploader).hidden = true;
+      find('[data-upload-fallback]', uploader).hidden = false;
+      find('[data-upload-save]', uploader).disabled = true;
+      find('[data-upload-remove]', uploader).hidden = true;
+      find('[data-upload-cancel]', uploader).hidden = true;
+      find('[data-upload-message]', uploader).textContent = 'Image will be saved in this browser for demo use.';
+      find('[data-upload-message]', uploader).hidden = false;
+      find('[data-upload-save]', uploader).textContent = 'Save with product';
+    }
+    if (product) find('[data-upload-save]', uploader).textContent = 'Upload image';
   }
   async function load() {
     if (busy) return;
@@ -85,8 +108,12 @@ if (await pageReady) {
         ...Object.fromEntries(new URLSearchParams(location.search)),
         limit: 20,
       });
+      const products = await Promise.all(result.data.map(async (product) => ({
+        ...product,
+        image_url: (await getDemoProductImage(product.id)) ?? product.image_url,
+      })));
       find('#admin-product-list').replaceChildren(
-        ...result.data.map((product) => {
+        ...products.map((product) => {
           rows.set(product.id, product);
           const row = copyTemplate('admin-product-template');
           row.dataset.productId = product.id;
@@ -122,6 +149,34 @@ if (await pageReady) {
   find('[data-new-product]')?.addEventListener('click', () => {
     edit();
     form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  find('#product-image').addEventListener('change', (event) => {
+    if (selected) return;
+    const file = event.target.files?.[0];
+    const message = find('[data-upload-message]', find('#product-upload'));
+    if (demoPreviewUrl) URL.revokeObjectURL(demoPreviewUrl);
+    demoPreviewUrl = '';
+    demoImageFile = null;
+    find('[data-upload-save]').textContent = 'Save with product';
+    if (file && (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024)) {
+      message.textContent = 'Choose a JPEG, PNG, or WebP image up to 5 MB.';
+      message.setAttribute('role', 'alert');
+      find('[data-upload-preview]').hidden = true;
+      find('[data-upload-fallback]').hidden = false;
+    } else if (file) {
+      demoImageFile = file;
+      demoPreviewUrl = URL.createObjectURL(file);
+      const preview = find('[data-upload-preview]');
+      preview.src = demoPreviewUrl;
+      preview.hidden = false;
+      find('[data-upload-fallback]').hidden = true;
+      message.textContent = 'Image is ready to be saved locally with this product.';
+      message.setAttribute('role', 'status');
+      find('[data-upload-save]').textContent = 'Create product with image';
+    }
+    message.hidden = !file;
+    find('[data-upload-save]').disabled = !demoImageFile;
+    find('[data-upload-cancel]').hidden = !demoImageFile;
   });
   find('[data-cancel-editing]', form).addEventListener('click', () => edit());
   find('#admin-product-list').addEventListener('click', (event) => {
@@ -177,6 +232,7 @@ if (await pageReady) {
       const result = selected
         ? await adminCatalogApi.updateProduct(selected.id, input)
         : await adminCatalogApi.createProduct(input);
+      if (!selected && demoImageFile) await saveDemoProductImage(result.data.id, demoImageFile);
       showNotice(`${result.data.name} was ${selected ? 'updated' : 'created'}.`);
       edit();
       busy = false;
@@ -187,6 +243,21 @@ if (await pageReady) {
       busy = false;
       setBusy(form, false);
     }
+  });
+  find('[data-upload-save]', find('#product-upload')).addEventListener('click', () => {
+    if (!selected && demoImageFile) form.requestSubmit();
+  });
+  find('[data-upload-cancel]', find('#product-upload')).addEventListener('click', () => {
+    if (demoPreviewUrl) URL.revokeObjectURL(demoPreviewUrl);
+    demoPreviewUrl = '';
+    demoImageFile = null;
+    find('#product-image').value = '';
+    find('[data-upload-preview]').hidden = true;
+    find('[data-upload-fallback]').hidden = false;
+    find('[data-upload-save]').disabled = true;
+    find('[data-upload-save]').textContent = 'Save with product';
+    find('[data-upload-cancel]').hidden = true;
+    find('[data-upload-message]').hidden = true;
   });
   try {
     categories = (await adminCatalogApi.getCategories()).data;

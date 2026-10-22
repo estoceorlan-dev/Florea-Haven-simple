@@ -77,7 +77,13 @@ export function updateUser(user) {
   for (const element of findAll('[data-account-name]'))
     element.textContent = user ? `Hi, ${firstName}` : 'Sign in';
   for (const link of findAll('[data-account-link], [data-drawer-account]')) {
-    link.href = user ? (user.role === 'admin' ? '/admin' : '/account') : '/login';
+    link.href = user
+      ? user.role === 'admin'
+        ? '/admin'
+        : user.role === 'staff'
+          ? '/admin/products'
+          : '/account'
+      : '/login';
     link.setAttribute('aria-label', user ? `Open account for ${user.name}` : 'Sign in');
     if (link.matches('[data-drawer-account]'))
       link.lastChild.textContent = user ? 'My account' : 'Sign in';
@@ -175,6 +181,12 @@ export const pageReady = (async () => {
     location.replace('/account');
     return false;
   }
+  if (access === 'staff' && !['admin', 'staff'].includes(currentUser.role)) {
+    location.replace('/account');
+    return false;
+  }
+  for (const link of findAll('[data-admin-only]'))
+    link.hidden = currentUser.role !== 'admin';
   updateUser(currentUser);
   if (access === 'public' || document.body.dataset.page === 'admin-home') showPage();
   void refreshCartBadge();

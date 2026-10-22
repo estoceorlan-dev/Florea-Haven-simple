@@ -179,7 +179,7 @@ def products():
 
 
 @bp.get("/admin/products")
-@protected("admin")
+@protected("staff")
 def admin_products():
     return list_products(True)
 
@@ -284,7 +284,7 @@ def delete_category(category_id):
 
 
 @bp.post("/products")
-@protected("admin")
+@protected("staff")
 def create_product():
     data = v.catalog_input(product=True)
     data["slug"] = slug_for(data)
@@ -306,7 +306,7 @@ def create_product():
 
 
 @bp.put("/products/<product_id>")
-@protected("admin")
+@protected("staff")
 def update_product(product_id):
     product_id = v.identifier(product_id)
     data = v.catalog_input(product=True, update=True)
@@ -328,7 +328,7 @@ def update_product(product_id):
 
 
 @bp.delete("/products/<product_id>")
-@protected("admin")
+@protected("staff")
 def deactivate_product(product_id):
     product_id = v.identifier(product_id)
     with get_db().transaction():

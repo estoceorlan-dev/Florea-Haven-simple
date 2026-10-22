@@ -72,6 +72,18 @@
     padding-inline: 0.65rem;
     display: inline-flex;
   }
+  [data-user-avatar] {
+    position: relative;
+  }
+  [data-user-avatar] > img,
+  [data-user-avatar] > [data-avatar-initial] {
+    position: absolute;
+    inset: 0;
+  }
+  [data-user-avatar] > [data-avatar-initial] {
+    display: grid;
+    place-items: center;
+  }
   .account-link:hover {
     background: #98516812;
   }
