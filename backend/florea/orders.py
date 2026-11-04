@@ -31,8 +31,22 @@ COURIER_PREFIXES = {
     "grab": "GRB",
 }
 ORDER_SELECT = """SELECT o.*, u.id AS customer_id, u.name AS customer_name, u.email AS customer_email,
-                  COALESCE((SELECT SUM(quantity) FROM order_items WHERE order_id = o.id), 0) AS item_count
-                  FROM orders o JOIN users u ON u.id = o.user_id"""
+                  COALESCE((SELECT SUM(quantity) FROM order_items WHERE order_id = o.id), 0) AS item_count,
+                  preview.product_id AS preview_product_id,
+                  preview.product_name AS preview_product_name,
+                  preview.image_url AS preview_image_url,
+                  preview.category_slug AS preview_category_slug
+                  FROM orders o
+                  JOIN users u ON u.id = o.user_id
+                  LEFT JOIN LATERAL (
+                      SELECT oi.product_id, oi.product_name, p.image_url, c.slug AS category_slug
+                      FROM order_items oi
+                      LEFT JOIN products p ON p.id = oi.product_id
+                      LEFT JOIN categories c ON c.id = p.category_id
+                      WHERE oi.order_id = o.id
+                      ORDER BY oi.created_at ASC, oi.id ASC
+                      LIMIT 1
+                  ) preview ON TRUE"""
 
 
 def tracking_prefix(courier_name):
@@ -82,6 +96,10 @@ def map_order(row, admin=False):
             "subtotal",
             "total_amount",
             "item_count",
+            "preview_product_id",
+            "preview_product_name",
+            "preview_image_url",
+            "preview_category_slug",
             "courier_name",
             "tracking_number",
             "estimated_delivery",

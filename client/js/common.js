@@ -123,10 +123,51 @@ export async function refreshCartBadge(cart) {
     for (const badge of findAll('[data-cart-count]')) {
       badge.textContent = count;
       badge.hidden = count === 0;
+      badge.style.display = count === 0 ? 'none' : '';
     }
   } catch {
     /* The cart page provides a retry when its API cannot be reached. */
   }
+}
+
+export function getDismissedNotificationsMap(userId = currentUser?.id) {
+  const key = `florea-dismissed-order-notifs-${userId ?? 'guest'}`;
+  try {
+    return JSON.parse(localStorage.getItem(key) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+export function markNotificationRead(order, userId = currentUser?.id) {
+  const key = `florea-dismissed-order-notifs-${userId ?? 'guest'}`;
+  const dismissed = getDismissedNotificationsMap(userId);
+  dismissed[order.id] = `${order.status}|${order.status_updated_at ?? ''}`;
+  try {
+    localStorage.setItem(key, JSON.stringify(dismissed));
+  } catch {
+    /* Ignore storage quota errors */
+  }
+}
+
+export function updateNotificationBellBadge(orders = []) {
+  const dismissed = getDismissedNotificationsMap();
+  const unreadCount = orders.filter((order) => {
+    const signature = `${order.status}|${order.status_updated_at ?? ''}`;
+    return dismissed[order.id] !== signature;
+  }).length;
+  for (const link of findAll('[data-notification-link]')) {
+    link.setAttribute(
+      'aria-label',
+      unreadCount > 0 ? `Notifications (${unreadCount} unread)` : 'Notifications',
+    );
+  }
+  for (const badge of findAll('[data-notification-count]')) {
+    badge.textContent = unreadCount;
+    badge.hidden = unreadCount === 0;
+    badge.style.display = unreadCount === 0 ? 'none' : '';
+  }
+  return unreadCount;
 }
 
 document.addEventListener('click', async (event) => {
@@ -163,19 +204,27 @@ document.addEventListener('click', async (event) => {
 });
 
 export async function checkCustomerOrderNotifications() {
-  if (!currentUser || currentUser.role !== 'customer') return;
-  if (document.body.dataset.page === 'orders') return;
+  if (!currentUser || currentUser.role !== 'customer') {
+    updateNotificationBellBadge([]);
+    return;
+  }
   try {
-    const result = await orderApi.getOrders({ limit: 5 });
-    const key = `florea-dismissed-order-notifs-${currentUser.id}`;
-    const dismissed = JSON.parse(localStorage.getItem(key) || '{}');
-    for (const order of (result.data ?? []).slice(0, 2)) {
+    const result = await orderApi.getOrders({ limit: 20 });
+    const orders = result.data ?? [];
+    updateNotificationBellBadge(orders);
+    if (
+      document.body.dataset.page === 'orders' ||
+      document.body.dataset.page === 'notifications'
+    )
+      return;
+    const dismissed = getDismissedNotificationsMap();
+    for (const order of orders.slice(0, 2)) {
       if (order.status === 'pending' && !order.courier_name && !order.status_note)
         continue;
       const signature = `${order.status}|${order.status_updated_at ?? ''}`;
       if (dismissed[order.id] === signature) continue;
       showOrderToast({
-        title: `Order #${order.id.slice(0, 8).toUpperCase()} · ${orderStatusLabels[order.status] ?? order.status}`,
+        title: `${order.preview_product_name || 'Your order'} · ${orderStatusLabels[order.status] ?? order.status}`,
         message:
           order.status_note ||
           buildDefaultStatusNote(
@@ -195,13 +244,8 @@ export async function checkCustomerOrderNotifications() {
               ? 'refund'
               : 'info',
         onDismiss: () => {
-          try {
-            const latest = JSON.parse(localStorage.getItem(key) || '{}');
-            latest[order.id] = signature;
-            localStorage.setItem(key, JSON.stringify(latest));
-          } catch {
-            /* Ignore storage errors */
-          }
+          markNotificationRead(order);
+          updateNotificationBellBadge(orders);
         },
       });
     }

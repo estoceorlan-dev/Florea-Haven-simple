@@ -2,21 +2,21 @@ import { currency } from './helpers.js';
 
 export const paymentMethodLabels = {
   cash_on_delivery: 'Cash on Delivery',
-  gcash: 'GCash (Paid · Demo Simulation)',
-  maya: 'Maya (Paid · Demo Simulation)',
+  gcash: 'GCash',
+  maya: 'Maya',
 };
 
 export const paymentSubmitLabels = {
   cash_on_delivery: 'Place order',
-  gcash: 'Proceed to GCash (Demo)',
-  maya: 'Proceed to Maya (Demo)',
+  gcash: 'Proceed to GCash',
+  maya: 'Proceed to Maya',
 };
 
 const PROVIDERS = {
   gcash: {
     name: 'GCash',
     title: 'GCash Express Checkout',
-    tagline: 'Simulated mobile wallet payment · No real money is charged',
+    tagline: 'Pay securely with your GCash mobile wallet',
     headerStyle:
       'background: linear-gradient(135deg, #0057ff 0%, #007dfe 100%); color: #ffffff;',
     buttonStyle:
@@ -26,7 +26,7 @@ const PROVIDERS = {
   maya: {
     name: 'Maya',
     title: 'Maya Checkout',
-    tagline: 'Simulated digital wallet payment · No real money is charged',
+    tagline: 'Pay securely with your Maya digital wallet',
     headerStyle:
       'background: linear-gradient(135deg, #0f172a 0%, #059669 100%); color: #ffffff;',
     buttonStyle:
@@ -51,7 +51,7 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
       'dialog',
       'm-auto w-[min(100%-1.5rem,28rem)] overflow-hidden rounded-[1.75rem] border border-border bg-surface p-0 text-text shadow-high backdrop:bg-black/60',
     );
-    dialog.setAttribute('aria-label', `${provider.title} Demo Simulation`);
+    dialog.setAttribute('aria-label', provider.title);
 
     const header = makeElement('div', 'p-6');
     header.style.cssText = provider.headerStyle;
@@ -60,7 +60,7 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
     const badge = makeElement(
       'span',
       'inline-block rounded-full bg-white/20 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em]',
-      'Demo Simulation',
+      'Secure Checkout',
     );
     const closeBtn = makeElement(
       'button',
@@ -110,7 +110,7 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
     phoneField.append(phoneLabel, phoneInput);
 
     const mpinField = makeElement('div', 'form-field');
-    const mpinLabel = makeElement('label', '', '4-digit MPIN (Demo)');
+    const mpinLabel = makeElement('label', '', '4-digit MPIN');
     mpinLabel.htmlFor = 'sim-wallet-mpin';
     const mpinInput = makeElement('input', 'form-input tracking-[0.35em]');
     mpinInput.id = 'sim-wallet-mpin';
@@ -120,7 +120,7 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
     const mpinHint = makeElement(
       'span',
       'form-hint',
-      'Demo mode: pre-filled with 1234. Any 4 digits work.',
+      'Enter your 4-digit wallet MPIN to continue.',
     );
     mpinField.append(mpinLabel, mpinInput, mpinHint);
 
@@ -136,7 +136,7 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
     const smsBanner = makeElement(
       'div',
       'rounded-xl border border-border bg-surface-muted p-3 text-xs leading-5 text-text',
-      `[Demo SMS] Your ${provider.name} one-time verification code for Floréa Haven is ${currentOtp}.`,
+      `Your ${provider.name} one-time verification code for Floréa Haven is ${currentOtp}.`,
     );
     const otpField = makeElement('div', 'form-field');
     const otpLabel = makeElement('label', '', '6-digit Authentication Code');
@@ -148,7 +148,7 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
     const resendBtn = makeElement(
       'button',
       'text-link mt-1 text-xs',
-      'Send a new simulated OTP code',
+      'Resend verification code',
     );
     resendBtn.type = 'button';
     otpField.append(otpLabel, otpInput, resendBtn);
@@ -175,7 +175,7 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
     );
     const rowWallet = makeElement('div', 'flex justify-between gap-2');
     rowWallet.append(
-      makeElement('span', 'text-text-muted', `${provider.name} Demo Balance`),
+      makeElement('span', 'text-text-muted', `${provider.name} Available Balance`),
       makeElement('strong', 'text-text', currency(25000)),
     );
     const rowAccount = makeElement('div', 'flex justify-between gap-2');
@@ -224,7 +224,7 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
     const refText = makeElement(
       'p',
       'text-xs text-text-muted',
-      `Simulated Reference No. ${refNumber}`,
+      `Reference No. ${refNumber}`,
     );
     const doneBtn = makeElement('button', '', 'Complete order');
     doneBtn.type = 'button';
@@ -257,11 +257,11 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
 
     step1Next.addEventListener('click', () => {
       if (phoneInput.value.trim().length < 7) {
-        setError('Enter a valid mobile number for the simulation.');
+        setError('Enter a valid mobile number.');
         return;
       }
       if (!/^\d{4}$/.test(mpinInput.value.trim())) {
-        setError('Enter a 4-digit MPIN (for example, 1234).');
+        setError('Enter a 4-digit MPIN.');
         return;
       }
       setError('');
@@ -274,7 +274,7 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
 
     resendBtn.addEventListener('click', () => {
       currentOtp = String(Math.floor(100000 + Math.random() * 900000));
-      smsBanner.textContent = `[Demo SMS] Your new ${provider.name} verification code for Floréa Haven is ${currentOtp}.`;
+      smsBanner.textContent = `Your new ${provider.name} verification code for Floréa Haven is ${currentOtp}.`;
       otpInput.value = currentOtp;
       setError('');
     });

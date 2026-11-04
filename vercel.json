@@ -21,6 +21,7 @@
     { "source": "/cart", "destination": "/pages/cart.html" },
     { "source": "/checkout", "destination": "/pages/checkout.html" },
     { "source": "/orders", "destination": "/pages/orders.html" },
+    { "source": "/notifications", "destination": "/pages/notifications.html" },
     {
       "source": "/orders/:id/confirmation",
       "destination": "/pages/order-confirmation.html"

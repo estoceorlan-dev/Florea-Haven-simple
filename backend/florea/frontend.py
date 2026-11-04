@@ -9,6 +9,7 @@ PAGES = {
     "cart": "pages/cart.html",
     "checkout": "pages/checkout.html",
     "orders": "pages/orders.html",
+    "notifications": "pages/notifications.html",
     "admin": "admin/index.html",
     "admin/products": "admin/products.html",
     "admin/categories": "admin/categories.html",

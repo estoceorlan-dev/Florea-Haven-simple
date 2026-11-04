@@ -1,4 +1,8 @@
 @layer components {
+  [hidden] {
+    display: none !important;
+  }
+
   /* #region Order status badges */
   .order-status-badge {
     border: 1px solid var(--color-border);
@@ -71,6 +75,205 @@
         var(--color-surface-muted)
       );
     }
+  }
+  /* #endregion */
+
+  /* #region Customer order catalog cards & section separators */
+  .order-section-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.35rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-muted);
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .order-section-tab {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-text-muted);
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition:
+      background var(--motion-fast) var(--ease-standard),
+      color var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard);
+  }
+  .order-section-tab:hover {
+    color: var(--color-floral-pink);
+  }
+  .order-section-tab[aria-pressed='true'] {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-floral-pink);
+    box-shadow: var(--shadow-low);
+  }
+
+  .order-tab-count {
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+    border-radius: 999px;
+    padding: 0.1rem 0.45rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .order-section-block {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .order-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .order-section-title {
+    font-family: var(--font-display);
+    font-size: 1.65rem;
+    color: var(--color-floral-pink);
+    white-space: nowrap;
+  }
+
+  .order-section-divider {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  .order-catalog-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  @media (min-width: 40rem) {
+    .order-catalog-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64rem) {
+    .order-catalog-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .order-catalog-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-low);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition:
+      border-color var(--motion-standard) var(--ease-standard),
+      transform var(--motion-standard) var(--ease-standard),
+      box-shadow var(--motion-standard) var(--ease-standard);
+  }
+  .order-catalog-card:hover {
+    border-color: var(--color-border-strong);
+    transform: translateY(-2px);
+  }
+
+  .order-catalog-media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    overflow: hidden;
+    background: var(--color-surface-muted);
+    display: block;
+  }
+
+  .order-catalog-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--motion-slow) var(--ease-standard);
+  }
+  .order-catalog-card:hover .order-catalog-image {
+    transform: scale(1.03);
+  }
+
+  .order-catalog-badge {
+    position: absolute;
+    top: 0.85rem;
+    left: 0.85rem;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-low);
+  }
+
+  .order-catalog-body {
+    padding: 1.25rem;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .order-catalog-footer {
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  /* #endregion */
+
+  /* #region Notifications page */
+  .notification-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-low);
+    padding: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.15rem;
+    transition: border-color var(--motion-fast) var(--ease-standard);
+  }
+  .notification-card[data-unread='true'] {
+    border-color: var(--color-floral-pink);
+    background: var(--color-surface-muted);
+  }
+
+  .notification-media {
+    width: 4.75rem;
+    height: 4.75rem;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .notification-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .notification-unread-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: var(--color-brand);
+    flex-shrink: 0;
   }
   /* #endregion */
 

@@ -111,6 +111,38 @@
             </button>
             <a
               class="icon-button relative"
+              aria-label="Notifications"
+              href="/notifications"
+              data-notification-link=""
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-bell"
+                aria-hidden="true"
+              >
+                <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
+                <path
+                  d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"
+                ></path>
+              </svg>
+              <span
+                data-notification-count=""
+                class="absolute -right-1 -top-1 grid min-w-5 h-5 place-items-center rounded-full bg-brand px-1 text-[0.6rem] font-bold text-canvas"
+                hidden=""
+              >
+                0
+              </span>
+            </a>
+            <a
+              class="icon-button relative"
               aria-label="Shopping cart with 0 items"
               href="/cart"
               data-cart-link=""
@@ -134,11 +166,6 @@
                   d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"
                 ></path>
               </svg>
-              <span
-                class="absolute -right-0.5 -top-0.5 grid min-h-4 min-w-4 place-items-center rounded-full bg-clay px-1 text-[0.56rem] font-bold leading-none text-canvas"
-              >
-                1
-              </span>
               <span
                 data-cart-count=""
                 class="absolute -right-1 -top-1 grid min-w-5 h-5 place-items-center rounded-full bg-brand px-1 text-[0.6rem] font-bold text-canvas"
@@ -253,7 +280,58 @@
             </p>
           </div>
           <div class="mt-6 space-y-3" id="order-updates-banner" hidden=""></div>
-          <div class="mt-8 space-y-4" id="order-list"></div>
+          <nav
+            class="order-section-tabs mt-8"
+            aria-label="Order status sections"
+            id="order-section-tabs"
+          >
+            <button
+              type="button"
+              class="order-section-tab"
+              data-order-tab="all"
+              aria-pressed="true"
+            >
+              <span>All</span>
+              <span class="order-tab-count" data-tab-count="all">0</span>
+            </button>
+            <button
+              type="button"
+              class="order-section-tab"
+              data-order-tab="pending"
+              aria-pressed="false"
+            >
+              <span>Pending</span>
+              <span class="order-tab-count" data-tab-count="pending">0</span>
+            </button>
+            <button
+              type="button"
+              class="order-section-tab"
+              data-order-tab="on_delivery"
+              aria-pressed="false"
+            >
+              <span>On delivery</span>
+              <span class="order-tab-count" data-tab-count="on_delivery">0</span>
+            </button>
+            <button
+              type="button"
+              class="order-section-tab"
+              data-order-tab="received"
+              aria-pressed="false"
+            >
+              <span>Received</span>
+              <span class="order-tab-count" data-tab-count="received">0</span>
+            </button>
+            <button
+              type="button"
+              class="order-section-tab"
+              data-order-tab="cancelled"
+              aria-pressed="false"
+            >
+              <span>Cancelled</span>
+              <span class="order-tab-count" data-tab-count="cancelled">0</span>
+            </button>
+          </nav>
+          <div class="mt-8 space-y-10" id="order-list"></div>
         </section>
         <section
           id="empty-state"
@@ -471,6 +549,31 @@
                 </svg>
                 Cart
               </a>
+              <a
+                class="drawer-action-link"
+                href="/notifications"
+                data-drawer-notifications=""
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-bell"
+                  aria-hidden="true"
+                >
+                  <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
+                  <path
+                    d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"
+                  ></path>
+                </svg>
+                Notifications
+              </a>
               <div data-member-only="" hidden="">
                 <a class="drawer-action-link" href="/orders">My orders</a>
                 <button
@@ -514,52 +617,74 @@
     </template>
     <!-- Reusable HTML: order-card-template. JavaScript clones this markup and fills its labeled fields. -->
     <template id="order-card-template">
-      <article
-        class="grid gap-5 rounded-card border border-border bg-surface p-5 shadow-low transition hover:border-border-strong sm:grid-cols-[1fr_auto] sm:items-center sm:p-6"
-      >
-        <div>
-          <div class="flex flex-wrap items-center gap-3">
-            <h2
-              class="font-display text-2xl text-floral-pink"
-              data-field="order-number"
-            >
-              Order number
-            </h2>
-            <span
-              class="order-status-badge"
-              data-status="pending"
-              data-field="order-status"
-            >
-              Pending
-            </span>
-          </div>
-          <p class="mt-2 text-sm text-text-muted" data-field="order-summary"></p>
-          <p
-            class="mt-2 text-xs font-medium text-floral-pink"
-            data-field="order-fulfillment"
-            hidden=""
-          ></p>
-          <p class="mt-1 text-xs text-text-muted" data-field="order-note" hidden=""></p>
-        </div>
-        <a class="text-link" href="/orders" data-order-link="">
-          View order
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-arrow-right"
-            aria-hidden="true"
+      <article class="order-catalog-card">
+        <a
+          class="order-catalog-media"
+          href="/orders"
+          data-order-link=""
+          aria-label="View order"
+        >
+          <img
+            class="order-catalog-image"
+            alt=""
+            loading="lazy"
+            data-field="order-image"
+            src="/image-placeholder.svg"
+          />
+          <span
+            class="order-status-badge order-catalog-badge"
+            data-status="pending"
+            data-field="order-status"
           >
-            <path d="M5 12h14"></path>
-            <path d="m12 5 7 7-7 7"></path>
-          </svg>
+            Pending
+          </span>
         </a>
+        <div class="order-catalog-body">
+          <div>
+            <h2
+              class="font-display text-2xl leading-tight text-floral-pink"
+              data-field="order-product-name"
+            >
+              Product name
+            </h2>
+            <p class="mt-2 text-xs text-text-muted" data-field="order-summary"></p>
+            <p
+              class="mt-2 text-xs font-medium text-floral-pink"
+              data-field="order-fulfillment"
+              hidden=""
+            ></p>
+            <p
+              class="mt-1 text-xs text-text-muted"
+              data-field="order-note"
+              hidden=""
+            ></p>
+          </div>
+          <div class="order-catalog-footer">
+            <strong
+              class="text-base font-bold text-floral-pink"
+              data-field="order-total"
+            ></strong>
+            <a class="text-link" href="/orders" data-order-link="">
+              View order
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-arrow-right"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
       </article>
     </template>
     <noscript>
