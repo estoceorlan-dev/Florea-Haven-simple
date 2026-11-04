@@ -430,6 +430,7 @@
                     <option value="shipped">Shipped</option>
                     <option value="delivered">Delivered</option>
                     <option value="cancelled">Cancelled</option>
+                    <option value="refunded">Refunded</option>
                   </select>
                 </label>
                 <label class="form-field">
@@ -478,7 +479,7 @@
               >
                 <div role="table" aria-label="Customer orders">
                   <div
-                    class="hidden grid-cols-[7rem_minmax(12rem,1.2fr)_minmax(10rem,1fr)_7rem_7rem_5rem] gap-4 bg-surface-muted px-5 py-3 text-[0.64rem] font-extrabold uppercase tracking-[0.12em] text-floral-pink lg:grid"
+                    class="admin-order-grid hidden grid-cols-[7rem_minmax(12rem,1.2fr)_minmax(10rem,1fr)_7rem_7rem_5rem] gap-4 bg-surface-muted px-5 py-3 text-[0.64rem] font-extrabold uppercase tracking-[0.12em] text-floral-pink lg:grid"
                     role="row"
                   >
                     <span role="columnheader">Order</span>
@@ -807,7 +808,7 @@
     <!-- Reusable HTML: admin-order-template. JavaScript clones this markup and fills its labeled fields. -->
     <template id="admin-order-template">
       <article
-        class="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[7rem_minmax(12rem,1.2fr)_minmax(10rem,1fr)_7rem_7rem_5rem] lg:items-center"
+        class="admin-order-grid grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[7rem_minmax(12rem,1.2fr)_minmax(10rem,1fr)_7rem_7rem_5rem] lg:items-center"
         role="row"
         data-order-row=""
       >
@@ -838,23 +839,134 @@
           >
             Pending
           </span>
+          <p
+            class="mt-1 text-xs font-medium text-text"
+            data-field="order-courier"
+            hidden=""
+          ></p>
+          <p
+            class="mt-0.5 text-[0.68rem] text-text-muted"
+            data-field="order-eta"
+            hidden=""
+          ></p>
         </div>
         <p
           class="text-sm font-bold text-floral-pink"
           role="cell"
           data-field="order-total"
         ></p>
-        <div role="cell">
+        <div role="cell" class="order-row-actions">
+          <button
+            type="button"
+            class="order-action-btn"
+            data-variant="process"
+            data-row-action="process"
+            hidden=""
+          >
+            Process
+          </button>
+          <button
+            type="button"
+            class="order-action-btn"
+            data-variant="process"
+            data-row-action="delivered"
+            hidden=""
+          >
+            Deliver
+          </button>
+          <button
+            type="button"
+            class="order-action-btn"
+            data-variant="cancel"
+            data-row-action="cancel"
+            hidden=""
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="order-action-btn"
+            data-variant="refund"
+            data-row-action="refund"
+            hidden=""
+          >
+            Refund
+          </button>
           <a
-            class="text-link"
+            class="order-action-btn"
             href="/orders"
             data-order-link=""
-            data-field="order-number"
+            aria-label="View order details"
           >
-            Order number
+            View
           </a>
         </div>
       </article>
+    </template>
+    <!-- Reusable HTML: confirmation-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="confirmation-template">
+      <div class="confirmation-root" id="confirmation-overlay">
+        <button
+          class="confirmation-backdrop"
+          type="button"
+          aria-label="Close confirmation"
+          data-close-overlay=""
+        ></button>
+        <section
+          class="confirmation-panel"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="confirmation-title"
+          aria-describedby="confirmation-description"
+        >
+          <span
+            class="grid size-11 place-items-center rounded-full bg-brand-soft text-danger"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-alert-triangle"
+              aria-hidden="true"
+            >
+              <path
+                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+              ></path>
+              <path d="M12 9v4"></path>
+              <path d="M12 17h.01"></path>
+            </svg>
+          </span>
+          <p class="eyebrow mt-5 text-danger">Please confirm</p>
+          <h2
+            class="mt-2 font-display text-3xl text-floral-pink"
+            id="confirmation-title"
+            data-confirm-title=""
+          >
+            Confirm this change?
+          </h2>
+          <p
+            class="mt-3 text-sm leading-6 text-text-muted"
+            id="confirmation-description"
+            data-confirm-description=""
+          >
+            Review this action before continuing.
+          </p>
+          <div class="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button class="button-secondary" type="button" data-close-overlay="">
+              Keep it
+            </button>
+            <button class="button-danger" type="button" data-confirm-action="">
+              Confirm
+            </button>
+          </div>
+        </section>
+      </div>
     </template>
     <noscript>
       <p class="page-shell py-5">

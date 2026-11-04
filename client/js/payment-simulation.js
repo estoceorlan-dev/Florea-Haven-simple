@@ -17,7 +17,8 @@ const PROVIDERS = {
     name: 'GCash',
     title: 'GCash Express Checkout',
     tagline: 'Simulated mobile wallet payment · No real money is charged',
-    headerStyle: 'background: linear-gradient(135deg, #0057ff 0%, #007dfe 100%); color: #ffffff;',
+    headerStyle:
+      'background: linear-gradient(135deg, #0057ff 0%, #007dfe 100%); color: #ffffff;',
     buttonStyle:
       'background: #0057ff; color: #ffffff; border-radius: 9999px; padding: 0.75rem 1.25rem; font-weight: 600; width: 100%;',
     prefix: 'GC',
@@ -26,7 +27,8 @@ const PROVIDERS = {
     name: 'Maya',
     title: 'Maya Checkout',
     tagline: 'Simulated digital wallet payment · No real money is charged',
-    headerStyle: 'background: linear-gradient(135deg, #0f172a 0%, #059669 100%); color: #ffffff;',
+    headerStyle:
+      'background: linear-gradient(135deg, #0f172a 0%, #059669 100%); color: #ffffff;',
     buttonStyle:
       'background: #059669; color: #ffffff; border-radius: 9999px; padding: 0.75rem 1.25rem; font-weight: 600; width: 100%;',
     prefix: 'MY',
@@ -68,7 +70,11 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
     closeBtn.type = 'button';
     topRow.append(badge, closeBtn);
 
-    const title = makeElement('h2', 'mt-3 font-display text-2xl font-bold', provider.title);
+    const title = makeElement(
+      'h2',
+      'mt-3 font-display text-2xl font-bold',
+      provider.title,
+    );
     const subtitle = makeElement('p', 'mt-1 text-xs opacity-90', provider.tagline);
 
     const summaryBox = makeElement(
@@ -151,7 +157,11 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
     const step2Next = makeElement('button', '', 'Verify code');
     step2Next.type = 'button';
     step2Next.style.cssText = provider.buttonStyle;
-    const step2Back = makeElement('button', 'button-quiet w-full text-xs', 'Back to login');
+    const step2Back = makeElement(
+      'button',
+      'button-quiet w-full text-xs',
+      'Back to login',
+    );
     step2Back.type = 'button';
     step2Actions.append(step2Next, step2Back);
     step2.append(smsBanner, otpField, step2Actions);
@@ -169,8 +179,15 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
       makeElement('strong', 'text-text', currency(25000)),
     );
     const rowAccount = makeElement('div', 'flex justify-between gap-2');
-    const accountNumberText = makeElement('span', 'font-medium text-text', phoneInput.value);
-    rowAccount.append(makeElement('span', 'text-text-muted', 'Mobile Account'), accountNumberText);
+    const accountNumberText = makeElement(
+      'span',
+      'font-medium text-text',
+      phoneInput.value,
+    );
+    rowAccount.append(
+      makeElement('span', 'text-text-muted', 'Mobile Account'),
+      accountNumberText,
+    );
     const rowTotal = makeElement(
       'div',
       'flex justify-between gap-2 border-t border-border pt-2',
@@ -308,4 +325,3 @@ export function simulateCashlessPayment({ method, amount, phone = '' }) {
     phoneInput.focus();
   });
 }
-

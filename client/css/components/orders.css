@@ -54,5 +54,147 @@
   .order-status-badge[data-status='cancelled'] {
     color: var(--color-danger);
   }
+  .order-status-badge[data-status='refunded'] {
+    border-color: #d0bcc7;
+    color: var(--color-floral-accent);
+  }
+  @supports (color: color-mix(in lab, red, red)) {
+    .order-status-badge[data-status='refunded'] {
+      border-color: color-mix(
+        in srgb,
+        var(--color-floral-accent) 32%,
+        var(--color-border)
+      );
+      background: color-mix(
+        in srgb,
+        var(--color-floral-accent) 8%,
+        var(--color-surface-muted)
+      );
+    }
+  }
+  /* #endregion */
+
+  /* #region Admin order actions & fulfillment */
+  @media (min-width: 64rem) {
+    .admin-order-grid {
+      grid-template-columns: 7rem minmax(10rem, 1.1fr) minmax(
+          8.5rem,
+          0.9fr
+        ) 7.5rem 6rem minmax(14rem, 1.35fr);
+      align-items: center;
+    }
+  }
+
+  .order-row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .order-action-btn {
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-text);
+    border-radius: 999px;
+    padding: 0.34rem 0.72rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition:
+      background var(--motion-fast) var(--ease-standard),
+      color var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard);
+  }
+  .order-action-btn:hover:not(:disabled) {
+    background: var(--color-surface-muted);
+    border-color: var(--color-floral-pink);
+    color: var(--color-floral-pink);
+  }
+  .order-action-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .order-action-btn[data-variant='process'] {
+    background: var(--color-floral-pink);
+    border-color: var(--color-floral-pink);
+    color: var(--color-canvas);
+  }
+  .order-action-btn[data-variant='process']:hover:not(:disabled) {
+    background: var(--color-brand-strong);
+    border-color: var(--color-brand-strong);
+    color: var(--color-canvas);
+  }
+  .order-action-btn[data-variant='cancel'] {
+    color: var(--color-danger);
+    border-color: #d7b4c0;
+  }
+  .order-action-btn[data-variant='cancel']:hover:not(:disabled) {
+    background: var(--color-danger);
+    border-color: var(--color-danger);
+    color: var(--color-canvas);
+  }
+  .order-action-btn[data-variant='refund'] {
+    color: var(--color-floral-accent);
+    border-color: #cfb7c3;
+  }
+  .order-action-btn[data-variant='refund']:hover:not(:disabled) {
+    background: var(--color-floral-accent);
+    border-color: var(--color-floral-accent);
+    color: var(--color-canvas);
+  }
+
+  .order-fulfillment-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-low);
+    padding: 1.25rem 1.5rem;
+  }
+
+  .order-meta-chip {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-muted);
+    color: var(--color-text);
+    border-radius: 999px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .order-toast-stack {
+    z-index: var(--layer-modal);
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    width: min(calc(100vw - 2rem), 25rem);
+    display: grid;
+    gap: 0.75rem;
+    pointer-events: none;
+  }
+
+  .order-toast-card {
+    pointer-events: auto;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: var(--shadow-overlay);
+    padding: 1rem 1.15rem;
+    animation: confirmation-enter var(--motion-standard) var(--ease-enter) both;
+  }
+
+  .order-toast-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
   /* #endregion */
 }

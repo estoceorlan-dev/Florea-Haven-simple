@@ -310,3 +310,36 @@ def test_cashless_payment_methods(customer, product, method):
     response = checkout(customer, data)
     assert response.status_code == 201, response.json
     assert response.json["data"]["order"]["payment_method"] == method
+
+
+def test_order_processing_courier_eta_and_refund(admin, customer, product, order):
+    url = "/api/admin/orders/" + order["id"] + "/status"
+    process_res = admin.put(
+        url,
+        json={
+            "status": "shipped",
+            "courierName": "J&T Express",
+            "estimatedDelivery": "2-3 business days (Simulated)",
+        },
+    )
+    assert process_res.status_code == 200, process_res.json
+    updated = process_res.json["data"]
+    assert updated["status"] == "shipped"
+    assert updated["courier_name"] == "J&T Express"
+    assert updated["tracking_number"].startswith("JNT-")
+    assert updated["estimated_delivery"] == "2-3 business days (Simulated)"
+    assert "J&T Express" in updated["status_note"]
+
+    customer_view = customer.get("/api/orders/" + order["id"]).json["data"]
+    assert customer_view["courier_name"] == "J&T Express"
+    assert customer_view["estimated_delivery"] == "2-3 business days (Simulated)"
+    assert customer_view["status_note"] == updated["status_note"]
+
+    refund_res = admin.put(url, json={"status": "refunded"})
+    assert refund_res.status_code == 200, refund_res.json
+    assert refund_res.json["data"]["status"] == "refunded"
+    assert (
+        customer.get("/api/products/" + product["id"]).json["data"]["stock_quantity"]
+        == product["stock_quantity"]
+    )
+    assert admin.put(url, json={"status": "refunded"}).status_code == 409

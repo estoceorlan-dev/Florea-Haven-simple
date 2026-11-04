@@ -99,8 +99,8 @@ export const adminOrderApi = {
   getOrders: (params = {}, options = {}) =>
     request(`/api/admin/orders${toQueryString(params)}`, options),
   getOrder: (id, options = {}) => request(`/api/admin/orders/${id}`, options),
-  updateStatus: (id, status) =>
-    jsonRequest(`/api/admin/orders/${id}/status`, 'PUT', { status }),
+  updateStatus: (id, status, details = {}) =>
+    jsonRequest(`/api/admin/orders/${id}/status`, 'PUT', { status, ...details }),
 };
 
 export const adminUserApi = {

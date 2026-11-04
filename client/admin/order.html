@@ -469,6 +469,14 @@
                     <button
                       type="button"
                       class="button-primary"
+                      data-order-process=""
+                      hidden=""
+                    >
+                      Process order (Courier &amp; ETA)
+                    </button>
+                    <button
+                      type="button"
+                      class="button-secondary"
                       data-order-status="confirmed"
                       hidden=""
                     >
@@ -476,7 +484,7 @@
                     </button>
                     <button
                       type="button"
-                      class="button-primary"
+                      class="button-secondary"
                       data-order-status="preparing"
                       hidden=""
                     >
@@ -484,7 +492,7 @@
                     </button>
                     <button
                       type="button"
-                      class="button-primary"
+                      class="button-secondary"
                       data-order-status="shipped"
                       hidden=""
                     >
@@ -505,6 +513,14 @@
                       hidden=""
                     >
                       Cancel order
+                    </button>
+                    <button
+                      type="button"
+                      class="button-secondary"
+                      data-order-status="refunded"
+                      hidden=""
+                    >
+                      Refund order
                     </button>
                   </div>
                 </div>
@@ -643,6 +659,38 @@
                         </svg>
                         <span data-field="status-date"></span>
                       </p>
+                    </div>
+                    <div
+                      class="order-fulfillment-card space-y-3 text-sm"
+                      data-order-fulfillment=""
+                    >
+                      <p class="eyebrow text-clay">Delivery &amp; ETA Simulation</p>
+                      <p class="text-xs leading-5 text-text" data-field="status-note">
+                        Awaiting fulfillment processing.
+                      </p>
+                      <div class="grid gap-2 border-t border-border pt-3 text-xs">
+                        <div class="flex justify-between gap-2">
+                          <span class="text-text-muted">Delivery company</span>
+                          <strong class="text-text" data-field="courier-name">
+                            Not assigned yet
+                          </strong>
+                        </div>
+                        <div class="flex justify-between gap-2">
+                          <span class="text-text-muted">Tracking number</span>
+                          <strong class="text-text" data-field="tracking-number">
+                            Pending dispatch
+                          </strong>
+                        </div>
+                        <div class="flex justify-between gap-2">
+                          <span class="text-text-muted">Estimated arrival (ETA)</span>
+                          <strong
+                            class="text-right text-floral-pink"
+                            data-field="estimated-delivery"
+                          >
+                            To be scheduled
+                          </strong>
+                        </div>
+                      </div>
                     </div>
                   </aside>
                 </div>

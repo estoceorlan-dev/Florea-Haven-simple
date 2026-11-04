@@ -1,10 +1,7 @@
 import { cartApi, orderApi } from './api.js';
 import { pageReady, currentUser, refreshCartBadge, showPage } from './common.js';
 import { availabilityMessage } from './cart.js';
-import {
-  paymentSubmitLabels,
-  simulateCashlessPayment,
-} from './payment-simulation.js';
+import { paymentSubmitLabels, simulateCashlessPayment } from './payment-simulation.js';
 import {
   find,
   copyTemplate,

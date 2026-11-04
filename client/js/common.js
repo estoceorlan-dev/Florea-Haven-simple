@@ -1,4 +1,4 @@
-import { authApi, cartApi } from './api.js';
+import { authApi, cartApi, orderApi } from './api.js';
 import {
   find,
   findAll,
@@ -8,6 +8,11 @@ import {
   openOverlay,
   setImage,
 } from './helpers.js';
+import {
+  buildDefaultStatusNote,
+  orderStatusLabels,
+  showOrderToast,
+} from './order-status.js';
 import {
   getStoredThemePreference,
   getSystemTheme,
@@ -157,6 +162,54 @@ document.addEventListener('click', async (event) => {
   }
 });
 
+export async function checkCustomerOrderNotifications() {
+  if (!currentUser || currentUser.role !== 'customer') return;
+  if (document.body.dataset.page === 'orders') return;
+  try {
+    const result = await orderApi.getOrders({ limit: 5 });
+    const key = `florea-dismissed-order-notifs-${currentUser.id}`;
+    const dismissed = JSON.parse(localStorage.getItem(key) || '{}');
+    for (const order of (result.data ?? []).slice(0, 2)) {
+      if (order.status === 'pending' && !order.courier_name && !order.status_note)
+        continue;
+      const signature = `${order.status}|${order.status_updated_at ?? ''}`;
+      if (dismissed[order.id] === signature) continue;
+      showOrderToast({
+        title: `Order #${order.id.slice(0, 8).toUpperCase()} · ${orderStatusLabels[order.status] ?? order.status}`,
+        message:
+          order.status_note ||
+          buildDefaultStatusNote(
+            order.status,
+            order.courier_name,
+            order.tracking_number,
+            order.estimated_delivery,
+          ),
+        courier: order.courier_name ?? '',
+        eta: order.estimated_delivery ?? '',
+        linkHref: `/orders/${order.id}`,
+        linkLabel: 'View order details',
+        tone:
+          order.status === 'cancelled'
+            ? 'danger'
+            : order.status === 'refunded'
+              ? 'refund'
+              : 'info',
+        onDismiss: () => {
+          try {
+            const latest = JSON.parse(localStorage.getItem(key) || '{}');
+            latest[order.id] = signature;
+            localStorage.setItem(key, JSON.stringify(latest));
+          } catch {
+            /* Ignore storage errors */
+          }
+        },
+      });
+    }
+  } catch {
+    /* Non-blocking background notification check */
+  }
+}
+
 export const pageReady = (async () => {
   try {
     currentUser = (await authApi.getMe()).data.user;
@@ -190,5 +243,6 @@ export const pageReady = (async () => {
   updateUser(currentUser);
   if (access === 'public' || document.body.dataset.page === 'admin-home') showPage();
   void refreshCartBadge();
+  void checkCustomerOrderNotifications();
   return true;
 })();

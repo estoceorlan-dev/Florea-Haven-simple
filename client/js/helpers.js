@@ -92,7 +92,8 @@ export function setBusy(form, busy) {
 export function setImage(image, url, alt = '') {
   if (!image) return;
   image.alt = alt;
-  const valid = typeof url === 'string' && /^(https?:\/\/|blob:|\/uploads\/)/i.test(url);
+  const valid =
+    typeof url === 'string' && /^(https?:\/\/|blob:|\/uploads\/)/i.test(url);
   const apiBase = (
     window.__FLOREA_API_URL__ ||
     document.querySelector('meta[name="florea-api-url"]')?.content ||

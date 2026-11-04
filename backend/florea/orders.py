@@ -14,21 +14,65 @@ from .errors import ApiError, invalid, missing
 
 bp = Blueprint("orders", __name__, url_prefix="/api")
 TRANSITIONS = {
-    "pending": ["confirmed", "cancelled"],
-    "confirmed": ["preparing", "cancelled"],
-    "preparing": ["shipped"],
-    "shipped": ["delivered"],
-    "delivered": [],
-    "cancelled": [],
+    "pending": ["confirmed", "preparing", "shipped", "cancelled", "refunded"],
+    "confirmed": ["preparing", "shipped", "cancelled", "refunded"],
+    "preparing": ["shipped", "delivered", "cancelled", "refunded"],
+    "shipped": ["delivered", "cancelled", "refunded"],
+    "delivered": ["refunded"],
+    "cancelled": ["refunded"],
+    "refunded": [],
+}
+COURIER_PREFIXES = {
+    "j&t": "JNT",
+    "jnt": "JNT",
+    "lbc": "LBC",
+    "flash": "FLS",
+    "ninja": "NJV",
+    "grab": "GRB",
 }
 ORDER_SELECT = """SELECT o.*, u.id AS customer_id, u.name AS customer_name, u.email AS customer_email,
                   COALESCE((SELECT SUM(quantity) FROM order_items WHERE order_id = o.id), 0) AS item_count
                   FROM orders o JOIN users u ON u.id = o.user_id"""
 
 
+def tracking_prefix(courier_name):
+    lowered = (courier_name or "").lower()
+    for key, prefix in COURIER_PREFIXES.items():
+        if key in lowered:
+            return prefix
+    letters = "".join(ch for ch in (courier_name or "").upper() if ch.isalpha())
+    return (letters[:3] or "TRK").ljust(3, "X")
+
+
+def default_status_note(status, courier_name=None, tracking_number=None, estimated_delivery=None):
+    if status == "confirmed":
+        if courier_name and estimated_delivery:
+            return f"Your order is confirmed and scheduled with {courier_name}. Estimated arrival: {estimated_delivery}."
+        return "Your order has been confirmed by Floréa Haven and is queued for preparation."
+    if status == "preparing":
+        if courier_name and estimated_delivery:
+            tracking_info = f" (Tracking: {tracking_number})" if tracking_number else ""
+            return f"Your order is being processed for dispatch via {courier_name}{tracking_info}. Estimated arrival: {estimated_delivery}."
+        return "Our florists are carefully preparing and packaging your order."
+    if status == "shipped":
+        if courier_name and estimated_delivery:
+            tracking_info = f" · Tracking: {tracking_number}" if tracking_number else ""
+            return f"Your order is on the way via {courier_name}{tracking_info}. Estimated arrival: {estimated_delivery}."
+        if courier_name:
+            return f"Your order has been shipped via {courier_name}."
+        return "Your order has been handed over to the courier and is on the way."
+    if status == "delivered":
+        return "Your order has been delivered. Thank you for shopping with Floréa Haven!"
+    if status == "cancelled":
+        return "Your order was cancelled and any reserved items were returned to stock."
+    if status == "refunded":
+        return "Your order has been refunded. Your simulated refund confirmation has been recorded."
+    return None
+
+
 def map_order(row, admin=False):
     result = {
-        field: row[field]
+        field: row.get(field)
         for field in (
             "id",
             "status",
@@ -38,6 +82,10 @@ def map_order(row, admin=False):
             "subtotal",
             "total_amount",
             "item_count",
+            "courier_name",
+            "tracking_number",
+            "estimated_delivery",
+            "status_note",
             "created_at",
             "updated_at",
         )
@@ -291,9 +339,31 @@ def admin_order(order_id):
 @protected("staff")
 def update_status(order_id):
     order_id = v.identifier(order_id)
-    status = v.choice(v.body({"status"}).get("status"), "status", TRANSITIONS)
+    payload = v.body({"status", "courierName", "trackingNumber", "estimatedDelivery", "statusNote"})
+    status = v.choice(payload.get("status"), "status", TRANSITIONS)
+    courier_name = (
+        v.string(payload["courierName"], "courierName", 2, 80)
+        if payload.get("courierName")
+        else None
+    )
+    tracking_number = (
+        v.string(payload["trackingNumber"], "trackingNumber", 3, 60)
+        if payload.get("trackingNumber")
+        else None
+    )
+    estimated_delivery = (
+        v.string(payload["estimatedDelivery"], "estimatedDelivery", 2, 120)
+        if payload.get("estimatedDelivery")
+        else None
+    )
+    status_note = (
+        v.string(payload["statusNote"], "statusNote", 2, 300) if payload.get("statusNote") else None
+    )
     with get_db().transaction():
-        order = one("SELECT status FROM orders WHERE id = %s FOR UPDATE", (order_id,))
+        order = one(
+            "SELECT status, courier_name, tracking_number, estimated_delivery FROM orders WHERE id = %s FOR UPDATE",
+            (order_id,),
+        )
         if not order:
             missing("order")
         allowed = TRANSITIONS[order["status"]]
@@ -308,7 +378,18 @@ def update_status(order_id):
                     "allowedStatuses": allowed,
                 },
             )
-        if status == "cancelled":
+        effective_courier = courier_name or order.get("courier_name")
+        effective_tracking = tracking_number or order.get("tracking_number")
+        if effective_courier and (courier_name or not effective_tracking):
+            if not tracking_number:
+                effective_tracking = (
+                    f"{tracking_prefix(effective_courier)}-{order_id.replace('-', '')[:8].upper()}"
+                )
+        effective_eta = estimated_delivery or order.get("estimated_delivery")
+        effective_note = status_note or default_status_note(
+            status, effective_courier, effective_tracking, effective_eta
+        )
+        if status == "cancelled" or (status == "refunded" and order["status"] != "cancelled"):
             items = rows(
                 "SELECT product_id, quantity FROM order_items WHERE order_id = %s ORDER BY product_id",
                 (order_id,),
@@ -319,7 +400,22 @@ def update_status(order_id):
                     (item["quantity"], item["product_id"]),
                 )
         execute(
-            "UPDATE orders SET status = %s, status_updated_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
-            (status, order_id),
+            """UPDATE orders
+               SET status = %s,
+                   courier_name = %s,
+                   tracking_number = %s,
+                   estimated_delivery = %s,
+                   status_note = %s,
+                   status_updated_at = CURRENT_TIMESTAMP,
+                   updated_at = CURRENT_TIMESTAMP
+               WHERE id = %s""",
+            (
+                status,
+                effective_courier,
+                effective_tracking,
+                effective_eta,
+                effective_note,
+                order_id,
+            ),
         )
         return jsonify(data=get_order(order_id, admin=True))

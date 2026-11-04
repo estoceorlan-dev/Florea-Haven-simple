@@ -166,7 +166,11 @@ if (await pageReady) {
     demoPreviewUrl = '';
     demoImageFile = null;
     find('[data-upload-save]').textContent = 'Save with product';
-    if (file && (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024)) {
+    if (
+      file &&
+      (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) ||
+        file.size > 5 * 1024 * 1024)
+    ) {
       message.textContent = 'Choose a JPEG, PNG, or WebP image up to 5 MB.';
       message.setAttribute('role', 'alert');
       find('[data-upload-preview]').hidden = true;
@@ -264,19 +268,22 @@ if (await pageReady) {
   find('[data-upload-save]', find('#product-upload')).addEventListener('click', () => {
     if (!selected && demoImageFile) form.requestSubmit();
   });
-  find('[data-upload-cancel]', find('#product-upload')).addEventListener('click', () => {
-    if (selected) return;
-    if (demoPreviewUrl) URL.revokeObjectURL(demoPreviewUrl);
-    demoPreviewUrl = '';
-    demoImageFile = null;
-    find('#product-image').value = '';
-    find('[data-upload-preview]').hidden = true;
-    find('[data-upload-fallback]').hidden = false;
-    find('[data-upload-save]').disabled = true;
-    find('[data-upload-save]').textContent = 'Save with product';
-    find('[data-upload-cancel]').hidden = true;
-    find('[data-upload-message]').hidden = true;
-  });
+  find('[data-upload-cancel]', find('#product-upload')).addEventListener(
+    'click',
+    () => {
+      if (selected) return;
+      if (demoPreviewUrl) URL.revokeObjectURL(demoPreviewUrl);
+      demoPreviewUrl = '';
+      demoImageFile = null;
+      find('#product-image').value = '';
+      find('[data-upload-preview]').hidden = true;
+      find('[data-upload-fallback]').hidden = false;
+      find('[data-upload-save]').disabled = true;
+      find('[data-upload-save]').textContent = 'Save with product';
+      find('[data-upload-cancel]').hidden = true;
+      find('[data-upload-message]').hidden = true;
+    },
+  );
   try {
     categories = (await adminCatalogApi.getCategories()).data;
     fillCategories(form.elements.categoryId, categories);

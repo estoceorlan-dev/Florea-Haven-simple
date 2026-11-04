@@ -186,7 +186,8 @@ if (await pageReady) {
     const loadProduct = async () => {
       try {
         const product = (await catalogApi.getProduct(id)).data;
-        product.image_url = product.image_url ?? (await getDemoProductImage(product.id));
+        product.image_url =
+          product.image_url ?? (await getDemoProductImage(product.id));
         fillProduct(find('#product-details'), product);
         showError(null);
       } catch (error) {
