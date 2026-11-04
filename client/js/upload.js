@@ -11,6 +11,9 @@ export function enableUpload(root, endpoint, initialUrl, onSaved) {
   const cancel = find('[data-upload-cancel]', root);
   const message = find('[data-upload-message]', root);
   const progress = find('[data-upload-progress]', root);
+  const indicator = find('[data-upload-indicator]', root);
+  const indicatorText = find('[data-upload-indicator-text]', root);
+  const prompt = find('[data-upload-prompt]', root);
   let savedUrl = initialUrl;
   let selectedFile = null;
   let previewUrl = '';
@@ -27,6 +30,22 @@ export function enableUpload(root, endpoint, initialUrl, onSaved) {
     input.disabled = busy;
     if (cancel) cancel.hidden = !selectedFile;
     progress.hidden = !busy;
+    if (prompt) prompt.textContent = 'Tap to choose an image';
+    if (indicator && indicatorText) {
+      if (busy) {
+        indicator.dataset.state = 'uploading';
+        indicatorText.textContent = 'Uploading…';
+      } else if (selectedFile) {
+        indicator.dataset.state = 'selected';
+        indicatorText.textContent = selectedFile.name;
+      } else if (savedUrl) {
+        indicator.dataset.state = 'uploaded';
+        indicatorText.textContent = 'Image uploaded';
+      } else {
+        indicator.dataset.state = 'idle';
+        indicatorText.textContent = 'Ready to upload';
+      }
+    }
   }
   function resetSelection() {
     if (previewUrl) URL.revokeObjectURL(previewUrl);

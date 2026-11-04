@@ -64,7 +64,7 @@ function formatOrderProductTitle(order) {
   return count > 1 ? `${baseName} · ${count} items` : baseName;
 }
 
-async function resolveOrderPreviewImage(order) {
+export async function resolveOrderPreviewImage(order) {
   if (order.preview_image_url) return order.preview_image_url;
   if (order.preview_product_id) {
     try {
@@ -76,6 +76,24 @@ async function resolveOrderPreviewImage(order) {
   }
   return (
     CATEGORY_FALLBACK_IMAGES[order.preview_category_slug] || '/image-placeholder.svg'
+  );
+}
+
+async function resolveOrderItemImage(item, order) {
+  if (item.image_url) return item.image_url;
+  if (item.product_id) {
+    try {
+      const demo = await getDemoProductImage(item.product_id);
+      if (demo) return demo;
+    } catch {
+      /* Ignore IndexedDB errors */
+    }
+  }
+  const slug = item.category_slug || order.preview_category_slug;
+  return (
+    CATEGORY_FALLBACK_IMAGES[slug] ||
+    order.preview_image_url ||
+    '/image-placeholder.svg'
   );
 }
 
@@ -101,7 +119,7 @@ export function fillOrderDetails(order) {
           : 'To be scheduled');
 
   fillText(document, {
-    'order-heading': `Order ${order.id}`,
+    'order-heading': 'Order #' + order.id.slice(0, 8).toUpperCase(),
     'order-number': 'Order #' + order.id.slice(0, 8).toUpperCase(),
     'order-date': 'Placed ' + dateTime(order.created_at),
     'order-status': orderStatusLabels[order.status] ?? order.status,
@@ -110,9 +128,7 @@ export function fillOrderDetails(order) {
     'payment-method': paymentMethodLabels[order.payment_method] ?? 'Cash on Delivery',
     'status-date': 'Status updated ' + dateTime(order.status_updated_at),
     'confirmation-message': `We received order #${order.id.slice(0, 8).toUpperCase()}. Its purchase details are saved in your order history.`,
-    'courier-name': order.courier_name
-      ? `${order.courier_name} (Simulation)`
-      : 'Awaiting courier assignment',
+    'courier-name': order.courier_name || 'Awaiting courier assignment',
     'tracking-number': order.tracking_number || 'Pending dispatch',
     'estimated-delivery': etaDisplay,
     'status-note': statusNote,
@@ -140,6 +156,18 @@ export function fillOrderDetails(order) {
         'item-description': `${item.sku} · Qty ${item.quantity} · ${currency(item.unit_price)} each`,
         'line-total': currency(item.line_total),
       });
+      const imgEl = find('[data-field="item-image"]', row);
+      if (imgEl) {
+        const immediateUrl =
+          item.image_url ||
+          CATEGORY_FALLBACK_IMAGES[item.category_slug || order.preview_category_slug] ||
+          order.preview_image_url ||
+          '/image-placeholder.svg';
+        setImage(imgEl, immediateUrl, item.product_name);
+        void resolveOrderItemImage(item, order).then((resolvedUrl) => {
+          if (resolvedUrl) setImage(imgEl, resolvedUrl, item.product_name);
+        });
+      }
       return row;
     }),
   );
@@ -193,7 +221,12 @@ function buildOrderCatalogCard(order, previewUrl) {
   return row;
 }
 
-if (document.body.dataset.access !== 'admin' && (await pageReady)) {
+if (
+  ['orders', 'order', 'order-confirmation', 'notifications'].includes(
+    document.body.dataset.page,
+  ) &&
+  (await pageReady)
+) {
   const page = document.body.dataset.page;
   if (page === 'orders') {
     let activeTab = 'all';

@@ -23,35 +23,35 @@ export const simulatedCouriers = [
     id: 'jnt',
     name: 'J&T Express',
     prefix: 'JNT',
-    service: 'Standard Express Parcel · Simulated',
+    service: 'Standard Express Parcel',
     daysRange: [2, 3],
   },
   {
     id: 'lbc',
     name: 'LBC Express',
     prefix: 'LBC',
-    service: 'Priority Rush Cargo · Simulated',
+    service: 'Priority Rush Cargo',
     daysRange: [1, 2],
   },
   {
     id: 'flash',
     name: 'Flash Express',
     prefix: 'FLS',
-    service: 'Nationwide Door-to-Door · Simulated',
+    service: 'Nationwide Door-to-Door',
     daysRange: [2, 4],
   },
   {
     id: 'ninjavan',
     name: 'Ninja Van',
     prefix: 'NJV',
-    service: 'Metro & Provincial Hub · Simulated',
+    service: 'Metro & Provincial Hub',
     daysRange: [3, 5],
   },
   {
     id: 'grab',
     name: 'GrabExpress',
     prefix: 'GRB',
-    service: 'Same-Day Botanical Messenger · Simulated',
+    service: 'Same-Day Botanical Messenger',
     daysRange: [0, 0],
   },
 ];
@@ -112,7 +112,7 @@ export function buildDefaultStatusNote(status, courierName, trackingNumber, eta)
     return 'Your order was cancelled and any reserved items were returned to stock.';
   }
   if (status === 'refunded') {
-    return 'Your order has been refunded. Your simulated refund confirmation has been recorded.';
+    return 'Your order has been refunded.';
   }
   return '';
 }
@@ -125,19 +125,19 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
 
   const dialog = makeElement(
     'dialog',
-    'm-auto w-[min(100%-1.5rem,32rem)] overflow-hidden rounded-[1.75rem] border border-border bg-surface p-0 text-text shadow-high backdrop:bg-black/60',
+    'm-auto w-[min(100%-1.5rem,30rem)] overflow-hidden rounded-[1.5rem] border border-border bg-surface p-0 text-text shadow-high backdrop:bg-black/60',
   );
   dialog.setAttribute('aria-label', `Process Order #${orderCode}`);
 
   const header = makeElement(
     'div',
-    'border-b border-border bg-surface-muted px-6 py-5',
+    'border-b border-border bg-surface-muted px-5 py-4',
   );
   const topRow = makeElement('div', 'flex items-center justify-between gap-3');
   const eyebrow = makeElement(
     'p',
     'eyebrow text-clay',
-    `Fulfillment & Courier Simulation · Order #${orderCode}`,
+    `Order Fulfillment · Order #${orderCode}`,
   );
   const closeBtn = makeElement('button', 'order-action-btn', 'Close');
   closeBtn.type = 'button';
@@ -145,17 +145,17 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
 
   const title = makeElement(
     'h2',
-    'mt-2 font-display text-3xl text-floral-pink',
+    'mt-1.5 font-display text-2xl text-floral-pink',
     'Process & Dispatch Order',
   );
   const subtitle = makeElement(
     'p',
     'mt-1 text-xs leading-5 text-text-muted',
-    'Select a simulated delivery partner and estimated time of arrival (ETA). This update and notification will immediately appear on the customer’s account.',
+    'Select a delivery partner and estimated time of arrival (ETA). This update and notification will immediately appear on the customer’s account.',
   );
   header.append(topRow, title, subtitle);
 
-  const form = makeElement('form', 'p-6 space-y-4');
+  const form = makeElement('form', 'p-5 space-y-3.5');
   const errorBox = makeElement('p', 'form-alert text-xs', '');
   errorBox.hidden = true;
   errorBox.setAttribute('role', 'alert');
@@ -187,7 +187,7 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
 
   // Delivery company selector
   const courierField = makeElement('div', 'form-field');
-  const courierLabel = makeElement('label', '', 'Delivery company (Simulation)');
+  const courierLabel = makeElement('label', '', 'Delivery company');
   courierLabel.htmlFor = 'process-order-courier';
   const courierSelect = makeElement('select', 'form-input');
   courierSelect.id = 'process-order-courier';
@@ -199,33 +199,17 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
   }
   courierField.append(courierLabel, courierSelect);
 
-  // Simulated ETA preset selector + editable input
+  // Single clean ETA selector (no redundant duplicate input)
   const etaField = makeElement('div', 'form-field');
-  const etaLabel = makeElement(
-    'label',
-    '',
-    'Estimated time of arrival (Simulated ETA)',
-  );
+  const etaLabel = makeElement('label', '', 'Estimated time of arrival (ETA)');
   etaLabel.htmlFor = 'process-order-eta-preset';
   const etaPresetSelect = makeElement('select', 'form-input');
   etaPresetSelect.id = 'process-order-eta-preset';
+  etaField.append(etaLabel, etaPresetSelect);
 
-  const etaCustomInput = makeElement('input', 'form-input mt-2');
-  etaCustomInput.type = 'text';
-  etaCustomInput.id = 'process-order-eta-custom';
-  etaCustomInput.setAttribute('aria-label', 'Custom estimated time of arrival');
-  etaCustomInput.placeholder = 'e.g. 2–3 business days (Est. Nov 6 – Nov 7)';
-
-  const etaHint = makeElement(
-    'span',
-    'form-hint',
-    'Choose a simulated arrival window above or refine the text shown to the customer.',
-  );
-  etaField.append(etaLabel, etaPresetSelect, etaCustomInput, etaHint);
-
-  // Simulated tracking number
+  // Tracking number
   const trackingField = makeElement('div', 'form-field');
-  const trackingLabel = makeElement('label', '', 'Simulated tracking number');
+  const trackingLabel = makeElement('label', '', 'Tracking number');
   trackingLabel.htmlFor = 'process-order-tracking';
   const trackingInput = makeElement('input', 'form-input font-semibold');
   trackingInput.id = 'process-order-tracking';
@@ -248,9 +232,16 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
     );
   }
 
-  function refreshCourierSimulation(preserveExisting = false) {
+  function refreshCourierSelection(preserveExisting = false) {
     const courier = selectedCourier();
     const etaOptions = buildSimulatedEtaOptions(courier);
+    if (
+      preserveExisting &&
+      order.estimated_delivery &&
+      !etaOptions.includes(order.estimated_delivery)
+    ) {
+      etaOptions.unshift(order.estimated_delivery);
+    }
     etaPresetSelect.replaceChildren(
       ...etaOptions.map((text) => {
         const opt = makeElement('option', '', text);
@@ -262,8 +253,7 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
       preserveExisting && order.estimated_delivery
         ? order.estimated_delivery
         : etaOptions[0];
-    etaCustomInput.value = nextEta;
-    if (etaOptions.includes(nextEta)) etaPresetSelect.value = nextEta;
+    etaPresetSelect.value = nextEta;
 
     const nextTracking =
       preserveExisting && order.tracking_number
@@ -279,24 +269,15 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
     );
   }
 
-  refreshCourierSimulation(true);
+  refreshCourierSelection(true);
 
-  courierSelect.addEventListener('change', () => refreshCourierSimulation(false));
+  courierSelect.addEventListener('change', () => refreshCourierSelection(false));
   etaPresetSelect.addEventListener('change', () => {
-    etaCustomInput.value = etaPresetSelect.value;
     noteInput.value = buildDefaultStatusNote(
       stageSelect.value,
       selectedCourier().name,
       trackingInput.value.trim(),
-      etaCustomInput.value.trim(),
-    );
-  });
-  etaCustomInput.addEventListener('input', () => {
-    noteInput.value = buildDefaultStatusNote(
-      stageSelect.value,
-      selectedCourier().name,
-      trackingInput.value.trim(),
-      etaCustomInput.value.trim(),
+      etaPresetSelect.value,
     );
   });
   trackingInput.addEventListener('input', () => {
@@ -304,7 +285,7 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
       stageSelect.value,
       selectedCourier().name,
       trackingInput.value.trim(),
-      etaCustomInput.value.trim(),
+      etaPresetSelect.value,
     );
   });
   stageSelect.addEventListener('change', () => {
@@ -312,13 +293,13 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
       stageSelect.value,
       selectedCourier().name,
       trackingInput.value.trim(),
-      etaCustomInput.value.trim(),
+      etaPresetSelect.value,
     );
   });
 
   const actions = makeElement(
     'div',
-    'flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end',
+    'flex flex-col-reverse gap-2.5 pt-2 sm:flex-row sm:justify-end',
   );
   const cancelBtn = makeElement('button', 'button-secondary', 'Keep current status');
   cancelBtn.type = 'button';
@@ -358,11 +339,11 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const courier = selectedCourier();
-    const estimatedDelivery = etaCustomInput.value.trim();
+    const estimatedDelivery = etaPresetSelect.value.trim();
     const trackingNumber = trackingInput.value.trim();
     const statusNote = noteInput.value.trim();
     if (estimatedDelivery.length < 2) {
-      errorBox.textContent = 'Enter an estimated time of arrival (ETA).';
+      errorBox.textContent = 'Select an estimated time of arrival (ETA).';
       errorBox.hidden = false;
       return;
     }

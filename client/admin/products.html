@@ -93,6 +93,9 @@
                 <path d="M8 16h.01"></path>
               </svg>
               <span>Orders</span>
+              <span class="admin-sidebar-badge" data-admin-orders-badge="" hidden="">
+                0
+              </span>
             </a>
             <a
               class="admin-nav-link admin-nav-link-active"
@@ -645,38 +648,73 @@
                           id="product-upload"
                           hidden=""
                         >
-                          <p class="mb-3 text-sm font-semibold text-text">
-                            Product image
-                          </p>
-                          <img
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
-                            width="800"
-                            height="800"
-                            decoding="async"
-                            class="mb-4 size-28 rounded-xl object-cover"
-                            alt="Product image"
-                            loading="lazy"
-                            data-upload-preview=""
-                          />
-                          <p
-                            class="mb-4 text-sm text-text-muted"
-                            data-upload-fallback=""
+                          <div
+                            class="mb-3 flex flex-wrap items-center justify-between gap-2"
                           >
-                            Choose an image to preview it here.
-                          </p>
-                          <label class="form-field" for="product-image">
-                            Choose product image
+                            <p class="text-sm font-semibold text-text">Product image</p>
+                            <span
+                              class="upload-status-pill"
+                              data-upload-indicator=""
+                              data-state="idle"
+                            >
+                              <span class="upload-status-dot" aria-hidden="true"></span>
+                              <span data-upload-indicator-text="">Ready to upload</span>
+                            </span>
+                          </div>
+                          <label class="product-upload-dropzone" for="product-image">
+                            <span class="sr-only">Choose product image</span>
+                            <img
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+                              width="800"
+                              height="800"
+                              decoding="async"
+                              class="size-28 rounded-xl object-cover shadow-low"
+                              alt="Product image"
+                              loading="lazy"
+                              data-upload-preview=""
+                              hidden=""
+                            />
+                            <span
+                              class="product-upload-placeholder"
+                              data-upload-fallback=""
+                            >
+                              <span class="product-upload-icon" aria-hidden="true">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                >
+                                  <path d="M12 3v12"></path>
+                                  <path d="m17 8-5-5-5 5"></path>
+                                  <path
+                                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                                  ></path>
+                                </svg>
+                              </span>
+                            </span>
+                            <span
+                              class="mt-2 block text-sm font-semibold text-floral-pink"
+                              data-upload-prompt=""
+                            >
+                              Tap to choose an image
+                            </span>
+                            <span class="mt-0.5 block text-xs text-text-muted">
+                              JPEG, PNG, or WebP · Up to 5 MB
+                            </span>
                           </label>
                           <input
                             type="file"
                             accept="image/jpeg,image/png,image/webp"
-                            class="my-2 block w-full text-sm"
+                            class="sr-only"
                             id="product-image"
+                            aria-label="Choose product image"
                           />
-                          <p class="form-hint">
-                            JPEG, PNG, or WebP. Up to 5 MB and 4096 × 4096 pixels. No
-                            animation.
-                          </p>
                           <div class="mt-3 flex flex-wrap gap-2">
                             <button
                               type="button"
@@ -926,6 +964,13 @@
                     <path d="M8 16h.01"></path>
                   </svg>
                   <span>Orders</span>
+                  <span
+                    class="admin-sidebar-badge"
+                    data-admin-orders-badge=""
+                    hidden=""
+                  >
+                    0
+                  </span>
                 </a>
                 <a class="admin-nav-link" href="/admin/products">
                   <svg

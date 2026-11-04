@@ -1,5 +1,5 @@
 import { adminOrderApi } from './api.js';
-import { pageReady, showPage } from './common.js';
+import { pageReady, refreshAdminOrdersBadge, showPage } from './common.js';
 import {
   find,
   findAll,
@@ -7,6 +7,7 @@ import {
   copyTemplate,
   currency,
   dateTime,
+  setImage,
   showError,
   showNotice,
   confirmAction,
@@ -18,12 +19,13 @@ import {
   orderStatusLabels,
   showOrderToast,
 } from './order-status.js';
-import { fillOrderDetails } from './orders.js';
+import { fillOrderDetails, resolveOrderPreviewImage } from './orders.js';
 import { enableFilters, updatePagination } from './admin-helpers.js';
 
 function notifyAdminAction(updated) {
   const code = updated.id.slice(0, 8).toUpperCase();
   showNotice(`Order status updated to ${updated.status}.`);
+  void refreshAdminOrdersBadge();
   showOrderToast({
     title: `Order #${code} · ${orderStatusLabels[updated.status] ?? updated.status}`,
     message:
@@ -125,7 +127,7 @@ if (await pageReady) {
       } else if (status === 'refunded') {
         confirmAction({
           title: 'Refund this order?',
-          description: `Issue a simulated refund of ${currency(currentOrder.total_amount)} to ${currentOrder.customer.name}? Items will be restored to stock if not already cancelled, and the customer will be notified.`,
+          description: `Issue a refund of ${currency(currentOrder.total_amount)} to ${currentOrder.customer.name}? Items will be restored to stock if not already cancelled, and the customer will be notified.`,
           label: 'Confirm refund',
           trigger: button,
           action: () => applyStatusUpdate('refunded'),
@@ -148,11 +150,16 @@ if (await pageReady) {
           limit: 20,
         });
         ordersById = new Map(result.data.map((order) => [order.id, order]));
+        const previews = await Promise.all(
+          result.data.map((order) => resolveOrderPreviewImage(order)),
+        );
         find('#admin-order-list').replaceChildren(
-          ...result.data.map((order) => {
+          ...result.data.map((order, idx) => {
             const row = copyTemplate('admin-order-template');
             row.dataset.orderId = order.id;
+            const productTitle = order.preview_product_name || 'Botanical Arrangement';
             fillText(row, {
+              'order-product': productTitle,
               'order-number': order.id.slice(0, 8).toUpperCase(),
               'item-count': `${order.item_count} ${order.item_count === 1 ? 'item' : 'items'}`,
               'customer-name': order.customer.name,
@@ -162,6 +169,7 @@ if (await pageReady) {
               'order-status': orderStatusLabels[order.status] ?? order.status,
               'order-address': `${order.delivery_address.city}, ${order.delivery_address.province}`,
             });
+            setImage(row, 'order-image', previews[idx], productTitle);
 
             const courierEl = find('[data-field="order-courier"]', row);
             if (courierEl) {
@@ -254,7 +262,7 @@ if (await pageReady) {
       } else if (action === 'refund') {
         confirmAction({
           title: `Refund Order #${code}?`,
-          description: `Issue a simulated refund of ${currency(order.total_amount)} to ${order.customer.name}? Items will be restored to stock if not already cancelled, and the customer will receive a refund notification.`,
+          description: `Issue a refund of ${currency(order.total_amount)} to ${order.customer.name}? Items will be restored to stock if not already cancelled, and the customer will receive a refund notification.`,
           label: 'Confirm refund',
           trigger: actionBtn,
           action: () => runRowUpdate('refunded'),

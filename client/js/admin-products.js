@@ -8,6 +8,7 @@ import {
   setImage,
   showError,
   showNotice,
+  showCenterNotice,
   formValues,
   setBusy,
   confirmAction,
@@ -104,6 +105,12 @@ if (await pageReady) {
       find('[data-upload-message]', uploader).textContent = '';
       find('[data-upload-message]', uploader).hidden = true;
       find('[data-upload-save]', uploader).textContent = 'Save with product';
+      const indicator = find('[data-upload-indicator]', uploader);
+      const indicatorText = find('[data-upload-indicator-text]', uploader);
+      if (indicator && indicatorText) {
+        indicator.dataset.state = 'idle';
+        indicatorText.textContent = 'Ready to upload';
+      }
     }
     if (product) find('[data-upload-save]', uploader).textContent = 'Upload image';
   }
@@ -161,7 +168,10 @@ if (await pageReady) {
   find('#product-image').addEventListener('change', (event) => {
     if (selected) return;
     const file = event.target.files?.[0];
-    const message = find('[data-upload-message]', find('#product-upload'));
+    const uploader = find('#product-upload');
+    const message = find('[data-upload-message]', uploader);
+    const indicator = find('[data-upload-indicator]', uploader);
+    const indicatorText = find('[data-upload-indicator-text]', uploader);
     if (demoPreviewUrl) URL.revokeObjectURL(demoPreviewUrl);
     demoPreviewUrl = '';
     demoImageFile = null;
@@ -175,6 +185,10 @@ if (await pageReady) {
       message.setAttribute('role', 'alert');
       find('[data-upload-preview]').hidden = true;
       find('[data-upload-fallback]').hidden = false;
+      if (indicator && indicatorText) {
+        indicator.dataset.state = 'idle';
+        indicatorText.textContent = 'Ready to upload';
+      }
     } else if (file) {
       demoImageFile = file;
       demoPreviewUrl = URL.createObjectURL(file);
@@ -185,6 +199,13 @@ if (await pageReady) {
       message.textContent = 'Image will be uploaded when you create the product.';
       message.setAttribute('role', 'status');
       find('[data-upload-save]').textContent = 'Create product with image';
+      if (indicator && indicatorText) {
+        indicator.dataset.state = 'selected';
+        indicatorText.textContent = file.name;
+      }
+    } else if (indicator && indicatorText) {
+      indicator.dataset.state = 'idle';
+      indicatorText.textContent = 'Ready to upload';
     }
     message.hidden = !file;
     find('[data-upload-save]').disabled = !demoImageFile;
@@ -242,19 +263,41 @@ if (await pageReady) {
     setBusy(form, true);
     showError(null);
     try {
+      const wasEditing = Boolean(selected);
+      const uploader = find('#product-upload');
+      const indicator = find('[data-upload-indicator]', uploader);
+      const indicatorText = find('[data-upload-indicator-text]', uploader);
+      const progress = find('[data-upload-progress]', uploader);
       const result = selected
         ? await adminCatalogApi.updateProduct(selected.id, input)
         : await adminCatalogApi.createProduct(input);
       if (pendingFile) {
+        if (indicator && indicatorText) {
+          indicator.dataset.state = 'uploading';
+          indicatorText.textContent = 'Uploading…';
+        }
+        if (progress) {
+          progress.value = 0;
+          progress.hidden = false;
+        }
         try {
-          await imageApi.upload(`/api/products/${result.data.id}/image`, pendingFile);
+          await imageApi.upload(
+            `/api/products/${result.data.id}/image`,
+            pendingFile,
+            (val) => {
+              if (progress) progress.value = val;
+            },
+          );
           await removeDemoProductImage(result.data.id);
         } catch (uploadError) {
           if (!selected) await saveDemoProductImage(result.data.id, pendingFile);
           else throw uploadError;
+        } finally {
+          if (progress) progress.hidden = true;
         }
       }
-      showNotice(`${result.data.name} was ${selected ? 'updated' : 'created'}.`);
+      showNotice(`${result.data.name} was ${wasEditing ? 'updated' : 'created'}.`);
+      showCenterNotice(wasEditing ? 'Product updated' : 'Product added');
       edit();
       busy = false;
       await load();
@@ -282,6 +325,15 @@ if (await pageReady) {
       find('[data-upload-save]').textContent = 'Save with product';
       find('[data-upload-cancel]').hidden = true;
       find('[data-upload-message]').hidden = true;
+      const indicator = find('[data-upload-indicator]', find('#product-upload'));
+      const indicatorText = find(
+        '[data-upload-indicator-text]',
+        find('#product-upload'),
+      );
+      if (indicator && indicatorText) {
+        indicator.dataset.state = 'idle';
+        indicatorText.textContent = 'Ready to upload';
+      }
     },
   );
   try {

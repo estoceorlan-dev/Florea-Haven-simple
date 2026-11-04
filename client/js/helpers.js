@@ -83,6 +83,35 @@ export function showNotice(message) {
   element.hidden = !message;
 }
 
+export function showCenterNotice(message = 'Product added', duration = 1600) {
+  const existing = document.querySelector('.center-screen-notice');
+  if (existing) existing.remove();
+  const wrapper = document.createElement('div');
+  wrapper.className = 'center-screen-notice';
+  wrapper.setAttribute('role', 'status');
+  wrapper.setAttribute('aria-live', 'polite');
+
+  const card = document.createElement('div');
+  card.className = 'center-screen-notice-card';
+
+  const icon = document.createElement('span');
+  icon.className = 'center-screen-notice-icon';
+  icon.setAttribute('aria-hidden', 'true');
+  icon.textContent = '✓';
+
+  const text = document.createElement('p');
+  text.className = 'center-screen-notice-text';
+  text.textContent = message;
+
+  card.append(icon, text);
+  wrapper.append(card);
+  document.body.append(wrapper);
+
+  setTimeout(() => {
+    wrapper.remove();
+  }, duration);
+}
+
 export function setBusy(form, busy) {
   form.setAttribute('aria-busy', String(busy));
   const submit = find('[type="submit"]', form);

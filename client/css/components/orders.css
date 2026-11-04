@@ -278,12 +278,175 @@
   /* #endregion */
 
   /* #region Admin order actions & fulfillment */
+  .admin-sidebar-badge {
+    margin-left: auto;
+    background: var(--color-brand);
+    color: var(--color-canvas);
+    border-radius: 999px;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.4rem;
+    font-size: 0.62rem;
+    font-weight: 800;
+    line-height: 1;
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .admin-order-thumb {
+    width: 2.85rem;
+    height: 2.85rem;
+    border-radius: 0.7rem;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-muted);
+    flex-shrink: 0;
+  }
+
+  .order-item-thumb {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 0.85rem;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-muted);
+    flex-shrink: 0;
+  }
+
+  .product-upload-dropzone {
+    border: 1.5px dashed var(--color-border-strong);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-muted);
+    padding: 1.15rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition:
+      border-color var(--motion-fast) var(--ease-standard),
+      background var(--motion-fast) var(--ease-standard);
+  }
+  .product-upload-dropzone:hover {
+    border-color: var(--color-floral-pink);
+    background: var(--color-surface);
+  }
+
+  .product-upload-placeholder {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .product-upload-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    background: var(--color-brand-soft);
+    color: var(--color-floral-pink);
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .upload-status-pill {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-muted);
+    color: var(--color-text-muted);
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    max-width: 14rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .upload-status-pill [data-upload-indicator-text] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .upload-status-pill[data-state='selected'],
+  .upload-status-pill[data-state='uploaded'] {
+    border-color: var(--color-success);
+    color: var(--color-success);
+  }
+  .upload-status-pill[data-state='uploading'] {
+    border-color: var(--color-floral-pink);
+    color: var(--color-floral-pink);
+  }
+
+  .upload-status-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+  .upload-status-pill[data-state='uploading'] .upload-status-dot {
+    animation: pulse 1s infinite ease-in-out;
+  }
+
+  .center-screen-notice {
+    z-index: 9999;
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+
+  .center-screen-notice-card {
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-floral-pink);
+    box-shadow: var(--shadow-overlay);
+    padding: 0.75rem 1.35rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    animation: confirmation-enter var(--motion-standard) var(--ease-enter) both;
+  }
+
+  .center-screen-notice-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 999px;
+    background: var(--color-floral-pink);
+    color: var(--color-canvas);
+    font-size: 0.8rem;
+    font-weight: 800;
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .center-screen-notice-text {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-floral-pink);
+    white-space: nowrap;
+  }
+
+  .order-detail-shell {
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+
+  .order-detail-actions .button-primary,
+  .order-detail-actions .button-secondary {
+    min-height: 2.15rem;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.75rem;
+  }
+
   @media (min-width: 64rem) {
     .admin-order-grid {
-      grid-template-columns: 7rem minmax(10rem, 1.1fr) minmax(
-          8.5rem,
-          0.9fr
-        ) 7.5rem 6rem minmax(14rem, 1.35fr);
+      grid-template-columns:
+        minmax(12rem, 1.35fr) minmax(10rem, 1fr) minmax(8.5rem, 0.9fr)
+        minmax(7rem, 0.8fr) 5.25rem minmax(15.5rem, auto);
       align-items: center;
     }
   }
@@ -292,7 +455,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.35rem;
   }
 
   .order-action-btn {
@@ -300,10 +463,11 @@
     background: var(--color-surface);
     color: var(--color-text);
     border-radius: 999px;
-    padding: 0.34rem 0.72rem;
+    padding: 0.32rem 0.68rem;
     font-size: 0.72rem;
     font-weight: 600;
     line-height: 1.2;
+    white-space: nowrap;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -356,7 +520,7 @@
     border-radius: var(--radius-card);
     background: var(--color-surface);
     box-shadow: var(--shadow-low);
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.25rem;
   }
 
   .order-meta-chip {

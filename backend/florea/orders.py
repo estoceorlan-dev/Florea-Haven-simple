@@ -80,7 +80,7 @@ def default_status_note(status, courier_name=None, tracking_number=None, estimat
     if status == "cancelled":
         return "Your order was cancelled and any reserved items were returned to stock."
     if status == "refunded":
-        return "Your order has been refunded. Your simulated refund confirmation has been recorded."
+        return "Your order has been refunded."
     return None
 
 
@@ -127,8 +127,14 @@ def get_order(order_id, user_id=None, admin=False):
         missing("order")
     result = map_order(row, admin)
     result["items"] = rows(
-        """SELECT id, product_id, product_name, sku, unit_price, quantity, line_total, created_at
-                             FROM order_items WHERE order_id = %s ORDER BY created_at ASC, id ASC""",
+        """SELECT oi.id, oi.product_id, oi.product_name, oi.sku, oi.unit_price,
+                  oi.quantity, oi.line_total, oi.created_at,
+                  p.image_url, c.slug AS category_slug
+           FROM order_items oi
+           LEFT JOIN products p ON p.id = oi.product_id
+           LEFT JOIN categories c ON c.id = p.category_id
+           WHERE oi.order_id = %s
+           ORDER BY oi.created_at ASC, oi.id ASC""",
         (order_id,),
     )
     return result

@@ -97,6 +97,9 @@
                 <path d="M8 16h.01"></path>
               </svg>
               <span>Orders</span>
+              <span class="admin-sidebar-badge" data-admin-orders-badge="" hidden="">
+                0
+              </span>
             </a>
             <a class="admin-nav-link" href="/admin/products">
               <svg
@@ -380,48 +383,32 @@
                 </p>
               </div>
               <form
-                class="mt-7 grid gap-3 rounded-card border border-border bg-surface p-4 shadow-low md:grid-cols-2 xl:grid-cols-5"
+                class="mt-6 grid gap-3.5 rounded-card border border-border bg-surface p-4 shadow-low md:grid-cols-2 xl:grid-cols-5"
                 aria-label="Filter orders"
                 id="filter-form"
                 action="/admin/orders"
                 method="get"
               >
-                <label class="relative">
-                  <span class="sr-only">Search order number</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="17"
-                    height="17"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-search pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-leaf"
-                    aria-hidden="true"
-                  >
-                    <path d="m21 21-4.34-4.34"></path>
-                    <circle cx="11" cy="11" r="8"></circle>
-                  </svg>
-                  <input
-                    class="form-input pl-10"
-                    type="search"
-                    placeholder="Order number"
-                    name="search"
-                  />
-                </label>
-                <label>
-                  <span class="sr-only">Search customer</span>
+                <label class="form-field">
+                  Order number
                   <input
                     class="form-input"
                     type="search"
-                    placeholder="Customer name or email"
+                    placeholder="e.g. 7EDBF7E3"
+                    name="search"
+                  />
+                </label>
+                <label class="form-field">
+                  Customer
+                  <input
+                    class="form-input"
+                    type="search"
+                    placeholder="Name or email"
                     name="customer"
                   />
                 </label>
-                <label>
-                  <span class="sr-only">Filter by order status</span>
+                <label class="form-field">
+                  Status
                   <select class="form-input" name="status">
                     <option value="all">All statuses</option>
                     <option value="pending">Pending</option>
@@ -658,6 +645,13 @@
                     <path d="M8 16h.01"></path>
                   </svg>
                   <span>Orders</span>
+                  <span
+                    class="admin-sidebar-badge"
+                    data-admin-orders-badge=""
+                    hidden=""
+                  >
+                    0
+                  </span>
                 </a>
                 <a class="admin-nav-link" href="/admin/products">
                   <svg
@@ -808,29 +802,50 @@
     <!-- Reusable HTML: admin-order-template. JavaScript clones this markup and fills its labeled fields. -->
     <template id="admin-order-template">
       <article
-        class="admin-order-grid grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[7rem_minmax(12rem,1.2fr)_minmax(10rem,1fr)_7rem_7rem_5rem] lg:items-center"
+        class="admin-order-grid grid gap-4 px-5 py-4 sm:grid-cols-2 lg:items-center"
         role="row"
         data-order-row=""
       >
-        <div role="cell">
-          <p class="text-sm font-bold text-floral-pink" data-field="order-number">
-            Order number
-          </p>
-          <p class="mt-1 text-xs text-text-muted" data-field="item-count"></p>
+        <div role="cell" class="flex min-w-0 items-center gap-3">
+          <img
+            class="admin-order-thumb"
+            alt=""
+            loading="lazy"
+            data-field="order-image"
+            src="/image-placeholder.svg"
+          />
+          <div class="min-w-0">
+            <p
+              class="truncate text-sm font-bold text-floral-pink"
+              data-field="order-product"
+            >
+              Product name
+            </p>
+            <p class="mt-0.5 text-xs text-text-muted">
+              #
+              <span data-field="order-number">Order</span>
+              ·
+              <span data-field="item-count"></span>
+            </p>
+          </div>
         </div>
         <div class="min-w-0" role="cell">
           <p
-            class="break-words text-sm font-semibold text-floral-pink"
+            class="truncate text-sm font-semibold text-floral-pink"
             data-field="customer-name"
           >
             Customer
           </p>
           <p
-            class="mt-1 break-all text-xs text-text-muted"
+            class="mt-0.5 truncate text-xs text-text-muted"
             data-field="customer-email"
           ></p>
+          <p
+            class="mt-0.5 truncate text-[0.68rem] text-text-muted"
+            data-field="order-address"
+          ></p>
         </div>
-        <p class="text-sm text-text-muted" role="cell" data-field="order-date"></p>
+        <p class="text-xs text-text-muted" role="cell" data-field="order-date"></p>
         <div role="cell">
           <span
             class="order-status-badge"

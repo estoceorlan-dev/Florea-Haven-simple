@@ -10,6 +10,7 @@ import {
   setImage,
   updateStock,
   formValues,
+  showCenterNotice,
   showError,
 } from './helpers.js';
 
@@ -193,6 +194,7 @@ export function enablePurchases(products) {
     try {
       const cart = (await cartApi.addItem(id, 1)).data.cart;
       await refreshCartBadge(cart);
+      showCenterNotice('Product added');
       showError(null);
     } catch (error) {
       showError(error);

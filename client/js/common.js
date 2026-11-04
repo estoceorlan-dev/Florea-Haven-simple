@@ -1,4 +1,4 @@
-import { authApi, cartApi, orderApi } from './api.js';
+import { adminOrderApi, authApi, cartApi, orderApi } from './api.js';
 import {
   find,
   findAll,
@@ -115,6 +115,7 @@ export function updateUser(user) {
 }
 
 export async function refreshCartBadge(cart) {
+  if (currentUser && currentUser.role !== 'customer') return;
   try {
     if (!cart && currentUser) cart = (await cartApi.getCart()).data.cart;
     const count = cart?.summary.item_count ?? 0;
@@ -127,6 +128,21 @@ export async function refreshCartBadge(cart) {
     }
   } catch {
     /* The cart page provides a retry when its API cannot be reached. */
+  }
+}
+
+export async function refreshAdminOrdersBadge() {
+  if (!currentUser || !['admin', 'staff'].includes(currentUser.role)) return;
+  try {
+    const result = await adminOrderApi.getOrders({ status: 'pending', limit: 1 });
+    const pendingCount = result.pagination?.total ?? 0;
+    for (const badge of findAll('[data-admin-orders-badge]')) {
+      badge.textContent = String(pendingCount);
+      badge.hidden = pendingCount === 0;
+      badge.style.display = pendingCount === 0 ? 'none' : '';
+    }
+  } catch {
+    /* Ignore non-blocking badge refresh errors */
   }
 }
 
@@ -190,6 +206,7 @@ document.addEventListener('click', async (event) => {
     updateNavigation();
     updateUser(currentUser);
     applyTheme();
+    void refreshAdminOrdersBadge();
     overlay.root.addEventListener('click', (event) => {
       if (event.target.closest('a[href]')) overlay.close();
     });
@@ -287,6 +304,7 @@ export const pageReady = (async () => {
   updateUser(currentUser);
   if (access === 'public' || document.body.dataset.page === 'admin-home') showPage();
   void refreshCartBadge();
+  void refreshAdminOrdersBadge();
   void checkCustomerOrderNotifications();
   return true;
 })();
