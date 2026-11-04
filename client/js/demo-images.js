@@ -29,6 +29,20 @@ export async function saveDemoProductImage(productId, file) {
   urls.delete(productId);
 }
 
+export async function removeDemoProductImage(productId) {
+  const db = await openDatabase();
+  await new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE, 'readwrite');
+    transaction.objectStore(STORE).delete(productId);
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error);
+    transaction.onabort = () => reject(transaction.error);
+  });
+  const oldUrl = urls.get(productId);
+  if (oldUrl) URL.revokeObjectURL(oldUrl);
+  urls.delete(productId);
+}
+
 export async function getDemoProductImage(productId) {
   if (urls.has(productId)) return urls.get(productId);
   const db = await openDatabase();

@@ -301,3 +301,12 @@ def test_migrations_are_repeatable(app):
         assert one("SELECT COUNT(*) AS n FROM schema_migrations")["n"] == len(
             list((BACKEND / "migrations").glob("*.sql"))
         )
+
+
+@pytest.mark.parametrize("method", ["gcash", "maya"])
+def test_cashless_payment_methods(customer, product, method):
+    add(customer, product, 1)
+    data = {**checkout_body(customer), "paymentMethod": method}
+    response = checkout(customer, data)
+    assert response.status_code == 201, response.json
+    assert response.json["data"]["order"]["payment_method"] == method

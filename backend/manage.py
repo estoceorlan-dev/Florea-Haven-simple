@@ -75,10 +75,32 @@ def main():
             )
             print("Administrator account created or updated.")
         elif args.command == "dev":
+            try:
+                migrate(get_db())
+            except Exception:
+                pass
             app.run(host="127.0.0.1", port=int(os.getenv("PORT", "4000")), use_reloader=True)
-        else:
+        elif args.command == "serve":
             from waitress import serve
 
+            migrate(get_db())
+            if os.getenv("AUTO_SEED", "true").lower() == "true" and not one(
+                "SELECT 1 AS present FROM categories LIMIT 1"
+            ):
+                seed(get_db())
+            if all(os.getenv(k) for k in ("ADMIN_NAME", "ADMIN_EMAIL", "ADMIN_PASSWORD")):
+                name = string(os.getenv("ADMIN_NAME"), "ADMIN_NAME", 2, 80)
+                email = string(
+                    os.getenv("ADMIN_EMAIL"), "ADMIN_EMAIL", 3, 254, r"[^\s@]+@[^\s@]+\.[^\s@]+"
+                ).lower()
+                password = string(os.getenv("ADMIN_PASSWORD"), "ADMIN_PASSWORD", 8, 72, trim=False)
+                one(
+                    """INSERT INTO users (id, name, email, password_hash, role)
+                       VALUES (%s, %s, %s, %s, 'admin') ON CONFLICT (email) DO UPDATE
+                       SET name = EXCLUDED.name, password_hash = EXCLUDED.password_hash,
+                       role = 'admin', updated_at = CURRENT_TIMESTAMP RETURNING id""",
+                    (uuid4(), name, email, hash_password(password)),
+                )
             app.logger.setLevel("INFO")
             proxy = {}
             if os.getenv("TRUST_PROXY", "false").lower() == "true":

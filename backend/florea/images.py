@@ -3,6 +3,7 @@
 import warnings
 from functools import wraps
 from io import BytesIO
+from pathlib import Path
 from threading import BoundedSemaphore
 from uuid import uuid4
 
@@ -40,14 +41,23 @@ def bounded_upload(fn):
     return wrapped
 
 
-def provider_options():
+def provider_options(allow_local=False):
     options = {
         key: current_app.config.get("CLOUDINARY_" + key.upper())
         for key in ("cloud_name", "api_key", "api_secret")
     }
-    if not all(options.values()):
-        raise ApiError(503, "IMAGES_UNAVAILABLE", "Image uploads are not configured yet.")
-    return options
+    if all(options.values()):
+        return options
+    if (
+        allow_local
+        and not any(options.values())
+        and (
+            current_app.config.get("APP_ENV") != "test"
+            or current_app.config.get("LOCAL_IMAGE_STORAGE")
+        )
+    ):
+        return None
+    raise ApiError(503, "IMAGES_UNAVAILABLE", "Image uploads are not configured yet.")
 
 
 def normalized_image(file, avatar=False):
@@ -88,11 +98,18 @@ def normalized_image(file, avatar=False):
 
 def cleanup_asset(public_id):
     try:
-        result = cloudinary.uploader.destroy(
-            public_id, resource_type="image", invalidate=True, timeout=30, **provider_options()
-        )
-        if result.get("result") not in {"ok", "not found"}:
-            raise RuntimeError("Provider did not confirm deletion")
+        options = provider_options(allow_local=True)
+        if options is None:
+            upload_root = Path(current_app.config["UPLOAD_FOLDER"]).resolve()
+            target = (upload_root / f"{public_id}.webp").resolve()
+            if upload_root in target.parents and target.is_file():
+                target.unlink()
+        else:
+            result = cloudinary.uploader.destroy(
+                public_id, resource_type="image", invalidate=True, timeout=30, **options
+            )
+            if result.get("result") not in {"ok", "not found"}:
+                raise RuntimeError("Provider did not confirm deletion")
         execute("DELETE FROM image_cleanup WHERE public_id = %s", (public_id,))
         return True
     except Exception:
@@ -129,7 +146,7 @@ def change_image(resource_id, avatar=False):
         missing("user" if avatar else "product")
     new_id, url = None, None
     if request.method == "PUT":
-        options = provider_options()
+        options = provider_options(allow_local=True)
         content = normalized_image(request.files.get("file"), avatar)
         prefix = "profile-images" if avatar else "product-images"
         new_id = f"florea/{prefix}/{resource_id}/{uuid4().hex}"
@@ -140,26 +157,35 @@ def change_image(resource_id, avatar=False):
             (new_id,),
         )
         try:
-            result = cloudinary.uploader.upload(
-                content,
-                public_id=new_id,
-                resource_type="image",
-                overwrite=False,
-                format="webp",
-                timeout=30,
-                **options,
-            )
-            if result.get("public_id") != new_id or result.get("resource_type") != "image":
-                raise RuntimeError("Unexpected provider response")
-            url = cloudinary.utils.cloudinary_url(
-                new_id,
-                cloud_name=options["cloud_name"],
-                secure=True,
-                version=int(result["version"]),
-                format="webp",
-                fetch_format="auto",
-                quality="auto",
-            )[0]
+            if options is None:
+                upload_root = Path(current_app.config["UPLOAD_FOLDER"]).resolve()
+                target = (upload_root / f"{new_id}.webp").resolve()
+                if upload_root not in target.parents:
+                    raise RuntimeError("Invalid upload path")
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(content.getvalue())
+                url = f"/uploads/{new_id}.webp"
+            else:
+                result = cloudinary.uploader.upload(
+                    content,
+                    public_id=new_id,
+                    resource_type="image",
+                    overwrite=False,
+                    format="webp",
+                    timeout=30,
+                    **options,
+                )
+                if result.get("public_id") != new_id or result.get("resource_type") != "image":
+                    raise RuntimeError("Unexpected provider response")
+                url = cloudinary.utils.cloudinary_url(
+                    new_id,
+                    cloud_name=options["cloud_name"],
+                    secure=True,
+                    version=int(result["version"]),
+                    format="webp",
+                    fetch_format="auto",
+                    quality="auto",
+                )[0]
         except Exception:
             current_app.logger.warning("image_upload_failed public_id=%s", new_id)
             raise ApiError(

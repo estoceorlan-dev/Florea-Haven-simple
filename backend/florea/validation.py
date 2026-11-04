@@ -161,7 +161,11 @@ def checkout_input(direct=False):
                 data.get("cartRevision"), "cartRevision", 64, 64, r"[a-f0-9]{64}"
             )
         }
-    payment = choice(data.get("paymentMethod"), "paymentMethod", ["cash_on_delivery"])
+    payment = choice(
+        data.get("paymentMethod"),
+        "paymentMethod",
+        ["cash_on_delivery", "gcash", "maya"],
+    )
     address = data.get("deliveryAddress")
     bounds = {
         "recipientName": (2, 80),

@@ -82,10 +82,12 @@ async function loadCatalog() {
         : { ...Object.fromEntries(query), limit: 9 };
     const result = await catalogApi.getProducts(params);
     const list = find('#product-list');
-    const productsWithDemoImages = await Promise.all(result.data.map(async (product) => ({
-      ...product,
-      image_url: (await getDemoProductImage(product.id)) ?? product.image_url,
-    })));
+    const productsWithDemoImages = await Promise.all(
+      result.data.map(async (product) => ({
+        ...product,
+        image_url: product.image_url ?? (await getDemoProductImage(product.id)),
+      })),
+    );
     const rows = productsWithDemoImages.map((product) => {
       const row = copyTemplate('product-card-template');
       fillProduct(row, product);
@@ -184,7 +186,7 @@ if (await pageReady) {
     const loadProduct = async () => {
       try {
         const product = (await catalogApi.getProduct(id)).data;
-        product.image_url = (await getDemoProductImage(product.id)) ?? product.image_url;
+        product.image_url = product.image_url ?? (await getDemoProductImage(product.id));
         fillProduct(find('#product-details'), product);
         showError(null);
       } catch (error) {

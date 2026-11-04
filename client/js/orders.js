@@ -12,6 +12,7 @@ import {
   updatePagination,
 } from './helpers.js';
 import { orderStatusLabels } from './order-status.js';
+import { paymentMethodLabels } from './payment-simulation.js';
 
 export function fillOrderDetails(order) {
   fillText(document, {
@@ -21,6 +22,7 @@ export function fillOrderDetails(order) {
     'order-status': orderStatusLabels[order.status],
     'order-subtotal': currency(order.subtotal),
     'order-total': currency(order.total_amount),
+    'payment-method': paymentMethodLabels[order.payment_method] ?? 'Cash on Delivery',
     'status-date': 'Status updated ' + dateTime(order.status_updated_at),
     'confirmation-message': `We received order #${order.id.slice(0, 8).toUpperCase()}. Its purchase details are saved in your order history.`,
   });

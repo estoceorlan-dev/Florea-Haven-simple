@@ -1,5 +1,6 @@
 import { catalogApi, cartApi, orderApi } from './api.js';
 import { currentUser, refreshCartBadge } from './common.js';
+import { simulateCashlessPayment } from './payment-simulation.js';
 import {
   find,
   findAll,
@@ -122,12 +123,20 @@ export function openPurchase(product, trigger, initialQuantity = 1) {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (busy) return;
+    if (!form.reportValidity()) return;
+    const { paymentMethod = 'cash_on_delivery', ...deliveryAddress } = formValues(form);
+    const simulation = await simulateCashlessPayment({
+      method: paymentMethod,
+      amount: Number(item.price) * quantity,
+      phone: deliveryAddress.phone,
+    });
+    if (!simulation.approved) return;
     const input = {
       productId: item.id,
       quantity,
       expectedUnitPrice: Number(item.price),
-      paymentMethod: 'cash_on_delivery',
-      deliveryAddress: formValues(form),
+      paymentMethod,
+      deliveryAddress,
     };
     const nextFingerprint = JSON.stringify(input);
     if (fingerprint !== nextFingerprint) {

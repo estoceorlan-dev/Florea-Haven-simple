@@ -1,0 +1,24 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "client/dist",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/products", "destination": "/pages/products.html" },
+    { "source": "/products/:id", "destination": "/pages/product.html" },
+    { "source": "/login", "destination": "/pages/login.html" },
+    { "source": "/register", "destination": "/pages/register.html" },
+    { "source": "/account", "destination": "/pages/account.html" },
+    { "source": "/cart", "destination": "/pages/cart.html" },
+    { "source": "/checkout", "destination": "/pages/checkout.html" },
+    { "source": "/orders", "destination": "/pages/orders.html" },
+    { "source": "/orders/:id/confirmation", "destination": "/pages/order-confirmation.html" },
+    { "source": "/orders/:id", "destination": "/pages/order.html" },
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/admin/products", "destination": "/admin/products.html" },
+    { "source": "/admin/categories", "destination": "/admin/categories.html" },
+    { "source": "/admin/users", "destination": "/admin/users.html" },
+    { "source": "/admin/orders", "destination": "/admin/orders.html" },
+    { "source": "/admin/orders/:id", "destination": "/admin/order.html" }
+  ]
+}

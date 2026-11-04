@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from functools import wraps
+from urllib.parse import urlsplit
 from uuid import uuid4
 
 import bcrypt
@@ -83,10 +84,18 @@ def protected(role=None):
 
 
 def cookie_options():
+    production = current_app.config["APP_ENV"] == "production"
+    origin = request.headers.get("Origin", "")
+    cross_site = bool(
+        production
+        and origin
+        and urlsplit(origin).netloc
+        and urlsplit(origin).netloc != request.host
+    )
     return dict(
         httponly=True,
-        secure=current_app.config["APP_ENV"] == "production",
-        samesite="Lax",
+        secure=production,
+        samesite="None" if cross_site else "Lax",
         path="/",
     )
 

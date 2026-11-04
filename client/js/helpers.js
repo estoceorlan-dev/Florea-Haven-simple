@@ -92,8 +92,15 @@ export function setBusy(form, busy) {
 export function setImage(image, url, alt = '') {
   if (!image) return;
   image.alt = alt;
-  const valid = typeof url === 'string' && /^(https?:\/\/|blob:)/i.test(url);
-  image.src = valid ? url : '/image-placeholder.svg';
+  const valid = typeof url === 'string' && /^(https?:\/\/|blob:|\/uploads\/)/i.test(url);
+  const apiBase = (
+    window.__FLOREA_API_URL__ ||
+    document.querySelector('meta[name="florea-api-url"]')?.content ||
+    ''
+  ).replace(/\/+$/, '');
+  const resolved =
+    valid && url.startsWith('/uploads/') && apiBase ? `${apiBase}${url}` : url;
+  image.src = valid ? resolved : '/image-placeholder.svg';
   image.onerror = () => {
     image.onerror = null;
     image.src = '/image-placeholder.svg';

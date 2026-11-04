@@ -1,5 +1,12 @@
-// HTML pages and Flask APIs are served from the same website.
-const apiBaseUrl = '';
+// Supports both same-origin hosting and split Vercel frontend + Render backend hosting.
+const configuredApiBaseUrl = '';
+export const apiBaseUrl = (
+  configuredApiBaseUrl ||
+  window.__FLOREA_API_URL__ ||
+  document.querySelector('meta[name="florea-api-url"]')?.content ||
+  ''
+).replace(/\/+$/, '');
+if (apiBaseUrl) window.__FLOREA_API_URL__ = apiBaseUrl;
 
 export class ApiError extends Error {
   constructor(message, status, details, code) {

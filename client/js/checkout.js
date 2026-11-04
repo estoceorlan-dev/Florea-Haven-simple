@@ -2,6 +2,10 @@ import { cartApi, orderApi } from './api.js';
 import { pageReady, currentUser, refreshCartBadge, showPage } from './common.js';
 import { availabilityMessage } from './cart.js';
 import {
+  paymentSubmitLabels,
+  simulateCashlessPayment,
+} from './payment-simulation.js';
+import {
   find,
   copyTemplate,
   fillText,
@@ -59,17 +63,26 @@ if (await pageReady) {
       showError(error);
     }
   }
+  form.addEventListener('change', (event) => {
+    if (event.target.name === 'paymentMethod') {
+      fillText(form, {
+        'submit-label': paymentSubmitLabels[event.target.value] ?? 'Place order',
+      });
+    }
+  });
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (busy || !cart) return;
+    if (!form.reportValidity()) return;
     busy = true;
     setBusy(form, true);
     showError(null);
-    const address = formValues(form);
+    const { paymentMethod = 'cash_on_delivery', ...address } = formValues(form);
     try {
       // Retry an uncertain network result with the exact same request and key.
       const retry =
         lastSubmission?.uncertain &&
+        paymentMethod === lastSubmission.input.paymentMethod &&
         JSON.stringify(address) ===
           JSON.stringify(lastSubmission.input.deliveryAddress);
       if (!retry) {
@@ -82,8 +95,18 @@ if (await pageReady) {
             'Your cart or availability changed. Review the updated order summary before continuing.',
           );
         }
+        const simulation = await simulateCashlessPayment({
+          method: paymentMethod,
+          amount: cart.summary.subtotal,
+          phone: address.phone,
+        });
+        if (!simulation.approved) {
+          busy = false;
+          setBusy(form, false);
+          return;
+        }
         const input = {
-          paymentMethod: 'cash_on_delivery',
+          paymentMethod,
           cartRevision: cart.revision,
           deliveryAddress: address,
         };

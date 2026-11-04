@@ -25,14 +25,16 @@ if (document.body.dataset.page === 'cart' && (await pageReady)) {
   const items = new Map();
   let busy = false;
   async function render(cart) {
-    const itemsWithDemoImages = await Promise.all(cart.items.map(async (item) => ({
-      ...item,
-      product: {
-        ...item.product,
-        image_url:
-          (await getDemoProductImage(item.product.id)) ?? item.product.image_url,
-      },
-    })));
+    const itemsWithDemoImages = await Promise.all(
+      cart.items.map(async (item) => ({
+        ...item,
+        product: {
+          ...item.product,
+          image_url:
+            item.product.image_url ?? (await getDemoProductImage(item.product.id)),
+        },
+      })),
+    );
     const content = find('#cart-content');
     if (content) content.hidden = cart.items.length === 0;
     find('#cart-empty').hidden = cart.items.length !== 0;

@@ -4,8 +4,10 @@ import {
   existsSync,
   lstatSync,
   mkdirSync,
+  readFileSync,
   readdirSync,
   rmSync,
+  writeFileSync,
 } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -35,4 +37,19 @@ for (const name of ['index.html', 'pages', 'admin', 'css', 'js', 'licenses']) {
   copy(path.join(client, name), path.join(output, name));
 }
 copy(path.join(client, 'public'), output);
+
+const apiBaseUrl = (
+  process.env.API_BASE_URL ||
+  process.env.VITE_API_URL ||
+  process.env.FLOREA_API_URL ||
+  ''
+).replace(/\/+$/, '');
+if (apiBaseUrl) {
+  const apiPath = path.join(output, 'js', 'api.js');
+  const content = readFileSync(apiPath, 'utf8').replace(
+    "const configuredApiBaseUrl = '';",
+    `const configuredApiBaseUrl = ${JSON.stringify(apiBaseUrl)};`,
+  );
+  writeFileSync(apiPath, content, 'utf8');
+}
 console.log('Copied plain HTML, CSS, JavaScript, and images to client/dist.');

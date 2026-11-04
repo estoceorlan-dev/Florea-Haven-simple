@@ -1,4 +1,4 @@
-import { adminCatalogApi } from './api.js';
+import { adminCatalogApi, imageApi } from './api.js';
 import { pageReady, showPage } from './common.js';
 import {
   find,
@@ -20,7 +20,11 @@ import {
   updatePagination,
 } from './admin-helpers.js';
 import { enableUpload } from './upload.js';
-import { getDemoProductImage, saveDemoProductImage } from './demo-images.js';
+import {
+  getDemoProductImage,
+  removeDemoProductImage,
+  saveDemoProductImage,
+} from './demo-images.js';
 
 if (await pageReady) {
   const form = find('#product-form');
@@ -80,12 +84,14 @@ if (await pageReady) {
         uploader,
         `/api/products/${product.id}/image`,
         product.image_url,
-        (result) => {
+        async (result) => {
           selected = result.data.product ?? result.data;
+          await removeDemoProductImage(product.id);
           void load();
         },
       );
     } else {
+      find('#product-image').value = '';
       find('#product-image').onchange = null;
       find('[data-upload-save]', uploader).onclick = null;
       find('[data-upload-remove]', uploader).onclick = null;
@@ -95,8 +101,8 @@ if (await pageReady) {
       find('[data-upload-save]', uploader).disabled = true;
       find('[data-upload-remove]', uploader).hidden = true;
       find('[data-upload-cancel]', uploader).hidden = true;
-      find('[data-upload-message]', uploader).textContent = 'Image will be saved in this browser for demo use.';
-      find('[data-upload-message]', uploader).hidden = false;
+      find('[data-upload-message]', uploader).textContent = '';
+      find('[data-upload-message]', uploader).hidden = true;
       find('[data-upload-save]', uploader).textContent = 'Save with product';
     }
     if (product) find('[data-upload-save]', uploader).textContent = 'Upload image';
@@ -108,10 +114,12 @@ if (await pageReady) {
         ...Object.fromEntries(new URLSearchParams(location.search)),
         limit: 20,
       });
-      const products = await Promise.all(result.data.map(async (product) => ({
-        ...product,
-        image_url: (await getDemoProductImage(product.id)) ?? product.image_url,
-      })));
+      const products = await Promise.all(
+        result.data.map(async (product) => ({
+          ...product,
+          image_url: product.image_url ?? (await getDemoProductImage(product.id)),
+        })),
+      );
       find('#admin-product-list').replaceChildren(
         ...products.map((product) => {
           rows.set(product.id, product);
@@ -170,7 +178,7 @@ if (await pageReady) {
       preview.src = demoPreviewUrl;
       preview.hidden = false;
       find('[data-upload-fallback]').hidden = true;
-      message.textContent = 'Image is ready to be saved locally with this product.';
+      message.textContent = 'Image will be uploaded when you create the product.';
       message.setAttribute('role', 'status');
       find('[data-upload-save]').textContent = 'Create product with image';
     }
@@ -225,6 +233,7 @@ if (await pageReady) {
       featured: form.elements.featured.checked,
     };
     if (selected) input.isActive = form.elements.isActive.checked;
+    const pendingFile = selected ? find('#product-image').files?.[0] : demoImageFile;
     busy = true;
     setBusy(form, true);
     showError(null);
@@ -232,7 +241,15 @@ if (await pageReady) {
       const result = selected
         ? await adminCatalogApi.updateProduct(selected.id, input)
         : await adminCatalogApi.createProduct(input);
-      if (!selected && demoImageFile) await saveDemoProductImage(result.data.id, demoImageFile);
+      if (pendingFile) {
+        try {
+          await imageApi.upload(`/api/products/${result.data.id}/image`, pendingFile);
+          await removeDemoProductImage(result.data.id);
+        } catch (uploadError) {
+          if (!selected) await saveDemoProductImage(result.data.id, pendingFile);
+          else throw uploadError;
+        }
+      }
       showNotice(`${result.data.name} was ${selected ? 'updated' : 'created'}.`);
       edit();
       busy = false;
@@ -248,6 +265,7 @@ if (await pageReady) {
     if (!selected && demoImageFile) form.requestSubmit();
   });
   find('[data-upload-cancel]', find('#product-upload')).addEventListener('click', () => {
+    if (selected) return;
     if (demoPreviewUrl) URL.revokeObjectURL(demoPreviewUrl);
     demoPreviewUrl = '';
     demoImageFile = null;

@@ -87,5 +87,44 @@
     font-size: 0.82rem;
     line-height: 1.5;
   }
+  .form-input::-ms-reveal,
+  .form-input::-ms-clear {
+    display: none;
+  }
+  .password-field-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  .password-field-wrap .form-input {
+    padding-right: 2.85rem;
+  }
+  .password-toggle {
+    position: absolute;
+    right: 0.45rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    color: var(--color-floral-pink);
+    opacity: 0.75;
+    cursor: pointer;
+    transition:
+      opacity 0.16s,
+      background-color 0.16s;
+  }
+  .password-toggle:hover,
+  .password-toggle:focus-visible {
+    opacity: 1;
+    background: color-mix(in srgb, var(--color-sage) 55%, transparent);
+    outline: none;
+  }
+  .password-toggle svg[hidden] {
+    display: none;
+  }
   /* #endregion */
 }

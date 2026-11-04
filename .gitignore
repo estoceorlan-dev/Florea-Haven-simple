@@ -16,5 +16,6 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .postgres-test/
+backend/uploads/
 test-results/
 playwright-report/

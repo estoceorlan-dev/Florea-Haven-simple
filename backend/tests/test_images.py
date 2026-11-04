@@ -189,3 +189,24 @@ def test_database_failure_retains_old_image_and_queues_orphan(customer, app, pro
     provider[1].assert_not_called()
     with app.app_context():
         assert one("SELECT COUNT(*) AS n FROM image_cleanup")["n"] == 1
+
+
+def test_local_image_storage_fallback(customer, app, tmp_path):
+    app.config.update(
+        CLOUDINARY_CLOUD_NAME=None,
+        CLOUDINARY_API_KEY=None,
+        CLOUDINARY_API_SECRET=None,
+        LOCAL_IMAGE_STORAGE=True,
+        UPLOAD_FOLDER=tmp_path,
+    )
+    uploaded = customer.put("/api/users/me/profile-image", data={"file": image_file()})
+    assert uploaded.status_code == 200
+    url = uploaded.json["data"]["user"]["profile_image_url"]
+    assert url.startswith("/uploads/florea/profile-images/")
+    served = customer.get(url)
+    assert served.status_code == 200
+    assert served.mimetype == "image/webp"
+    removed = customer.delete("/api/users/me/profile-image")
+    assert removed.status_code == 200
+    assert removed.json["data"]["user"]["profile_image_url"] is None
+    assert customer.get(url).status_code == 404

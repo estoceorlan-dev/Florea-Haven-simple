@@ -1134,31 +1134,54 @@
                   </div>
                 </div>
               </fieldset>
-              <div
-                class="mt-5 flex gap-3 rounded-2xl bg-brand-soft p-4 text-sm text-brand-strong"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-banknote shrink-0"
-                  aria-hidden="true"
-                >
-                  <rect width="20" height="12" x="2" y="6" rx="2"></rect>
-                  <circle cx="12" cy="12" r="2"></circle>
-                  <path d="M6 12h.01M18 12h.01"></path>
-                </svg>
-                <div>
-                  <strong>Cash on Delivery</strong>
-                  <p class="mt-1 text-xs leading-5">Pay when your order arrives.</p>
-                </div>
-              </div>
+              <fieldset class="mt-5 space-y-2">
+                <legend class="text-xs font-semibold uppercase tracking-[0.1em] text-text-muted">
+                  Payment method
+                </legend>
+                <label class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-border bg-surface-muted/70 px-4 py-3 text-sm">
+                  <span class="flex items-center gap-2.5">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="cash_on_delivery"
+                      checked=""
+                      class="accent-floral-pink"
+                    />
+                    <span>
+                      <strong class="block text-text">Cash on Delivery</strong>
+                      <span class="text-xs text-text-muted">Pay when your order arrives.</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-border bg-surface-muted/70 px-4 py-3 text-sm">
+                  <span class="flex items-center gap-2.5">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="gcash"
+                      class="accent-floral-pink"
+                    />
+                    <span>
+                      <strong class="block text-text">GCash (Demo)</strong>
+                      <span class="text-xs text-text-muted">Simulated mobile wallet checkout.</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-border bg-surface-muted/70 px-4 py-3 text-sm">
+                  <span class="flex items-center gap-2.5">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="maya"
+                      class="accent-floral-pink"
+                    />
+                    <span>
+                      <strong class="block text-text">Maya (Demo)</strong>
+                      <span class="text-xs text-text-muted">Simulated digital wallet checkout.</span>
+                    </span>
+                  </span>
+                </label>
+              </fieldset>
               <div
                 class="mt-5 flex items-center justify-between border-t border-border pt-5"
               >

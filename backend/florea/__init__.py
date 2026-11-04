@@ -66,6 +66,7 @@ def create_app(config=None):
         RATELIMIT_STORAGE_URI=os.getenv("RATELIMIT_STORAGE_URI", "memory://"),
         RATELIMIT_HEADERS_ENABLED=True,
         FRONTEND_DIST=ROOT / "client" / "dist",
+        UPLOAD_FOLDER=Path(os.getenv("UPLOAD_FOLDER", ROOT / "backend" / "uploads")),
     )
     app.config.update(config or {})
     if app.config["APP_ENV"] == "development" and not (config or {}).get("FRONTEND_DIST"):
@@ -93,34 +94,44 @@ def create_app(config=None):
         raise RuntimeError("SESSION_DAYS must be an integer between 1 and 30.")
     app.teardown_appcontext(close_db)
 
+    def get_allowed_origins():
+        allowed = {app.config["CLIENT_ORIGIN"].rstrip("/")}
+        render_url = os.getenv("RENDER_EXTERNAL_URL")
+        if render_url:
+            allowed.add(render_url.rstrip("/"))
+        if app.config["APP_ENV"] == "development":
+            configured_origin = urlsplit(app.config["CLIENT_ORIGIN"])
+            if configured_origin.hostname in {"localhost", "127.0.0.1"}:
+                port = configured_origin.port or (
+                    443 if configured_origin.scheme == "https" else 80
+                )
+                allowed.update(
+                    f"{configured_origin.scheme}://{hostname}:{port}"
+                    for hostname in ("localhost", "127.0.0.1")
+                )
+        return allowed
+
     @app.before_request
     def check_origin():
         g.request_started = perf_counter()
         g.request_id = secrets.token_hex(12)
         if request.endpoint in {"images.profile_image", "images.product_image"}:
             request.max_content_length = 5 * 1024 * 1024 + 64 * 1024
+        if request.method == "OPTIONS":
+            return app.make_default_options_response()
         if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
             origin = request.headers.get("Origin")
-            allowed_origins = {app.config["CLIENT_ORIGIN"]}
-            if app.config["APP_ENV"] == "development":
-                configured_origin = urlsplit(app.config["CLIENT_ORIGIN"])
-                if configured_origin.hostname in {"localhost", "127.0.0.1"}:
-                    port = configured_origin.port or (
-                        443 if configured_origin.scheme == "https" else 80
-                    )
-                    allowed_origins.update(
-                        f"{configured_origin.scheme}://{hostname}:{port}"
-                        for hostname in ("localhost", "127.0.0.1")
-                    )
-            if (origin and origin not in allowed_origins) or request.headers.get(
-                "Sec-Fetch-Site"
-            ) == "cross-site":
+            allowed_origins = get_allowed_origins()
+            if (origin and origin.rstrip("/") not in allowed_origins) or (
+                not origin and request.headers.get("Sec-Fetch-Site") == "cross-site"
+            ):
                 raise ApiError(403, "ORIGIN_NOT_ALLOWED", "This request origin is not allowed.")
 
     @app.after_request
     def response_headers(response):
-        if request.headers.get("Origin") == app.config["CLIENT_ORIGIN"]:
-            response.headers["Access-Control-Allow-Origin"] = app.config["CLIENT_ORIGIN"]
+        origin = request.headers.get("Origin")
+        if origin and origin.rstrip("/") in get_allowed_origins():
+            response.headers["Access-Control-Allow-Origin"] = origin
             response.headers["Access-Control-Allow-Credentials"] = "true"
             response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
             response.headers["Access-Control-Allow-Headers"] = (
@@ -214,6 +225,14 @@ def create_app(config=None):
     def frontend(path):
         if path == "api" or path.startswith("api/"):
             raise ApiError(404, "NOT_FOUND", f"No route matches {request.method} {request.path}.")
+        if path.startswith("uploads/"):
+            uploads = Path(app.config["UPLOAD_FOLDER"]).resolve()
+            target = (uploads / path.removeprefix("uploads/")).resolve()
+            if uploads in target.parents and target.is_file():
+                response = app.response_class(target.read_bytes(), mimetype="image/webp")
+                response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+                return response
+            raise ApiError(404, "NOT_FOUND", "Uploaded image not found.")
         dist = Path(app.config["FRONTEND_DIST"])
         # send_from_directory performs traversal-safe path resolution.
         if (dist / path).is_file():

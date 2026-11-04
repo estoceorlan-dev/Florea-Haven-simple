@@ -1,9 +1,33 @@
 import { authApi } from './api.js';
 import { currentUser, pageReady } from './common.js';
-import { find, formValues, safeReturnPath, showError, setBusy } from './helpers.js';
+import {
+  find,
+  findAll,
+  formValues,
+  safeReturnPath,
+  showError,
+  setBusy,
+} from './helpers.js';
 
 const form = find('#auth-form');
 const registering = document.body.dataset.page === 'register';
+
+for (const button of findAll('[data-toggle-password]', form)) {
+  const showLabel = button.getAttribute('aria-label') || 'Show password';
+  const hideLabel = showLabel.replace(/^Show/i, 'Hide');
+  button.addEventListener('click', () => {
+    const input = document.getElementById(button.dataset.togglePassword);
+    if (!input) return;
+    const showing = input.type === 'password';
+    input.type = showing ? 'text' : 'password';
+    button.setAttribute('aria-pressed', String(showing));
+    button.setAttribute('aria-label', showing ? hideLabel : showLabel);
+    const eyeOpen = find('[data-eye-open]', button);
+    const eyeClosed = find('[data-eye-closed]', button);
+    if (eyeOpen) eyeOpen.hidden = showing;
+    if (eyeClosed) eyeClosed.hidden = !showing;
+  });
+}
 
 function destination(user) {
   const path = safeReturnPath(sessionStorage.getItem('florea-return-path'));
