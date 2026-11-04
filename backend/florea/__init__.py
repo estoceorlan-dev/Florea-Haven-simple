@@ -95,7 +95,11 @@ def create_app(config=None):
     app.teardown_appcontext(close_db)
 
     def get_allowed_origins():
-        allowed = {app.config["CLIENT_ORIGIN"].rstrip("/")}
+        allowed = {
+            app.config["CLIENT_ORIGIN"].rstrip("/"),
+            "https://florea-haven.vercel.app",
+            "https://florea-haven.onrender.com",
+        }
         render_url = os.getenv("RENDER_EXTERNAL_URL")
         if render_url:
             allowed.add(render_url.rstrip("/"))
