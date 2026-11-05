@@ -100,17 +100,22 @@ export function updateUser(user) {
     'account-role': user?.role ?? '',
     'admin-greeting': `Welcome back${firstName ? ', ' + firstName : ''}.`,
   });
-  for (const element of findAll('[data-avatar-initial]'))
-    element.textContent = firstName[0]?.toUpperCase() ?? '';
+  for (const element of findAll('[data-avatar-initial]')) {
+    element.textContent = '';
+    element.hidden = true;
+  }
   for (const avatar of findAll('[data-user-avatar]')) {
     const image = find('img', avatar);
     const initial = find('[data-avatar-initial]', avatar);
     const guest = find('svg', avatar);
     const hasImage = Boolean(user?.profile_image_url);
-    image.hidden = !hasImage;
-    initial.hidden = !user || hasImage;
-    if (guest) guest.hidden = Boolean(user);
-    if (hasImage) setImage(image, user.profile_image_url, '');
+    if (image) image.hidden = !hasImage;
+    if (initial) initial.hidden = true;
+    if (guest) {
+      guest.hidden = hasImage;
+      guest.toggleAttribute('hidden', hasImage);
+    }
+    if (hasImage && image) setImage(image, user.profile_image_url, '');
   }
 }
 

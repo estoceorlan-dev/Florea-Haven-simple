@@ -75,14 +75,14 @@
   [data-user-avatar] {
     position: relative;
   }
-  [data-user-avatar] > img,
-  [data-user-avatar] > [data-avatar-initial] {
+  [data-user-avatar] > img {
     position: absolute;
     inset: 0;
   }
-  [data-user-avatar] > [data-avatar-initial] {
-    display: grid;
-    place-items: center;
+  [data-user-avatar] > [data-avatar-initial],
+  [data-user-avatar] > svg[hidden],
+  [data-user-avatar] > img[hidden] {
+    display: none !important;
   }
   .account-link:hover {
     background: #98516812;
