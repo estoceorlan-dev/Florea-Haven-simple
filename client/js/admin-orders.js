@@ -169,7 +169,11 @@ if (await pageReady) {
               'order-status': orderStatusLabels[order.status] ?? order.status,
               'order-address': `${order.delivery_address.city}, ${order.delivery_address.province}`,
             });
-            setImage(row, 'order-image', previews[idx], productTitle);
+            setImage(
+              find('[data-field="order-image"]', row),
+              previews[idx],
+              productTitle,
+            );
 
             const courierEl = find('[data-field="order-courier"]', row);
             if (courierEl) {

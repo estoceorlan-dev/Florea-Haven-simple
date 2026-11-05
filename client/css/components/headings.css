@@ -8,11 +8,11 @@
   }
   .section-title {
     font-family: var(--font-display);
-    letter-spacing: -0.055em;
+    letter-spacing: -0.05em;
     color: var(--color-floral-pink);
     text-wrap: balance;
-    font-size: clamp(2.55rem, 5vw, 4.75rem);
-    line-height: 1.05;
+    font-size: clamp(2rem, 4.8vw, 4.25rem);
+    line-height: 1.06;
   }
   /* #endregion */
 }
