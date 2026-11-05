@@ -17,29 +17,13 @@ import {
   allowedOrderTransitions,
   openProcessOrderDialog,
   orderStatusLabels,
-  showOrderToast,
 } from './order-status.js';
 import { fillOrderDetails, resolveOrderPreviewImage } from './orders.js';
 import { enableFilters, updatePagination } from './admin-helpers.js';
 
 function notifyAdminAction(updated) {
-  const code = updated.id.slice(0, 8).toUpperCase();
   showNotice(`Order status updated to ${updated.status}.`);
   void refreshAdminOrdersBadge();
-  showOrderToast({
-    title: `Order #${code} · ${orderStatusLabels[updated.status] ?? updated.status}`,
-    message:
-      updated.status_note ||
-      `Customer ${updated.customer?.name ?? ''} has been notified of this ${updated.status} update.`,
-    courier: updated.courier_name ?? '',
-    eta: updated.estimated_delivery ?? '',
-    tone:
-      updated.status === 'cancelled'
-        ? 'danger'
-        : updated.status === 'refunded'
-          ? 'refund'
-          : 'info',
-  });
 }
 
 if (await pageReady) {
@@ -169,11 +153,7 @@ if (await pageReady) {
               'order-status': orderStatusLabels[order.status] ?? order.status,
               'order-address': `${order.delivery_address.city}, ${order.delivery_address.province}`,
             });
-            setImage(
-              find('[data-field="order-image"]', row),
-              previews[idx],
-              productTitle,
-            );
+            setImage(find('[data-field="order-image"]', row), previews[idx], productTitle);
 
             const courierEl = find('[data-field="order-courier"]', row);
             if (courierEl) {

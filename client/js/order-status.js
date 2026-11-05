@@ -384,6 +384,13 @@ export function showOrderToast({
   tone = 'info',
   onDismiss,
 }) {
+  if (
+    document.body.dataset.access === 'admin' ||
+    document.body.dataset.access === 'staff' ||
+    document.body.dataset.page?.startsWith('admin-')
+  ) {
+    return { close() {} };
+  }
   let stack = document.getElementById('order-toast-stack');
   if (!stack) {
     stack = makeElement('div', 'order-toast-stack');

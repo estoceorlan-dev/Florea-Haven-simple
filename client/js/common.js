@@ -94,6 +94,8 @@ export function updateUser(user) {
       link.lastChild.textContent = user ? 'My account' : 'Sign in';
   }
   for (const element of findAll('[data-member-only]')) element.hidden = !user;
+  for (const link of findAll('[data-notification-link]'))
+    link.hidden = !user || user.role !== 'customer';
   for (const link of findAll('[data-admin-only]')) link.hidden = user?.role !== 'admin';
   for (const element of findAll('[data-user-role]'))
     element.textContent = user?.role === 'staff' ? 'Staff' : 'Admin';
@@ -149,12 +151,12 @@ export async function refreshCartBadge(cart) {
 export async function refreshAdminOrdersBadge() {
   if (!currentUser || !['admin', 'staff'].includes(currentUser.role)) return;
   try {
-    const result = await adminOrderApi.getOrders({ status: 'pending', limit: 1 });
-    const pendingCount = result.pagination?.total ?? 0;
+    const result = await adminOrderApi.getOrders({ limit: 1 });
+    const orderCount = result.pagination?.total ?? result.data?.length ?? 0;
     for (const badge of findAll('[data-admin-orders-badge]')) {
-      badge.textContent = String(pendingCount);
-      badge.hidden = pendingCount === 0;
-      badge.style.display = pendingCount === 0 ? 'none' : '';
+      badge.textContent = String(orderCount);
+      badge.hidden = false;
+      badge.style.display = '';
     }
   } catch {
     /* Ignore non-blocking badge refresh errors */
