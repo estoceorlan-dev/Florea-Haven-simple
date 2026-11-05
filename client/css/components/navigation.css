@@ -72,12 +72,33 @@
     padding-inline: 0.65rem;
     display: inline-flex;
   }
+  .h-full {
+    height: 100%;
+  }
   [data-user-avatar] {
     position: relative;
+    overflow: hidden;
+    border-radius: 9999px;
+    aspect-ratio: 1 / 1;
   }
   [data-user-avatar] > img {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 9999px;
+    object-fit: cover;
+    object-position: center;
+  }
+  [data-page='account'] [data-upload-preview],
+  [data-page='account'] [data-upload-fallback] {
+    width: 7rem;
+    height: 7rem;
+    aspect-ratio: 1 / 1;
+    border-radius: 9999px;
+    object-fit: cover;
+    object-position: center;
   }
   [data-user-avatar] > [data-avatar-initial],
   [data-user-avatar] > svg[hidden],
