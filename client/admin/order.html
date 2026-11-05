@@ -42,6 +42,7 @@
           </a>
           <p
             class="mt-3 pl-11 text-[0.62rem] font-extrabold uppercase tracking-[0.16em] text-text-muted"
+            data-workspace-role=""
           >
             Administrator
           </p>
@@ -327,6 +328,7 @@
                 <div class="min-w-0">
                   <p
                     class="text-[0.6rem] font-extrabold uppercase tracking-[0.15em] text-text-muted"
+                    data-workspace-label=""
                   >
                     Admin workspace
                   </p>
@@ -350,6 +352,7 @@
                 </div>
                 <span
                   class="rounded-full bg-brand-soft px-3 py-1.5 text-[0.62rem] font-extrabold uppercase tracking-[0.14em] text-brand"
+                  data-user-role=""
                 >
                   Admin
                 </span>
@@ -724,7 +727,9 @@
           <div
             class="flex min-h-16 items-center justify-between gap-4 border-b border-border px-5 py-4"
           >
-            <p class="font-display text-2xl text-floral-pink">Admin menu</p>
+            <p class="font-display text-2xl text-floral-pink" data-workspace-menu="">
+              Admin menu
+            </p>
             <button
               class="icon-button shrink-0"
               type="button"
@@ -797,6 +802,7 @@
                   class="admin-nav-link admin-nav-link-active"
                   aria-current="page"
                   href="/admin"
+                  data-admin-only
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

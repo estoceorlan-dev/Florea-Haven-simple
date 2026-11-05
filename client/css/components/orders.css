@@ -296,6 +296,14 @@
   /* #endregion */
 
   /* #region Admin order actions & fulfillment */
+  .gap-3\.5 {
+    gap: 0.875rem;
+  }
+
+  .space-y-3\.5 > :not(:last-child) {
+    margin-bottom: 0.875rem;
+  }
+
   .admin-sidebar-badge {
     margin-left: auto;
     background: var(--color-brand);

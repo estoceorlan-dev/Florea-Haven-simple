@@ -1,5 +1,5 @@
-import { adminCatalogApi, imageApi } from './api.js';
-import { pageReady, showPage } from './common.js';
+import { adminCatalogApi, catalogApi, imageApi } from './api.js';
+import { currentUser, pageReady, showPage } from './common.js';
 import {
   find,
   fillText,
@@ -337,7 +337,11 @@ if (await pageReady) {
     },
   );
   try {
-    categories = (await adminCatalogApi.getCategories()).data;
+    const categoryResult =
+      currentUser?.role === 'admin'
+        ? await adminCatalogApi.getCategories()
+        : await catalogApi.getCategories();
+    categories = categoryResult.data;
     fillCategories(form.elements.categoryId, categories);
     fillCategories(find('#filter-form').elements.category, categories, true);
     find('#filter-form').elements.category.value =
@@ -345,8 +349,9 @@ if (await pageReady) {
     edit();
     await load();
     watchAvailability(load);
-    showPage();
   } catch (error) {
     showError(error);
+  } finally {
+    showPage();
   }
 }

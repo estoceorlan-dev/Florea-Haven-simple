@@ -155,7 +155,7 @@ export function openProcessOrderDialog({ order, trigger, onSubmit }) {
   );
   header.append(topRow, title, subtitle);
 
-  const form = makeElement('form', 'p-5 space-y-3.5');
+  const form = makeElement('form', 'p-5 grid gap-4');
   const errorBox = makeElement('p', 'form-alert text-xs', '');
   errorBox.hidden = true;
   errorBox.setAttribute('role', 'alert');

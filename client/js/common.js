@@ -94,6 +94,16 @@ export function updateUser(user) {
       link.lastChild.textContent = user ? 'My account' : 'Sign in';
   }
   for (const element of findAll('[data-member-only]')) element.hidden = !user;
+  for (const link of findAll('[data-admin-only]')) link.hidden = user?.role !== 'admin';
+  for (const element of findAll('[data-user-role]'))
+    element.textContent = user?.role === 'staff' ? 'Staff' : 'Admin';
+  for (const element of findAll('[data-workspace-role]'))
+    element.textContent = user?.role === 'staff' ? 'Staff' : 'Administrator';
+  for (const element of findAll('[data-workspace-label]'))
+    element.textContent =
+      user?.role === 'staff' ? 'Staff workspace' : 'Admin workspace';
+  for (const element of findAll('[data-workspace-menu]'))
+    element.textContent = user?.role === 'staff' ? 'Staff menu' : 'Admin menu';
   fillText(document, {
     greeting: `Welcome${firstName ? ', ' + firstName : ''}.`,
     'account-email': user?.email ?? '',
