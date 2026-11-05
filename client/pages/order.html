@@ -289,7 +289,7 @@
               </svg>
               All orders
             </a>
-            <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6">
+            <div class="order-detail-layout">
               <div class="min-w-0">
                 <div
                   class="flex flex-wrap items-center justify-between gap-3 rounded-card border border-border bg-surface p-4 shadow-low sm:px-5"
@@ -308,10 +308,7 @@
                     Pending
                   </span>
                 </div>
-                <div
-                  class="mt-3 divide-y divide-border rounded-card border border-border bg-surface px-4 shadow-low sm:px-5"
-                  id="order-items"
-                ></div>
+                <div class="order-items-grid" id="order-items"></div>
                 <p class="mt-3 text-xs leading-5 text-text-muted">
                   This purchase record keeps the product names, quantities, and prices
                   from when you placed the order. Current catalog availability may
@@ -719,29 +716,56 @@
     </template>
     <!-- Reusable HTML: order-item-template. JavaScript clones this markup and fills its labeled fields. -->
     <template id="order-item-template">
-      <article class="grid gap-3 py-3.5 sm:grid-cols-[1fr_auto] sm:items-center">
-        <div class="flex min-w-0 items-center gap-3.5">
+      <article class="product-card order-product-card group">
+        <a
+          class="relative m-2 mb-0 block aspect-square overflow-hidden rounded-[1.1rem] bg-brand-soft"
+          href="/products"
+          data-product-link=""
+        >
           <img
-            class="order-item-thumb"
+            class="size-full object-cover transition duration-500 ease-out motion-safe:group-hover:scale-[1.035]"
             alt=""
             loading="lazy"
             data-field="item-image"
             src="/image-placeholder.svg"
           />
+          <span
+            class="absolute left-3 top-3 rounded-full bg-ivory/95 px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-floral-pink shadow-sm"
+            data-field="item-qty"
+          >
+            Qty 1
+          </span>
+        </a>
+        <div class="flex flex-1 flex-col p-4 sm:p-5">
           <div class="min-w-0">
             <p
-              class="truncate font-display text-lg text-floral-pink"
-              data-field="item-name"
-            >
-              Product name
-            </p>
-            <p
-              class="mt-0.5 text-[0.68rem] uppercase tracking-[0.12em] text-text-muted"
+              class="text-[0.64rem] font-bold uppercase tracking-[0.17em] text-clay"
               data-field="item-description"
             ></p>
+            <h3
+              class="mt-2 font-display text-xl leading-snug tracking-[-0.025em] text-floral-pink sm:text-[1.35rem]"
+            >
+              <a
+                class="hover:text-floral-pink"
+                href="/products"
+                data-field="item-name"
+                data-product-link=""
+              >
+                Product name
+              </a>
+            </h3>
+          </div>
+          <div class="order-product-footer mt-auto border-t border-border/70 pt-3">
+            <span
+              class="text-xs font-medium text-text-muted"
+              data-field="item-unit-price"
+            ></span>
+            <strong
+              class="text-lg font-semibold tracking-tight text-brand-strong"
+              data-field="line-total"
+            ></strong>
           </div>
         </div>
-        <strong class="text-sm text-floral-pink" data-field="line-total"></strong>
       </article>
     </template>
     <noscript>

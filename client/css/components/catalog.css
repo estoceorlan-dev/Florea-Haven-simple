@@ -1,4 +1,18 @@
 @layer components {
+  /* #region Catalog hero banner */
+  .catalog-hero-banner {
+    padding: 0.95rem 1.25rem;
+  }
+  .catalog-hero-title {
+    font-size: clamp(1.8rem, 3.2vw, 2.55rem);
+    line-height: 1.06;
+  }
+  @media (min-width: 40rem) {
+    .catalog-hero-banner {
+      padding: 1.15rem 1.75rem;
+    }
+  }
+  /* #endregion */
   /* #region Product grid */
   .product-grid {
     grid-template-columns: minmax(0, 1fr);

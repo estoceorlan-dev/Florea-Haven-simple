@@ -154,8 +154,14 @@ export function fillOrderDetails(order) {
       fillText(row, {
         'item-name': item.product_name,
         'item-description': `${item.sku} · Qty ${item.quantity} · ${currency(item.unit_price)} each`,
+        'item-qty': `Qty ${item.quantity}`,
+        'item-unit-price': `${currency(item.unit_price)} each`,
         'line-total': currency(item.line_total),
       });
+      for (const link of findAll('[data-product-link]', row)) {
+        if (item.product_id) link.href = `/products/${item.product_id}`;
+        else link.removeAttribute('href');
+      }
       const imgEl = find('[data-field="item-image"]', row);
       if (imgEl) {
         const immediateUrl =

@@ -449,8 +449,40 @@
   }
 
   .order-detail-shell {
-    max-width: 56rem;
+    max-width: 64rem;
     margin-inline: auto;
+  }
+
+  .order-detail-layout {
+    display: grid;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  @media (min-width: 56rem) {
+    .order-detail-layout {
+      grid-template-columns: minmax(0, 1fr) 21rem;
+      gap: 1.5rem;
+    }
+  }
+
+  .order-items-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 0.85rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 30rem) {
+    .order-items-grid {
+      grid-template-columns: repeat(auto-fill, minmax(14.5rem, 18.5rem));
+    }
+  }
+
+  .order-product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.85rem;
   }
 
   .order-detail-actions .button-primary,
