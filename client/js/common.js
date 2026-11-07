@@ -59,7 +59,133 @@ function updateNavigation() {
     if (admin) link.classList.toggle('admin-nav-link-active', active);
   }
 }
+function setupAdminSidebar() {
+  const sidebar = find('aside.lg\\:flex');
+  if (!sidebar) return;
+  sidebar.dataset.adminSidebar = '';
+  const mainShell = sidebar.nextElementSibling;
+  if (mainShell) mainShell.dataset.adminMainShell = '';
+
+  const headerBox = sidebar.firstElementChild;
+  const brandLink = find('a[aria-label="Floréa Haven home"]', headerBox);
+  const toggleBtn = document.createElement('button');
+  toggleBtn.type = 'button';
+  toggleBtn.className = 'admin-sidebar-toggle';
+  toggleBtn.dataset.sidebarToggle = '';
+  toggleBtn.setAttribute('aria-label', 'Collapse sidebar');
+  toggleBtn.setAttribute('aria-expanded', 'true');
+  toggleBtn.title = 'Collapse sidebar (auto-collapses after 10s of inactivity)';
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const icon = document.createElementNS(svgNS, 'svg');
+  icon.setAttribute('xmlns', svgNS);
+  icon.setAttribute('width', '18');
+  icon.setAttribute('height', '18');
+  icon.setAttribute('viewBox', '0 0 24 24');
+  icon.setAttribute('fill', 'none');
+  icon.setAttribute('stroke', 'currentColor');
+  icon.setAttribute('stroke-width', '2');
+  icon.setAttribute('stroke-linecap', 'round');
+  icon.setAttribute('stroke-linejoin', 'round');
+  icon.setAttribute('aria-hidden', 'true');
+  const rect = document.createElementNS(svgNS, 'rect');
+  rect.setAttribute('width', '18');
+  rect.setAttribute('height', '18');
+  rect.setAttribute('x', '3');
+  rect.setAttribute('y', '3');
+  rect.setAttribute('rx', '2');
+  const path = document.createElementNS(svgNS, 'path');
+  path.setAttribute('d', 'M9 3v18');
+  icon.append(rect, path);
+  toggleBtn.append(icon);
+
+  if (headerBox && brandLink) {
+    const row = document.createElement('div');
+    row.className = 'admin-sidebar-header-row';
+    headerBox.insertBefore(row, brandLink);
+    row.append(brandLink, toggleBtn);
+  }
+
+  for (const link of findAll('.admin-nav-link', sidebar)) {
+    const labelSpan = find('span:not(.admin-sidebar-badge)', link);
+    if (labelSpan && !link.title) {
+      link.title = labelSpan.textContent.trim();
+    }
+  }
+
+  const signOutBtn = find('[data-sign-out]', sidebar);
+  if (signOutBtn) {
+    signOutBtn.title = 'Sign out';
+    for (const node of [...signOutBtn.childNodes]) {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+        const span = document.createElement('span');
+        span.className = 'admin-sidebar-label';
+        span.textContent = node.textContent.trim();
+        node.replaceWith(span);
+      }
+    }
+  }
+
+  let idleTimer = null;
+  const IDLE_MS = 10000;
+
+  function setCollapsed(collapsed) {
+    document.body.dataset.sidebarCollapsed = String(collapsed);
+    toggleBtn.setAttribute('aria-expanded', String(!collapsed));
+    toggleBtn.setAttribute(
+      'aria-label',
+      collapsed ? 'Expand sidebar' : 'Collapse sidebar',
+    );
+    toggleBtn.title = collapsed
+      ? 'Expand sidebar'
+      : 'Collapse sidebar (auto-collapses after 10s of inactivity)';
+    clearTimeout(idleTimer);
+    if (!collapsed) {
+      idleTimer = setTimeout(() => {
+        if (sidebar.contains(document.activeElement)) {
+          resetIdleTimer();
+          return;
+        }
+        setCollapsed(true);
+      }, IDLE_MS);
+    }
+  }
+
+  function resetIdleTimer() {
+    if (document.body.dataset.sidebarCollapsed === 'true') return;
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      if (sidebar.contains(document.activeElement)) {
+        resetIdleTimer();
+        return;
+      }
+      setCollapsed(true);
+    }, IDLE_MS);
+  }
+
+  toggleBtn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const isCollapsed = document.body.dataset.sidebarCollapsed === 'true';
+    setCollapsed(!isCollapsed);
+  });
+
+  for (const evt of [
+    'mousemove',
+    'mouseenter',
+    'pointerdown',
+    'keydown',
+    'focusin',
+    'touchstart',
+    'wheel',
+  ]) {
+    sidebar.addEventListener(evt, resetIdleTimer, { passive: true });
+  }
+
+  setCollapsed(false);
+}
+
 updateNavigation();
+setupAdminSidebar();
 applyTheme();
 window
   .matchMedia?.('(prefers-color-scheme: dark)')

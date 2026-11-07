@@ -5,12 +5,16 @@ import {
   dateTime,
   fillText,
   find,
+  findAll,
   showError,
   showNotice,
   watchAvailability,
 } from './helpers.js';
 import { orderStatusLabels } from './order-status.js';
-import { formatPaymentMethod } from './payment-simulation.js';
+import { paymentMethodLabels } from './payment-simulation.js';
+
+const formatPaymentMethod = (method) =>
+  paymentMethodLabels[method] ?? method ?? 'Cash on Delivery';
 
 const periodLabels = {
   all: 'All time',
@@ -20,18 +24,29 @@ const periodLabels = {
 };
 
 const statusConfig = [
-  { key: 'pending', label: 'Pending review', tone: 'warning' },
-  { key: 'processing', label: 'Processing', tone: 'clay' },
-  { key: 'paid', label: 'Paid', tone: 'clay' },
-  { key: 'shipped', label: 'Shipped', tone: 'brand' },
-  { key: 'delivered', label: 'Delivered', tone: 'success' },
-  { key: 'cancelled', label: 'Cancelled', tone: 'danger' },
-  { key: 'refunded', label: 'Refunded', tone: 'danger' },
+  { key: 'pending', label: 'Pending review', tone: 'warning', color: '#b7791f' },
+  { key: 'confirmed', label: 'Confirmed', tone: 'accent', color: '#b56576' },
+  { key: 'preparing', label: 'Preparing', tone: 'accent', color: '#985168' },
+  { key: 'shipped', label: 'Shipped', tone: 'brand', color: '#7a3e52' },
+  { key: 'delivered', label: 'Delivered', tone: 'success', color: '#1f6a4a' },
+  { key: 'cancelled', label: 'Cancelled', tone: 'danger', color: '#b42318' },
+  { key: 'refunded', label: 'Refunded', tone: 'danger', color: '#912018' },
 ];
+
+const svgNS = 'http://www.w3.org/2000/svg';
 
 function createEl(tag, className = '', text = '') {
   const element = document.createElement(tag);
   if (className) element.className = className;
+  if (text !== '') element.textContent = text;
+  return element;
+}
+
+function createSvg(tag, attrs = {}, text = '') {
+  const element = document.createElementNS(svgNS, tag);
+  for (const [key, value] of Object.entries(attrs)) {
+    element.setAttribute(key, String(value));
+  }
   if (text !== '') element.textContent = text;
   return element;
 }
@@ -43,6 +58,34 @@ function createProgressBar(percent, tone = 'brand') {
   fill.style.width = `${Math.max(0, Math.min(100, Math.round(percent)))}%`;
   track.append(fill);
   return track;
+}
+
+function isBillableOrder(order) {
+  return order.status !== 'cancelled' && order.status !== 'refunded';
+}
+
+function sumRevenue(orders) {
+  return orders
+    .filter(isBillableOrder)
+    .reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
+}
+
+function formatDelta(current, previous) {
+  if (previous <= 0 && current <= 0) {
+    return { label: '0% vs prior', trend: 'neutral' };
+  }
+  if (previous <= 0 && current > 0) {
+    return { label: '+100% vs prior', trend: 'up' };
+  }
+  const pct = ((current - previous) / previous) * 100;
+  const rounded = Math.round(pct * 10) / 10;
+  if (Math.abs(rounded) < 0.1) {
+    return { label: '0% vs prior', trend: 'neutral' };
+  }
+  return {
+    label: `${rounded > 0 ? '+' : ''}${rounded}% vs prior`,
+    trend: rounded > 0 ? 'up' : 'down',
+  };
 }
 
 function filterOrdersByPeriod(orders, period) {
@@ -62,8 +105,452 @@ function filterOrdersByPeriod(orders, period) {
   });
 }
 
+function computeComparisonSeries(orders, users, granularity) {
+  const now = new Date();
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
+  if (granularity === 'daily') {
+    const todayStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    ).getTime();
+    const yesterdayStart = todayStart - DAY_MS;
+
+    const buckets = [];
+    for (let i = 6; i >= 0; i--) {
+      const start = todayStart - i * DAY_MS;
+      const end = start + DAY_MS;
+      const dateObj = new Date(start);
+      const label =
+        i === 0
+          ? 'Today'
+          : dateObj.toLocaleDateString('en-PH', {
+              weekday: 'short',
+              month: 'short',
+              day: 'numeric',
+            });
+      const shortLabel =
+        i === 0 ? 'Today' : dateObj.toLocaleDateString('en-PH', { weekday: 'short' });
+      const bucketOrders = orders.filter((order) => {
+        const ts = new Date(order.created_at).getTime();
+        return ts >= start && ts < end;
+      });
+      buckets.push({
+        label,
+        shortLabel,
+        orders: bucketOrders.length,
+        revenue: sumRevenue(bucketOrders),
+      });
+    }
+
+    const currentOrders = orders.filter(
+      (order) => new Date(order.created_at).getTime() >= todayStart,
+    );
+    const prevOrders = orders.filter((order) => {
+      const ts = new Date(order.created_at).getTime();
+      return ts >= yesterdayStart && ts < todayStart;
+    });
+    const currentUsers = users.filter(
+      (user) => new Date(user.created_at).getTime() >= todayStart,
+    );
+    const prevUsers = users.filter((user) => {
+      const ts = new Date(user.created_at).getTime();
+      return ts >= yesterdayStart && ts < todayStart;
+    });
+
+    const prev7Start = todayStart - 14 * DAY_MS;
+    const prev7End = todayStart - 7 * DAY_MS;
+    const prev7Revenue = sumRevenue(
+      orders.filter((o) => {
+        const ts = new Date(o.created_at).getTime();
+        return ts >= prev7Start && ts < prev7End;
+      }),
+    );
+
+    return {
+      title: 'Daily revenue & order velocity (Last 7 days)',
+      subtitle: 'Comparing Today against Yesterday, with 7-day daily trend bars.',
+      currentPeriodLabel: 'Today',
+      previousPeriodLabel: 'Yesterday',
+      benchmarkAvg: prev7Revenue / 7,
+      benchmarkLabel: `Prior 7-day daily avg: ${currency(prev7Revenue / 7)}`,
+      currentOrders,
+      prevOrders,
+      currentUsers,
+      prevUsers,
+      buckets,
+    };
+  }
+
+  if (granularity === 'weekly') {
+    const todayEnd = now.getTime();
+    const WEEK_MS = 7 * DAY_MS;
+    const thisWeekStart = todayEnd - WEEK_MS;
+    const lastWeekStart = thisWeekStart - WEEK_MS;
+
+    const buckets = [];
+    for (let i = 6; i >= 0; i--) {
+      const end = todayEnd - i * WEEK_MS;
+      const start = end - WEEK_MS;
+      const startDate = new Date(start);
+      const shortLabel =
+        i === 0
+          ? 'This wk'
+          : startDate.toLocaleDateString('en-PH', { month: 'short', day: 'numeric' });
+      const bucketOrders = orders.filter((order) => {
+        const ts = new Date(order.created_at).getTime();
+        return ts >= start && ts <= end;
+      });
+      buckets.push({
+        label: i === 0 ? 'Current 7 days' : `Week of ${shortLabel}`,
+        shortLabel,
+        orders: bucketOrders.length,
+        revenue: sumRevenue(bucketOrders),
+      });
+    }
+
+    const currentOrders = orders.filter(
+      (order) => new Date(order.created_at).getTime() >= thisWeekStart,
+    );
+    const prevOrders = orders.filter((order) => {
+      const ts = new Date(order.created_at).getTime();
+      return ts >= lastWeekStart && ts < thisWeekStart;
+    });
+    const currentUsers = users.filter(
+      (user) => new Date(user.created_at).getTime() >= thisWeekStart,
+    );
+    const prevUsers = users.filter((user) => {
+      const ts = new Date(user.created_at).getTime();
+      return ts >= lastWeekStart && ts < thisWeekStart;
+    });
+
+    return {
+      title: 'Weekly revenue & order comparisons (Last 7 weeks)',
+      subtitle: 'Comparing the last 7 days against the prior 7-day week.',
+      currentPeriodLabel: 'This week (7d)',
+      previousPeriodLabel: 'Last week (prior 7d)',
+      benchmarkAvg: sumRevenue(prevOrders),
+      benchmarkLabel: `Prior week benchmark: ${currency(sumRevenue(prevOrders))}`,
+      currentOrders,
+      prevOrders,
+      currentUsers,
+      prevUsers,
+      buckets,
+    };
+  }
+
+  // Monthly
+  const buckets = [];
+  for (let i = 5; i >= 0; i--) {
+    const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+    const startMs = monthStart.getTime();
+    const endMs = monthEnd.getTime();
+    const shortLabel = monthStart.toLocaleDateString('en-PH', { month: 'short' });
+    const label = monthStart.toLocaleDateString('en-PH', {
+      month: 'short',
+      year: 'numeric',
+    });
+    const bucketOrders = orders.filter((order) => {
+      const ts = new Date(order.created_at).getTime();
+      return ts >= startMs && ts < endMs;
+    });
+    buckets.push({
+      label,
+      shortLabel,
+      orders: bucketOrders.length,
+      revenue: sumRevenue(bucketOrders),
+    });
+  }
+
+  const thirtyDaysAgo = now.getTime() - 30 * DAY_MS;
+  const sixtyDaysAgo = thirtyDaysAgo - 30 * DAY_MS;
+  const currentOrders = orders.filter(
+    (order) => new Date(order.created_at).getTime() >= thirtyDaysAgo,
+  );
+  const prevOrders = orders.filter((order) => {
+    const ts = new Date(order.created_at).getTime();
+    return ts >= sixtyDaysAgo && ts < thirtyDaysAgo;
+  });
+  const currentUsers = users.filter(
+    (user) => new Date(user.created_at).getTime() >= thirtyDaysAgo,
+  );
+  const prevUsers = users.filter((user) => {
+    const ts = new Date(user.created_at).getTime();
+    return ts >= sixtyDaysAgo && ts < thirtyDaysAgo;
+  });
+
+  return {
+    title: 'Monthly revenue & order comparisons (Last 6 months)',
+    subtitle: 'Comparing the last 30 days against the preceding 30-day period.',
+    currentPeriodLabel: 'Last 30 days',
+    previousPeriodLabel: 'Prior 30 days',
+    benchmarkAvg: sumRevenue(prevOrders),
+    benchmarkLabel: `Prior 30d benchmark: ${currency(sumRevenue(prevOrders))}`,
+    currentOrders,
+    prevOrders,
+    currentUsers,
+    prevUsers,
+    buckets,
+  };
+}
+
+function renderTrendSvgChart(container, buckets, benchmarkAvg) {
+  const width = 680;
+  const height = 220;
+  const padLeft = 64;
+  const padRight = 28;
+  const padTop = 26;
+  const padBottom = 36;
+  const plotW = width - padLeft - padRight;
+  const plotH = height - padTop - padBottom;
+
+  const maxRev = Math.max(
+    1000,
+    benchmarkAvg || 0,
+    ...buckets.map((bucket) => bucket.revenue),
+  );
+  const maxOrders = Math.max(1, ...buckets.map((bucket) => bucket.orders));
+
+  const svg = createSvg('svg', {
+    viewBox: `0 0 ${width} ${height}`,
+    class: 'w-full h-auto overflow-visible',
+    role: 'img',
+    'aria-label': 'Revenue and order volume trend chart',
+  });
+
+  // Grid lines & Y-axis labels
+  for (const ratio of [0, 0.5, 1]) {
+    const y = padTop + plotH * (1 - ratio);
+    const val = Math.round(maxRev * ratio);
+    svg.append(
+      createSvg('line', {
+        x1: padLeft,
+        y1: y,
+        x2: width - padRight,
+        y2: y,
+        stroke: 'var(--color-border)',
+        'stroke-dasharray': ratio === 0 ? 'none' : '3 3',
+        'stroke-width': 1,
+      }),
+      createSvg(
+        'text',
+        {
+          x: padLeft - 8,
+          y: y + 4,
+          'text-anchor': 'end',
+          fill: 'var(--color-text-muted)',
+          'font-size': '10',
+          'font-weight': '600',
+        },
+        currency(val),
+      ),
+    );
+  }
+
+  // Benchmark dashed line
+  if (benchmarkAvg > 0) {
+    const benchY = padTop + plotH * (1 - Math.min(1, benchmarkAvg / maxRev));
+    svg.append(
+      createSvg('line', {
+        x1: padLeft,
+        y1: benchY,
+        x2: width - padRight,
+        y2: benchY,
+        stroke: 'var(--color-clay)',
+        'stroke-dasharray': '5 4',
+        'stroke-width': 1.5,
+      }),
+    );
+  }
+
+  const slotWidth = plotW / Math.max(1, buckets.length);
+  const barWidth = Math.min(44, Math.max(18, slotWidth * 0.48));
+  const linePoints = [];
+
+  buckets.forEach((bucket, index) => {
+    const centerX = padLeft + slotWidth * index + slotWidth / 2;
+    const revRatio = Math.min(1, bucket.revenue / maxRev);
+    const barH = Math.max(bucket.revenue > 0 ? 6 : 2, plotH * revRatio);
+    const barY = padTop + plotH - barH;
+
+    // Bar
+    svg.append(
+      createSvg('rect', {
+        x: centerX - barWidth / 2,
+        y: barY,
+        width: barWidth,
+        height: barH,
+        rx: 6,
+        fill: bucket.revenue > 0 ? 'var(--color-brand)' : 'var(--color-border)',
+      }),
+    );
+
+    // Value label above bar
+    if (bucket.revenue > 0) {
+      svg.append(
+        createSvg(
+          'text',
+          {
+            x: centerX,
+            y: Math.max(12, barY - 6),
+            'text-anchor': 'middle',
+            fill: 'var(--color-floral-pink)',
+            'font-size': '9.5',
+            'font-weight': '700',
+          },
+          currency(bucket.revenue),
+        ),
+      );
+    }
+
+    // X-axis label
+    svg.append(
+      createSvg(
+        'text',
+        {
+          x: centerX,
+          y: height - 10,
+          'text-anchor': 'middle',
+          fill: 'var(--color-text-muted)',
+          'font-size': '10.5',
+          'font-weight': '600',
+        },
+        bucket.shortLabel,
+      ),
+    );
+
+    const orderRatio = bucket.orders / maxOrders;
+    const pointY = padTop + plotH * (1 - orderRatio * 0.85);
+    linePoints.push({ x: centerX, y: pointY, orders: bucket.orders });
+  });
+
+  // Overlaid Order Count Polyline
+  if (linePoints.length > 1) {
+    svg.append(
+      createSvg('polyline', {
+        fill: 'none',
+        stroke: 'var(--color-clay)',
+        'stroke-width': 2.25,
+        'stroke-linecap': 'round',
+        'stroke-linejoin': 'round',
+        points: linePoints.map((pt) => `${pt.x},${pt.y}`).join(' '),
+      }),
+    );
+  }
+
+  for (const pt of linePoints) {
+    svg.append(
+      createSvg('circle', {
+        cx: pt.x,
+        cy: pt.y,
+        r: 4,
+        fill: 'var(--color-surface)',
+        stroke: 'var(--color-clay)',
+        'stroke-width': 2.25,
+      }),
+    );
+  }
+
+  container.replaceChildren(svg);
+}
+
+function renderDonutChart(container, orders, fulfillmentRate) {
+  const size = 168;
+  const stroke = 20;
+  const radius = (size - stroke) / 2;
+  const center = size / 2;
+  const circumference = 2 * Math.PI * radius;
+
+  const svg = createSvg('svg', {
+    viewBox: `0 0 ${size} ${size}`,
+    width: size,
+    height: size,
+    role: 'img',
+    'aria-label': `Order fulfillment donut chart: ${orders.length} total orders, ${fulfillmentRate}% delivered`,
+  });
+
+  // Background track ring
+  svg.append(
+    createSvg('circle', {
+      cx: center,
+      cy: center,
+      r: radius,
+      fill: 'none',
+      stroke: 'var(--color-surface-muted)',
+      'stroke-width': stroke,
+    }),
+  );
+
+  if (orders.length > 0) {
+    let offsetFraction = 0;
+    for (const cfg of statusConfig) {
+      const count = orders.filter((order) => order.status === cfg.key).length;
+      if (!count) continue;
+      const fraction = count / orders.length;
+      const segLength = fraction * circumference;
+      const circle = createSvg('circle', {
+        cx: center,
+        cy: center,
+        r: radius,
+        fill: 'none',
+        stroke: cfg.color,
+        'stroke-width': stroke,
+        'stroke-dasharray': `${segLength} ${circumference - segLength}`,
+        'stroke-dashoffset': String(-offsetFraction * circumference),
+        transform: `rotate(-90 ${center} ${center})`,
+      });
+      svg.append(circle);
+      offsetFraction += fraction;
+    }
+  }
+
+  // Center text
+  svg.append(
+    createSvg(
+      'text',
+      {
+        x: center,
+        y: center - 2,
+        'text-anchor': 'middle',
+        fill: 'var(--color-floral-pink)',
+        'font-size': '22',
+        'font-weight': '800',
+      },
+      String(orders.length),
+    ),
+    createSvg(
+      'text',
+      {
+        x: center,
+        y: center + 16,
+        'text-anchor': 'middle',
+        fill: 'var(--color-text-muted)',
+        'font-size': '10',
+        'font-weight': '700',
+      },
+      `${fulfillmentRate}% DELIVERED`,
+    ),
+  );
+
+  container.replaceChildren(svg);
+}
+
+async function fetchAllPages(fetcher, params = {}) {
+  const first = await fetcher({ ...params, page: 1, limit: 100 });
+  const items = [...(first.data ?? [])];
+  const totalPages = first.pagination?.totalPages ?? 1;
+  for (let page = 2; page <= Math.min(totalPages, 10); page++) {
+    const next = await fetcher({ ...params, page, limit: 100 });
+    if (next.data?.length) items.push(...next.data);
+  }
+  return { data: items, total: first.pagination?.total ?? items.length };
+}
+
 if (await pageReady) {
   const periodSelect = find('#analytics-period');
+  let chartGranularity = 'daily';
   let rawOrders = [];
   let rawProducts = [];
   let rawCategories = [];
@@ -73,13 +560,8 @@ if (await pageReady) {
   function render() {
     const period = periodSelect?.value || 'all';
     const filteredOrders = filterOrdersByPeriod(rawOrders, period);
-    const activeOrders = filteredOrders.filter(
-      (order) => order.status !== 'cancelled' && order.status !== 'refunded',
-    );
-    const grossRevenue = activeOrders.reduce(
-      (sum, order) => sum + Number(order.total_amount || 0),
-      0,
-    );
+    const activeOrders = filteredOrders.filter(isBillableOrder);
+    const grossRevenue = sumRevenue(filteredOrders);
     const averageOrderValue = activeOrders.length
       ? grossRevenue / activeOrders.length
       : 0;
@@ -87,7 +569,7 @@ if (await pageReady) {
       (order) => order.status === 'delivered',
     ).length;
     const awaitingActionCount = filteredOrders.filter((order) =>
-      ['pending', 'processing', 'paid'].includes(order.status),
+      ['pending', 'confirmed', 'preparing'].includes(order.status),
     ).length;
     const fulfillmentRate = filteredOrders.length
       ? Math.round((deliveredCount / filteredOrders.length) * 100)
@@ -122,7 +604,109 @@ if (await pageReady) {
       'report-period-summary': `${periodLabels[period] ?? 'All time'} · ${filteredOrders.length} ${filteredOrders.length === 1 ? 'order' : 'orders'} · ${currency(grossRevenue)} net revenue`,
     });
 
-    // 1. Fulfillment Pipeline Breakdown
+    // Time-Series Daily / Weekly / Monthly Comparisons & Trend Chart
+    const series = computeComparisonSeries(rawOrders, rawUsers, chartGranularity);
+    fillText(document, {
+      'trend-chart-title': series.title,
+      'trend-chart-subtitle': series.subtitle,
+      'trend-benchmark-label': series.benchmarkLabel,
+    });
+
+    const curRev = sumRevenue(series.currentOrders);
+    const prevRev = sumRevenue(series.prevOrders);
+    const curBillable = series.currentOrders.filter(isBillableOrder);
+    const prevBillable = series.prevOrders.filter(isBillableOrder);
+    const curAov = curBillable.length ? curRev / curBillable.length : 0;
+    const prevAov = prevBillable.length ? prevRev / prevBillable.length : 0;
+
+    const comparisonMetrics = [
+      {
+        label: `Revenue (${series.currentPeriodLabel})`,
+        value: currency(curRev),
+        prevText: `${series.previousPeriodLabel}: ${currency(prevRev)}`,
+        delta: formatDelta(curRev, prevRev),
+      },
+      {
+        label: `Orders (${series.currentPeriodLabel})`,
+        value: `${series.currentOrders.length} ${series.currentOrders.length === 1 ? 'order' : 'orders'}`,
+        prevText: `${series.previousPeriodLabel}: ${series.prevOrders.length} ${series.prevOrders.length === 1 ? 'order' : 'orders'}`,
+        delta: formatDelta(series.currentOrders.length, series.prevOrders.length),
+      },
+      {
+        label: `Avg. basket (${series.currentPeriodLabel})`,
+        value: currency(curAov),
+        prevText: `${series.previousPeriodLabel}: ${currency(prevAov)}`,
+        delta: formatDelta(curAov, prevAov),
+      },
+      {
+        label: `New accounts (${series.currentPeriodLabel})`,
+        value: `${series.currentUsers.length} joined`,
+        prevText: `${series.previousPeriodLabel}: ${series.prevUsers.length} joined`,
+        delta: formatDelta(series.currentUsers.length, series.prevUsers.length),
+      },
+    ];
+
+    const compGrid = find('#analytics-comparison-grid');
+    if (compGrid) {
+      compGrid.replaceChildren(
+        ...comparisonMetrics.map((metric) => {
+          const card = createEl(
+            'div',
+            'rounded-control border border-border bg-surface-muted/60 p-4',
+          );
+          const top = createEl(
+            'div',
+            'flex flex-wrap items-center justify-between gap-2',
+          );
+          const pill = createEl('span', 'analytics-delta-pill', metric.delta.label);
+          pill.dataset.trend = metric.delta.trend;
+          top.append(
+            createEl('p', 'text-xs font-bold text-text-muted', metric.label),
+            pill,
+          );
+          card.append(
+            top,
+            createEl('p', 'mt-2 font-display text-2xl text-floral-pink', metric.value),
+            createEl('p', 'mt-1 text-xs text-text-muted', metric.prevText),
+          );
+          return card;
+        }),
+      );
+    }
+
+    const trendChartEl = find('#analytics-trend-chart');
+    if (trendChartEl) {
+      renderTrendSvgChart(trendChartEl, series.buckets, series.benchmarkAvg);
+    }
+
+    const bucketsEl = find('#analytics-trend-buckets');
+    if (bucketsEl) {
+      bucketsEl.replaceChildren(
+        ...series.buckets.map((bucket) => {
+          const item = createEl(
+            'div',
+            'rounded-control border border-border bg-surface px-3 py-2 text-xs',
+          );
+          item.append(
+            createEl('p', 'font-bold text-floral-pink', bucket.shortLabel),
+            createEl('p', 'mt-0.5 font-semibold text-text', currency(bucket.revenue)),
+            createEl(
+              'p',
+              'text-[0.68rem] text-text-muted',
+              `${bucket.orders} ${bucket.orders === 1 ? 'order' : 'orders'}`,
+            ),
+          );
+          return item;
+        }),
+      );
+    }
+
+    // 1. Donut Chart + Fulfillment Pipeline Breakdown
+    const donutEl = find('#analytics-donut-chart');
+    if (donutEl) {
+      renderDonutChart(donutEl, filteredOrders, fulfillmentRate);
+    }
+
     const statusList = find('#analytics-status-list');
     const statusRows = statusConfig.map(({ key, label, tone }) => {
       const matching = filteredOrders.filter((order) => order.status === key);
@@ -216,10 +800,9 @@ if (await pageReady) {
       );
       const valueBadge = createEl(
         'div',
-        'text-right',
+        'text-xs font-bold text-floral-pink',
         `${currency(catValue)} (${Math.round(share)}%)`,
       );
-      valueBadge.className = 'text-xs font-bold text-floral-pink';
       top.append(titleGroup, valueBadge);
       card.append(top, createProgressBar(share, 'success'));
       return card;
@@ -258,7 +841,7 @@ if (await pageReady) {
             : 'All active customer orders are shipped or delivered',
         detail:
           awaitingActionCount > 0
-            ? `Review pending and paid orders to maintain fast dispatch times. Current delivery completion rate is ${fulfillmentRate}%.`
+            ? `Review pending, confirmed, and preparing orders to maintain fast dispatch times. Delivery completion rate is ${fulfillmentRate}%.`
             : `Order pipeline is clear with a ${fulfillmentRate}% delivery completion rate in the selected period.`,
         href: '/admin/orders',
         linkText: 'Open order queue →',
@@ -397,7 +980,7 @@ if (await pageReady) {
           const orderLink = createEl(
             'a',
             'font-semibold text-floral-pink underline-offset-4 hover:underline',
-            `Order #${order.id.slice(0, 8)} · ${order.customer?.name ?? 'Customer'}`,
+            `Order #${order.id.slice(0, 8).toUpperCase()} · ${order.customer?.name ?? 'Customer'}`,
           );
           orderLink.href = `/admin/orders/${order.id}`;
           const meta = createEl(
@@ -432,16 +1015,18 @@ if (await pageReady) {
     try {
       const [ordersResult, productsResult, categoriesResult, usersResult] =
         await Promise.all([
-          adminOrderApi.getOrders({ limit: 100 }),
-          adminCatalogApi.getProducts({ limit: 100, status: 'all' }),
+          fetchAllPages((params) => adminOrderApi.getOrders(params)),
+          fetchAllPages((params) =>
+            adminCatalogApi.getProducts({ ...params, status: 'all' }),
+          ),
           adminCatalogApi.getCategories(),
-          adminUserApi.getUsers({ limit: 100 }),
+          fetchAllPages((params) => adminUserApi.getUsers(params)),
         ]);
       rawOrders = ordersResult.data ?? [];
       rawProducts = productsResult.data ?? [];
       rawCategories = categoriesResult.data ?? [];
       rawUsers = usersResult.data ?? [];
-      totalUserCount = usersResult.pagination?.total ?? rawUsers.length;
+      totalUserCount = usersResult.total ?? rawUsers.length;
       render();
       if (announce) showNotice('Analytics and reports refreshed.');
     } catch (error) {
@@ -495,6 +1080,16 @@ if (await pageReady) {
     link.remove();
     URL.revokeObjectURL(url);
     showNotice('Analytics report exported as CSV.');
+  }
+
+  for (const button of findAll('[data-chart-granularity]')) {
+    button.addEventListener('click', () => {
+      chartGranularity = button.dataset.chartGranularity;
+      for (const btn of findAll('[data-chart-granularity]')) {
+        btn.setAttribute('aria-pressed', String(btn === button));
+      }
+      render();
+    });
   }
 
   periodSelect?.addEventListener('change', () => render());

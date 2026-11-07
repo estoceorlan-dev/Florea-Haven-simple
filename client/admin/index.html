@@ -531,6 +531,102 @@
                 </article>
               </div>
 
+              <!-- Time-Series Charts & Daily / Weekly / Monthly Comparisons -->
+              <section
+                class="mt-7 rounded-card border border-border bg-surface p-6 shadow-low"
+                aria-labelledby="trend-comparison-heading"
+              >
+                <div class="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <p class="eyebrow text-clay">
+                      Comparative performance &amp; trends
+                    </p>
+                    <h2
+                      class="mt-1 font-display text-3xl text-floral-pink"
+                      id="trend-comparison-heading"
+                      data-field="trend-chart-title"
+                    >
+                      Daily, weekly &amp; monthly revenue comparisons
+                    </h2>
+                    <p
+                      class="mt-1 text-xs leading-5 text-text-muted"
+                      data-field="trend-chart-subtitle"
+                    >
+                      Compare current performance against the prior benchmark period.
+                    </p>
+                  </div>
+                  <div
+                    class="analytics-tab-group"
+                    role="group"
+                    aria-label="Comparison timeframe"
+                  >
+                    <button
+                      type="button"
+                      class="analytics-tab-button"
+                      aria-pressed="true"
+                      data-chart-granularity="daily"
+                    >
+                      Daily
+                    </button>
+                    <button
+                      type="button"
+                      class="analytics-tab-button"
+                      aria-pressed="false"
+                      data-chart-granularity="weekly"
+                    >
+                      Weekly
+                    </button>
+                    <button
+                      type="button"
+                      class="analytics-tab-button"
+                      aria-pressed="false"
+                      data-chart-granularity="monthly"
+                    >
+                      Monthly
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  class="mt-6 analytics-comparison-grid"
+                  id="analytics-comparison-grid"
+                ></div>
+
+                <div class="mt-6 analytics-chart-surface">
+                  <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                    <div class="flex flex-wrap items-center gap-4 text-xs">
+                      <span
+                        class="inline-flex items-center gap-1.5 font-semibold text-floral-pink"
+                      >
+                        <span
+                          class="inline-block size-2.5 rounded-full bg-brand"
+                          aria-hidden="true"
+                        ></span>
+                        Gross revenue (bars)
+                      </span>
+                      <span
+                        class="inline-flex items-center gap-1.5 font-semibold text-clay"
+                      >
+                        <span
+                          class="inline-block size-2.5 rounded-full bg-clay"
+                          aria-hidden="true"
+                        ></span>
+                        Order count (trend line)
+                      </span>
+                    </div>
+                    <span
+                      class="text-xs text-text-muted"
+                      data-field="trend-benchmark-label"
+                    ></span>
+                  </div>
+                  <div id="analytics-trend-chart"></div>
+                  <div
+                    class="mt-4 grid gap-2 sm:grid-cols-3 lg:grid-cols-7"
+                    id="analytics-trend-buckets"
+                  ></div>
+                </div>
+              </section>
+
               <!-- Analytics Breakdown: Fulfillment Pipeline & Category Performance -->
               <div class="mt-7 analytics-report-grid">
                 <section
@@ -554,7 +650,13 @@
                       All time
                     </span>
                   </div>
-                  <div class="mt-6 space-y-4" id="analytics-status-list"></div>
+                  <div class="mt-6 analytics-donut-layout">
+                    <div
+                      class="mx-auto flex flex-col items-center"
+                      id="analytics-donut-chart"
+                    ></div>
+                    <div class="space-y-3" id="analytics-status-list"></div>
+                  </div>
                   <div class="mt-6 border-t border-border pt-5">
                     <h3
                       class="text-xs font-extrabold uppercase tracking-[0.14em] text-floral-pink"
