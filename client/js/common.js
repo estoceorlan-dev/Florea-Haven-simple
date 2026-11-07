@@ -6,6 +6,7 @@ import {
   showError,
   safeReturnPath,
   openOverlay,
+  confirmAction,
   setImage,
 } from './helpers.js';
 import {
@@ -203,23 +204,37 @@ export function updateNotificationBellBadge(orders = []) {
   return unreadCount;
 }
 
-document.addEventListener('click', async (event) => {
+let activeNavOverlay = null;
+
+document.addEventListener('click', (event) => {
   const logout = event.target.closest('[data-sign-out]');
   if (logout) {
-    logout.disabled = true;
-    try {
-      await authApi.logout();
-      sessionStorage.removeItem('florea-return-path');
-      location.assign('/');
-    } catch (error) {
-      showError(error);
-      logout.disabled = false;
+    let trigger = logout;
+    if (logout.closest('#navigation-overlay') && activeNavOverlay) {
+      activeNavOverlay.close();
+      activeNavOverlay = null;
+      trigger = find('[data-open-navigation]') ?? logout;
     }
+    confirmAction({
+      title: 'Sign out of Floréa Haven?',
+      description:
+        'You will need to sign in again to access your account, saved cart, orders, or workspace.',
+      label: 'Sign out',
+      cancelLabel: 'Stay signed in',
+      trigger,
+      action: async () => {
+        await authApi.logout();
+        sessionStorage.removeItem('florea-return-path');
+        location.assign('/');
+      },
+    });
+    return;
   }
   const menu = event.target.closest('[data-open-navigation]');
   if (menu) {
     menu.setAttribute('aria-expanded', 'true');
     const overlay = openOverlay('navigation-template', menu);
+    activeNavOverlay = overlay;
     updateNavigation();
     updateUser(currentUser);
     applyTheme();

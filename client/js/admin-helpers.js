@@ -35,3 +35,72 @@ export function fillCategories(select, categories, includeAll = false) {
   select.replaceChildren(...options);
   if (options.some((option) => option.value === value)) select.value = value;
 }
+
+export function setupAdminModal(modalId, onCancel) {
+  const root = find(`#${modalId}`);
+  const panel = find('[role="dialog"]', root);
+  let triggerElement = null;
+  let previousOverflow = '';
+
+  const focusable = () =>
+    findAll(
+      'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex="0"]',
+      panel,
+    ).filter((element) => !element.closest('[hidden]'));
+
+  function onKey(event) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      if (onCancel) onCancel();
+      else close();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const elements = focusable();
+    const first = elements[0];
+    const last = elements.at(-1);
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  }
+
+  function open(trigger = document.activeElement) {
+    if (root.hidden) {
+      triggerElement = trigger;
+      previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      root.hidden = false;
+      document.addEventListener('keydown', onKey);
+    }
+    const firstInput =
+      find(
+        'input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled])',
+        panel,
+      ) ?? focusable()[0];
+    firstInput?.focus();
+  }
+
+  function close() {
+    if (root.hidden) return;
+    document.removeEventListener('keydown', onKey);
+    document.body.style.overflow = previousOverflow;
+    root.hidden = true;
+    if (triggerElement && document.contains(triggerElement)) {
+      triggerElement.focus();
+    }
+    triggerElement = null;
+  }
+
+  for (const button of findAll('[data-close-modal]', root)) {
+    button.addEventListener('click', () => {
+      if (onCancel) onCancel();
+      else close();
+    });
+  }
+
+  return { root, open, close };
+}

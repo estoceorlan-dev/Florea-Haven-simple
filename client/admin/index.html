@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/css/styles.css" />
     <script src="/theme-init.js"></script>
     <script type="module" src="/js/common.js"></script>
+    <script type="module" src="/js/admin-dashboard.js"></script>
   </head>
   <body data-page="admin-home" data-access="admin">
     <!-- The complete page layout is here. JavaScript only fills data and handles actions. -->
@@ -373,325 +374,305 @@
             ></p>
             <section class="py-2 sm:py-4">
               <div
-                class="grid gap-8 border-b border-border pb-9 lg:grid-cols-[1fr_auto] lg:items-end"
+                class="grid gap-6 border-b border-border pb-8 lg:grid-cols-[1fr_auto] lg:items-end"
               >
                 <div>
-                  <p class="eyebrow text-clay">Administrator dashboard</p>
+                  <p class="eyebrow text-clay">Analytics, insights &amp; reports</p>
                   <h1
                     class="mt-3 max-w-3xl font-display text-5xl leading-[0.98] tracking-[-0.055em] text-floral-pink sm:text-6xl"
                     data-field="admin-greeting"
                   >
                     Welcome back.
                   </h1>
-                  <p class="mt-5 max-w-2xl text-sm leading-7 text-text-muted">
-                    Keep Floréa Haven's collection organized, available, and ready for
-                    every customer visit.
+                  <p class="mt-4 max-w-2xl text-sm leading-7 text-text-muted">
+                    Monitor store revenue, order fulfillment velocity, catalog inventory
+                    valuation, and operational insights across Floréa Haven.
                   </p>
                 </div>
-                <div
-                  class="flex items-center gap-3 rounded-card border border-border bg-surface px-5 py-4 shadow-low"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-shield-check text-success"
-                    aria-hidden="true"
+                <div class="flex flex-wrap items-center gap-3">
+                  <label class="min-w-0">
+                    <span class="sr-only">Reporting period</span>
+                    <select
+                      class="form-input min-w-40"
+                      id="analytics-period"
+                      aria-label="Reporting period"
+                    >
+                      <option value="all">All time</option>
+                      <option value="30d">Last 30 days</option>
+                      <option value="7d">Last 7 days</option>
+                      <option value="today">Today</option>
+                    </select>
+                  </label>
+                  <button
+                    class="button-secondary"
+                    type="button"
+                    data-refresh-dashboard=""
                   >
-                    <path
-                      d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
-                    ></path>
-                    <path d="m9 12 2 2 4-4"></path>
-                  </svg>
-                  <div>
-                    <p class="text-xs font-bold text-floral-pink">
-                      Protected workspace
-                    </p>
-                    <p class="mt-1 text-xs text-text-muted">
-                      Administrator session active
-                    </p>
-                  </div>
+                    Refresh
+                  </button>
+                  <button class="button-primary" type="button" data-export-csv="">
+                    Export CSV report
+                  </button>
                 </div>
               </div>
-              <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                <a
-                  class="motion-lift group flex min-h-64 flex-col justify-between rounded-card border p-7 shadow-low border-brand bg-brand text-canvas"
-                  href="/admin/users"
+
+              <!-- Executive KPI Cards -->
+              <div class="mt-8 analytics-kpi-grid" aria-label="Executive metrics">
+                <article
+                  class="flex flex-col justify-between rounded-card border border-brand bg-brand p-6 text-canvas shadow-low"
                 >
                   <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-users text-brand-soft"
-                      aria-hidden="true"
+                    <p
+                      class="text-[0.65rem] font-extrabold uppercase tracking-[0.16em] text-canvas/80"
                     >
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                      <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                      <circle cx="9" cy="7" r="4"></circle>
-                    </svg>
-                    <h2 class="mt-6 font-display text-3xl text-canvas">
-                      User management
-                    </h2>
-                    <p class="mt-3 text-sm leading-6 text-canvas/80">
-                      Manage customer accounts, administrator roles, and account access.
+                      Gross revenue
+                    </p>
+                    <p
+                      class="mt-3 font-display text-4xl tracking-tight text-canvas"
+                      data-field="kpi-revenue"
+                    >
+                      ₱0
+                    </p>
+                    <p
+                      class="mt-2 text-xs leading-5 text-canvas/80"
+                      data-field="kpi-aov"
+                    >
+                      Avg. order value ₱0 · 0 active orders
                     </p>
                   </div>
-                  <span
-                    class="mt-8 inline-flex items-center gap-2 text-[0.68rem] font-extrabold uppercase tracking-[0.11em]"
+                  <a
+                    class="mt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-canvas underline-offset-4 hover:underline"
+                    href="/admin/orders"
                   >
-                    Manage users
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="15"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-arrow-right transition group-hover:translate-x-1"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                  </span>
-                </a>
-                <a
-                  class="motion-lift group flex min-h-64 flex-col justify-between rounded-card border p-7 shadow-low border-border bg-surface text-text"
-                  href="/admin/orders"
+                    Order reports
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </article>
+
+                <article
+                  class="flex flex-col justify-between rounded-card border border-border bg-surface p-6 shadow-low"
                 >
                   <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-clipboard-list text-floral-accent"
-                      aria-hidden="true"
+                    <p class="eyebrow text-clay">Order fulfillment</p>
+                    <p
+                      class="mt-3 font-display text-4xl tracking-tight text-floral-pink"
+                      data-field="kpi-orders"
                     >
-                      <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
-                      <path
-                        d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
-                      ></path>
-                      <path d="M12 11h4"></path>
-                      <path d="M12 16h4"></path>
-                      <path d="M8 11h.01"></path>
-                      <path d="M8 16h.01"></path>
-                    </svg>
-                    <h2 class="mt-6 font-display text-3xl text-floral-pink">
-                      Customer orders
-                    </h2>
-                    <p class="mt-3 text-sm leading-6 text-text-muted">
-                      Review delivery details and progress new orders through
-                      fulfillment.
+                      0 orders
+                    </p>
+                    <p
+                      class="mt-2 text-xs leading-5 text-text-muted"
+                      data-field="kpi-fulfillment"
+                    >
+                      0% delivered · 0 awaiting action
                     </p>
                   </div>
-                  <span
-                    class="mt-8 inline-flex items-center gap-2 text-[0.68rem] font-extrabold uppercase tracking-[0.11em]"
+                  <a
+                    class="mt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-floral-pink underline-offset-4 hover:underline"
+                    href="/admin/orders"
                   >
                     Manage orders
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="15"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-arrow-right transition group-hover:translate-x-1"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                  </span>
-                </a>
-                <a
-                  class="motion-lift group flex min-h-64 flex-col justify-between rounded-card border p-7 shadow-low border-border bg-surface text-text"
-                  href="/admin/products"
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </article>
+
+                <article
+                  class="flex flex-col justify-between rounded-card border border-border bg-surface p-6 shadow-low"
                 >
                   <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-package text-floral-accent"
-                      aria-hidden="true"
+                    <p class="eyebrow text-clay">Catalog &amp; stock value</p>
+                    <p
+                      class="mt-3 font-display text-4xl tracking-tight text-floral-pink"
+                      data-field="kpi-inventory-value"
                     >
-                      <path
-                        d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"
-                      ></path>
-                      <path d="M12 22V12"></path>
-                      <polyline points="3.29 7 12 12 20.71 7"></polyline>
-                      <path d="m7.5 4.27 9 5.15"></path>
-                    </svg>
-                    <h2 class="mt-6 font-display text-3xl text-floral-pink">
-                      Products &amp; inventory
-                    </h2>
-                    <p class="mt-3 text-sm leading-6 text-text-muted">
-                      Create products, refine listings, and keep stock levels accurate.
+                      ₱0
+                    </p>
+                    <p
+                      class="mt-2 text-xs leading-5 text-text-muted"
+                      data-field="kpi-catalog-summary"
+                    >
+                      0 active products · 0 total units
                     </p>
                   </div>
-                  <span
-                    class="mt-8 inline-flex items-center gap-2 text-[0.68rem] font-extrabold uppercase tracking-[0.11em]"
+                  <a
+                    class="mt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-floral-pink underline-offset-4 hover:underline"
+                    href="/admin/products"
                   >
                     Manage products
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="15"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-arrow-right transition group-hover:translate-x-1"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                  </span>
-                </a>
-                <a
-                  class="motion-lift group flex min-h-64 flex-col justify-between rounded-card border p-7 shadow-low border-border bg-surface text-text"
-                  href="/admin/categories"
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </article>
+
+                <article
+                  class="flex flex-col justify-between rounded-card border border-border bg-surface p-6 shadow-low"
                 >
                   <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-tags text-floral-accent"
-                      aria-hidden="true"
+                    <p class="eyebrow text-clay">Registered accounts</p>
+                    <p
+                      class="mt-3 font-display text-4xl tracking-tight text-floral-pink"
+                      data-field="kpi-users"
                     >
-                      <path
-                        d="M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"
-                      ></path>
-                      <path
-                        d="M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193"
-                      ></path>
-                      <circle cx="10.5" cy="6.5" r=".5" fill="currentColor"></circle>
-                    </svg>
-                    <h2 class="mt-6 font-display text-3xl text-floral-pink">
-                      Categories
-                    </h2>
-                    <p class="mt-3 text-sm leading-6 text-text-muted">
-                      Organize the catalog and maintain customer-facing collections.
+                      0 users
+                    </p>
+                    <p
+                      class="mt-2 text-xs leading-5 text-text-muted"
+                      data-field="kpi-users-summary"
+                    >
+                      0 customers · 0 staff &amp; admins
                     </p>
                   </div>
-                  <span
-                    class="mt-8 inline-flex items-center gap-2 text-[0.68rem] font-extrabold uppercase tracking-[0.11em]"
+                  <a
+                    class="mt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-floral-pink underline-offset-4 hover:underline"
+                    href="/admin/users"
                   >
-                    Manage categories
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="15"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-arrow-right transition group-hover:translate-x-1"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                  </span>
-                </a>
-                <a
-                  class="motion-lift group flex min-h-64 flex-col justify-between rounded-card border p-7 shadow-low border-border bg-surface text-text"
-                  href="/products"
-                >
-                  <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-store text-floral-accent"
-                      aria-hidden="true"
-                    >
-                      <path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"></path>
-                      <path
-                        d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"
-                      ></path>
-                      <path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"></path>
-                    </svg>
-                    <h2 class="mt-6 font-display text-3xl text-floral-pink">
-                      Floréa Haven review
-                    </h2>
-                    <p class="mt-3 text-sm leading-6 text-text-muted">
-                      Check how active catalog changes appear to customers.
-                    </p>
-                  </div>
-                  <span
-                    class="mt-8 inline-flex items-center gap-2 text-[0.68rem] font-extrabold uppercase tracking-[0.11em]"
-                  >
-                    View Floréa Haven
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="15"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-arrow-right transition group-hover:translate-x-1"
-                      aria-hidden="true"
-                    >
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                  </span>
-                </a>
+                    User management
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </article>
               </div>
+
+              <!-- Analytics Breakdown: Fulfillment Pipeline & Category Performance -->
+              <div class="mt-7 analytics-report-grid">
+                <section
+                  class="rounded-card border border-border bg-surface p-6 shadow-low"
+                  aria-labelledby="pipeline-report-heading"
+                >
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p class="eyebrow text-clay">Operations analytics</p>
+                      <h2
+                        class="mt-1 font-display text-3xl text-floral-pink"
+                        id="pipeline-report-heading"
+                      >
+                        Fulfillment &amp; payment mix
+                      </h2>
+                    </div>
+                    <span
+                      class="rounded-full bg-surface-muted px-3 py-1 text-xs font-semibold text-text-muted"
+                      data-field="pipeline-period-label"
+                    >
+                      All time
+                    </span>
+                  </div>
+                  <div class="mt-6 space-y-4" id="analytics-status-list"></div>
+                  <div class="mt-6 border-t border-border pt-5">
+                    <h3
+                      class="text-xs font-extrabold uppercase tracking-[0.14em] text-floral-pink"
+                    >
+                      Revenue by payment method
+                    </h3>
+                    <div class="mt-4 space-y-3" id="analytics-payment-list"></div>
+                  </div>
+                </section>
+
+                <section
+                  class="rounded-card border border-border bg-surface p-6 shadow-low"
+                  aria-labelledby="category-report-heading"
+                >
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p class="eyebrow text-clay">Catalog report</p>
+                      <h2
+                        class="mt-1 font-display text-3xl text-floral-pink"
+                        id="category-report-heading"
+                      >
+                        Collection valuation &amp; stock
+                      </h2>
+                    </div>
+                    <a
+                      class="text-xs font-bold uppercase tracking-[0.12em] text-floral-pink underline-offset-4 hover:underline"
+                      href="/admin/categories"
+                    >
+                      Manage categories →
+                    </a>
+                  </div>
+                  <p class="mt-2 text-xs leading-5 text-text-muted">
+                    Retail inventory value and unit availability across each collection.
+                  </p>
+                  <div class="mt-6 space-y-5" id="analytics-category-list"></div>
+                </section>
+              </div>
+
+              <!-- Insights & Low-Stock Watchlist -->
+              <div class="mt-7 analytics-report-grid">
+                <section
+                  class="rounded-card border border-border bg-surface p-6 shadow-low"
+                  aria-labelledby="insights-heading"
+                >
+                  <div>
+                    <p class="eyebrow text-clay">Automated intelligence</p>
+                    <h2
+                      class="mt-1 font-display text-3xl text-floral-pink"
+                      id="insights-heading"
+                    >
+                      Store insights &amp; recommendations
+                    </h2>
+                    <p class="mt-2 text-xs leading-5 text-text-muted">
+                      Actionable signals computed from live order velocity, revenue
+                      channels, and inventory health.
+                    </p>
+                  </div>
+                  <ul class="mt-6 space-y-3" id="analytics-insights-list"></ul>
+                </section>
+
+                <section
+                  class="rounded-card border border-border bg-surface p-6 shadow-low"
+                  aria-labelledby="watchlist-heading"
+                >
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p class="eyebrow text-clay">Inventory health report</p>
+                      <h2
+                        class="mt-1 font-display text-3xl text-floral-pink"
+                        id="watchlist-heading"
+                      >
+                        Low-stock &amp; restock watchlist
+                      </h2>
+                    </div>
+                    <a
+                      class="text-xs font-bold uppercase tracking-[0.12em] text-floral-pink underline-offset-4 hover:underline"
+                      href="/admin/products?sort=stock-asc"
+                    >
+                      View all stock →
+                    </a>
+                  </div>
+                  <p class="mt-2 text-xs leading-5 text-text-muted">
+                    Products approaching depletion (10 units or fewer) that require
+                    replenishment.
+                  </p>
+                  <div
+                    class="mt-5 divide-y divide-border"
+                    id="analytics-low-stock-list"
+                  ></div>
+                </section>
+              </div>
+
+              <!-- Recent Orders Financial Report -->
+              <section
+                class="mt-7 overflow-hidden rounded-card border border-border bg-surface shadow-low"
+                aria-labelledby="financial-ledger-heading"
+              >
+                <div
+                  class="flex flex-wrap items-center justify-between gap-4 border-b border-border bg-surface-muted px-6 py-5"
+                >
+                  <div>
+                    <p class="eyebrow text-clay">Financial &amp; fulfillment ledger</p>
+                    <h2
+                      class="mt-1 font-display text-3xl text-floral-pink"
+                      id="financial-ledger-heading"
+                    >
+                      Recent order transactions report
+                    </h2>
+                  </div>
+                  <p
+                    class="text-xs font-semibold text-text-muted"
+                    data-field="report-period-summary"
+                  >
+                    Showing recent orders
+                  </p>
+                </div>
+                <div class="divide-y divide-border" id="analytics-recent-orders"></div>
+              </section>
             </section>
           </main>
         </div>
@@ -988,6 +969,71 @@
             </div>
           </div>
         </aside>
+      </div>
+    </template>
+    <!-- Reusable HTML: confirmation-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="confirmation-template">
+      <div class="confirmation-root" id="confirmation-overlay">
+        <button
+          class="confirmation-backdrop"
+          type="button"
+          aria-label="Close confirmation"
+          data-close-overlay=""
+        ></button>
+        <section
+          class="confirmation-panel"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="confirmation-title"
+          aria-describedby="confirmation-description"
+        >
+          <span
+            class="grid size-11 place-items-center rounded-full bg-brand-soft text-danger"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-alert-triangle"
+              aria-hidden="true"
+            >
+              <path
+                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+              ></path>
+              <path d="M12 9v4"></path>
+              <path d="M12 17h.01"></path>
+            </svg>
+          </span>
+          <p class="eyebrow mt-5 text-danger">Please confirm</p>
+          <h2
+            class="mt-2 font-display text-3xl text-floral-pink"
+            id="confirmation-title"
+            data-confirm-title=""
+          >
+            Confirm this change?
+          </h2>
+          <p
+            class="mt-3 text-sm leading-6 text-text-muted"
+            id="confirmation-description"
+            data-confirm-description=""
+          >
+            Review this action before continuing.
+          </p>
+          <div class="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button class="button-secondary" type="button" data-close-overlay="">
+              Keep it
+            </button>
+            <button class="button-danger" type="button" data-confirm-action="">
+              Confirm
+            </button>
+          </div>
+        </section>
       </div>
     </template>
     <noscript>

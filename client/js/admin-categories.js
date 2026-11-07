@@ -10,25 +10,37 @@ import {
   setBusy,
   confirmAction,
 } from './helpers.js';
-import { fillForm } from './admin-helpers.js';
+import { fillForm, setupAdminModal } from './admin-helpers.js';
 
 if (await pageReady) {
   const form = find('#category-form');
+  const modalError = find('[data-modal-error]', form);
   const categories = new Map();
   let selected = null;
   let busy = false;
+  const modal = setupAdminModal('category-modal', () => {
+    edit();
+    modal.close();
+  });
+  function closeModal() {
+    edit();
+    modal.close();
+  }
   function edit(category = null) {
     selected = category;
+    showError(null, modalError);
     fillForm(form, {
       name: category?.name ?? '',
       slug: category?.slug ?? '',
       description: category?.description ?? '',
     });
-    fillText(form, { 'form-title': category ? 'Edit collection' : 'Add a collection' });
+    fillText(form, {
+      'form-eyebrow': category ? 'Edit category' : 'New category',
+      'form-title': category ? 'Edit collection' : 'Add a collection',
+    });
     find('[data-save-category]', form).textContent = category
       ? 'Save category'
       : 'Create category';
-    find('[data-cancel-editing]', form).hidden = !category;
   }
   async function load() {
     const result = await adminCatalogApi.getCategories();
@@ -56,7 +68,11 @@ if (await pageReady) {
       }),
     );
   }
-  find('[data-cancel-editing]', form).addEventListener('click', () => edit());
+  find('[data-new-category]')?.addEventListener('click', (event) => {
+    edit();
+    modal.open(event.currentTarget);
+  });
+  find('[data-cancel-editing]', form).addEventListener('click', closeModal);
   find('#admin-category-list').addEventListener('click', (event) => {
     const button = event.target.closest('[data-edit-category], [data-delete-category]');
     if (!button) return;
@@ -65,6 +81,7 @@ if (await pageReady) {
     );
     if (button.hasAttribute('data-edit-category')) {
       edit(category);
+      modal.open(button);
       return;
     }
     confirmAction({
@@ -75,7 +92,7 @@ if (await pageReady) {
       action: async () => {
         await adminCatalogApi.deleteCategory(category.id);
         showNotice(`${category.name} was deleted.`);
-        if (selected?.id === category.id) edit();
+        if (selected?.id === category.id) closeModal();
         await load();
       },
     });
@@ -86,15 +103,17 @@ if (await pageReady) {
     busy = true;
     setBusy(form, true);
     showError(null);
+    showError(null, modalError);
     try {
+      const wasEditing = Boolean(selected);
       const result = selected
         ? await adminCatalogApi.updateCategory(selected.id, formValues(form))
         : await adminCatalogApi.createCategory(formValues(form));
-      showNotice(`${result.data.name} was ${selected ? 'updated' : 'created'}.`);
-      edit();
+      showNotice(`${result.data.name} was ${wasEditing ? 'updated' : 'created'}.`);
+      closeModal();
       await load();
     } catch (error) {
-      showError(error);
+      showError(error, modalError);
     } finally {
       busy = false;
       setBusy(form, false);

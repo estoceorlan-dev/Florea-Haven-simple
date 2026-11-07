@@ -489,93 +489,140 @@
                     <p class="text-xs text-text-muted" data-field="page-summary"></p>
                   </div>
                 </div>
-                <form
-                  class="rounded-card border border-border bg-surface p-6 shadow-low"
-                  aria-label="Create user"
-                  id="user-form"
-                  hidden=""
+              </div>
+              <div class="admin-modal-root" id="user-modal" hidden="">
+                <button
+                  class="admin-modal-backdrop"
+                  type="button"
+                  tabindex="-1"
+                  aria-label="Close user dialog"
+                  data-close-modal=""
+                ></button>
+                <div
+                  class="admin-modal-panel"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="user-form-title"
                 >
-                  <p class="eyebrow text-clay">Account details</p>
-                  <h2
-                    class="mt-2 font-display text-3xl text-floral-pink"
-                    data-field="form-title"
-                  >
-                    Add a user
-                  </h2>
-                  <fieldset class="mt-6 grid min-w-0 gap-5">
-                    <label class="form-field">
-                      Full name
-                      <input
-                        class="form-input"
-                        name="name"
-                        autocomplete="name"
-                        required=""
-                        minlength="2"
-                        maxlength="80"
-                      />
-                    </label>
-                    <label class="form-field">
-                      Email address
-                      <input
-                        class="form-input"
-                        name="email"
-                        type="email"
-                        autocomplete="email"
-                        required=""
-                        maxlength="254"
-                      />
-                    </label>
-                    <label class="form-field">
-                      Password
-                      <input
-                        class="form-input"
-                        name="password"
-                        type="password"
-                        pattern="(?=.*[A-Za-z])(?=.*[0-9]).{8,72}"
-                        autocomplete="new-password"
-                        aria-label="Password"
-                        aria-describedby="user-password-hint"
-                        required=""
-                        minlength="8"
-                        maxlength="72"
-                      />
-                      <span id="user-password-hint" class="form-hint text-text-muted">
-                        8–72 characters, including a letter and a number.
-                      </span>
-                    </label>
-                    <label class="form-field">
-                      Account role
-                      <select
-                        class="form-input"
-                        name="role"
-                        aria-label="Account role"
-                        aria-describedby="user-role-hint"
+                  <form class="p-6 sm:p-7" aria-label="Create user" id="user-form">
+                    <div class="flex items-start justify-between gap-4">
+                      <div>
+                        <p class="eyebrow text-clay" data-field="form-eyebrow">
+                          Account details
+                        </p>
+                        <h2
+                          class="mt-2 font-display text-3xl text-floral-pink"
+                          id="user-form-title"
+                          data-field="form-title"
+                        >
+                          Add a user
+                        </h2>
+                      </div>
+                      <button
+                        class="icon-button -mr-2 -mt-2"
+                        type="button"
+                        aria-label="Close user dialog"
+                        data-close-modal=""
                       >
-                        <option value="customer">Customer</option>
-                        <option value="staff">Staff</option>
-                        <option value="admin">Administrator</option>
-                      </select>
-                      <span id="user-role-hint" class="form-hint text-text-muted">
-                        Staff can manage products and orders. Administrators can also
-                        manage accounts and categories.
-                      </span>
-                    </label>
-                    <button
-                      class="button-primary w-full"
-                      type="submit"
-                      data-save-user=""
-                    >
-                      Create user
-                    </button>
-                    <button
-                      class="button-secondary w-full"
-                      type="button"
-                      data-cancel-editing=""
-                    >
-                      Cancel
-                    </button>
-                  </fieldset>
-                </form>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-x"
+                          aria-hidden="true"
+                        >
+                          <path d="M18 6 6 18"></path>
+                          <path d="m6 6 12 12"></path>
+                        </svg>
+                      </button>
+                    </div>
+                    <p
+                      class="form-alert mt-4"
+                      role="alert"
+                      data-modal-error=""
+                      hidden=""
+                    ></p>
+                    <fieldset class="mt-6 grid min-w-0 gap-5">
+                      <label class="form-field">
+                        Full name
+                        <input
+                          class="form-input"
+                          name="name"
+                          autocomplete="name"
+                          required=""
+                          minlength="2"
+                          maxlength="80"
+                        />
+                      </label>
+                      <label class="form-field">
+                        Email address
+                        <input
+                          class="form-input"
+                          name="email"
+                          type="email"
+                          autocomplete="email"
+                          required=""
+                          maxlength="254"
+                        />
+                      </label>
+                      <label class="form-field">
+                        Password
+                        <input
+                          class="form-input"
+                          name="password"
+                          type="password"
+                          pattern="(?=.*[A-Za-z])(?=.*[0-9]).{8,72}"
+                          autocomplete="new-password"
+                          aria-label="Password"
+                          aria-describedby="user-password-hint"
+                          required=""
+                          minlength="8"
+                          maxlength="72"
+                        />
+                        <span id="user-password-hint" class="form-hint text-text-muted">
+                          8–72 characters, including a letter and a number.
+                        </span>
+                      </label>
+                      <label class="form-field">
+                        Account role
+                        <select
+                          class="form-input"
+                          name="role"
+                          aria-label="Account role"
+                          aria-describedby="user-role-hint"
+                        >
+                          <option value="customer">Customer</option>
+                          <option value="staff">Staff</option>
+                          <option value="admin">Administrator</option>
+                        </select>
+                        <span id="user-role-hint" class="form-hint text-text-muted">
+                          Staff can manage products and orders. Administrators can also
+                          manage accounts and categories.
+                        </span>
+                      </label>
+                      <div
+                        class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"
+                      >
+                        <button
+                          class="button-secondary"
+                          type="button"
+                          data-cancel-editing=""
+                        >
+                          Cancel
+                        </button>
+                        <button class="button-primary" type="submit" data-save-user="">
+                          Create user
+                        </button>
+                      </div>
+                    </fieldset>
+                  </form>
+                </div>
               </div>
             </section>
 

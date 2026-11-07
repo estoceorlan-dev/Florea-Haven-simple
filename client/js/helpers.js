@@ -227,10 +227,21 @@ export function openOverlay(templateId, trigger) {
   return { root, close };
 }
 
-export function confirmAction({ title, description, label, trigger, action }) {
+export function confirmAction({
+  title,
+  description,
+  label,
+  cancelLabel,
+  trigger,
+  action,
+}) {
   const overlay = openOverlay('confirmation-template', trigger);
   find('[data-confirm-title]', overlay.root).textContent = title;
   find('[data-confirm-description]', overlay.root).textContent = description;
+  if (cancelLabel) {
+    const cancelButton = find('.confirmation-panel [data-close-overlay]', overlay.root);
+    if (cancelButton) cancelButton.textContent = cancelLabel;
+  }
   const button = find('[data-confirm-action]', overlay.root);
   button.textContent = label;
   button.addEventListener('click', async () => {

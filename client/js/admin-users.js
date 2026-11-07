@@ -12,18 +12,33 @@ import {
   confirmAction,
   watchAvailability,
 } from './helpers.js';
-import { enableFilters, fillForm, updatePagination } from './admin-helpers.js';
+import {
+  enableFilters,
+  fillForm,
+  updatePagination,
+  setupAdminModal,
+} from './admin-helpers.js';
 
 if (await pageReady) {
   const form = find('#user-form');
+  const modalError = find('[data-modal-error]', form);
   const users = new Map();
   let selected = null;
   let busy = false;
   enableFilters();
-  function edit(account = null) {
+  const modal = setupAdminModal('user-modal', () => {
+    selected = null;
+    showError(null, modalError);
+    modal.close();
+  });
+  function closeModal() {
+    selected = null;
+    showError(null, modalError);
+    modal.close();
+  }
+  function edit(account = null, trigger = document.activeElement) {
     selected = account;
-    form.hidden = false;
-    find('#user-editor-layout').classList.add('xl:grid-cols-[minmax(0,1fr)_22rem]');
+    showError(null, modalError);
     form.setAttribute('aria-label', account ? 'Edit user' : 'Create user');
     fillForm(form, {
       name: account?.name ?? '',
@@ -31,12 +46,15 @@ if (await pageReady) {
       role: account?.role ?? 'customer',
       password: '',
     });
-    fillText(form, { 'form-title': account ? 'Edit user' : 'Add a user' });
+    fillText(form, {
+      'form-eyebrow': account ? 'Update account' : 'Account details',
+      'form-title': account ? 'Edit user' : 'Add a user',
+    });
     form.elements.password.closest('label').hidden = Boolean(account);
     form.elements.password.required = !account;
     form.elements.role.disabled = account?.id === currentUser.id;
     find('[data-save-user]', form).textContent = account ? 'Save user' : 'Create user';
-    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    modal.open(trigger);
   }
   async function load() {
     if (busy) return;
@@ -81,18 +99,16 @@ if (await pageReady) {
       showError(error);
     }
   }
-  find('[data-new-user]').addEventListener('click', () => edit());
-  find('[data-cancel-editing]', form).addEventListener('click', () => {
-    form.hidden = true;
-    find('#user-editor-layout').classList.remove('xl:grid-cols-[minmax(0,1fr)_22rem]');
-    selected = null;
-  });
+  find('[data-new-user]').addEventListener('click', (event) =>
+    edit(null, event.currentTarget),
+  );
+  find('[data-cancel-editing]', form).addEventListener('click', closeModal);
   find('#admin-user-list').addEventListener('click', (event) => {
     const button = event.target.closest('[data-edit-user], [data-toggle-user]');
     if (!button) return;
     const account = users.get(button.closest('[data-user-id]').dataset.userId);
     if (button.hasAttribute('data-edit-user')) {
-      edit(account);
+      edit(account, button);
       return;
     }
     const verb = account.is_active ? 'Deactivate' : 'Reactivate';
@@ -127,21 +143,19 @@ if (await pageReady) {
     busy = true;
     setBusy(form, true);
     showError(null);
+    showError(null, modalError);
     try {
+      const wasEditing = Boolean(selected);
       const result = selected
         ? await adminUserApi.updateUser(selected.id, input)
         : await adminUserApi.createUser(input);
-      showNotice(`${result.data.name} was ${selected ? 'updated' : 'created'}.`);
+      showNotice(`${result.data.name} was ${wasEditing ? 'updated' : 'created'}.`);
       if (result.data.id === currentUser.id) updateUser(result.data);
-      form.hidden = true;
-      find('#user-editor-layout').classList.remove(
-        'xl:grid-cols-[minmax(0,1fr)_22rem]',
-      );
-      selected = null;
+      closeModal();
       busy = false;
       await load();
     } catch (error) {
-      showError(error);
+      showError(error, modalError);
     } finally {
       busy = false;
       setBusy(form, false);

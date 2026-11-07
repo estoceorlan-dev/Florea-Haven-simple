@@ -30,6 +30,7 @@ test('administrator creates, edits, removes categories and restores products', a
   const category = 'Seasonal ' + suffix;
   const renamed = 'Seasonal revised ' + suffix;
   await page.goto('/admin/categories');
+  await page.getByRole('button', { name: 'New category', exact: true }).click();
   await page.getByLabel('Category name', { exact: true }).fill(category);
   await page.getByLabel('Description', { exact: true }).fill('A seasonal collection.');
   await page.getByRole('button', { name: 'Create category', exact: true }).click();
@@ -48,6 +49,7 @@ test('administrator creates, edits, removes categories and restores products', a
   ).toHaveCount(0);
 
   await page.goto('/admin/products');
+  await page.getByRole('button', { name: 'New product', exact: true }).click();
   const form = page.locator('form').filter({
     has: page.getByRole('heading', { name: 'Add to the garden', exact: true }),
   });

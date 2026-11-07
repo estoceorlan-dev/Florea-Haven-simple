@@ -64,6 +64,10 @@ test('customer purchase, profile image, admin inventory and fulfillment', async 
   await expect(page).toHaveURL('/account');
   expect((await page.request.get('/api/admin/orders')).status()).toBe(403);
   await page.getByRole('button', { name: 'Sign out', exact: true }).first().click();
+  await page
+    .getByRole('alertdialog')
+    .getByRole('button', { name: 'Sign out', exact: true })
+    .click();
   await expect(page).toHaveURL('/');
 
   await page.goto('/login');
@@ -91,6 +95,10 @@ test('customer purchase, profile image, admin inventory and fulfillment', async 
   });
   await page.goto('/account');
   await page.getByRole('button', { name: 'Sign out', exact: true }).first().click();
+  await page
+    .getByRole('alertdialog')
+    .getByRole('button', { name: 'Sign out', exact: true })
+    .click();
   await expect(page).toHaveURL('/');
   await page.goto('/login');
   await page.getByLabel('Email address').fill(email);

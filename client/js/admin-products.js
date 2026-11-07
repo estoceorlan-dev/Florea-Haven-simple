@@ -19,6 +19,7 @@ import {
   fillForm,
   fillCategories,
   updatePagination,
+  setupAdminModal,
 } from './admin-helpers.js';
 import { enableUpload } from './upload.js';
 import {
@@ -29,6 +30,7 @@ import {
 
 if (await pageReady) {
   const form = find('#product-form');
+  const modalError = find('[data-modal-error]', form);
   const rows = new Map();
   let selected = null;
   let categories = [];
@@ -36,8 +38,17 @@ if (await pageReady) {
   let demoImageFile = null;
   let demoPreviewUrl = '';
   enableFilters();
+  const modal = setupAdminModal('product-modal', () => {
+    edit();
+    modal.close();
+  });
+  function closeModal() {
+    edit();
+    modal.close();
+  }
   function edit(product = null) {
     selected = product;
+    showError(null, modalError);
     fillForm(
       form,
       product
@@ -71,7 +82,6 @@ if (await pageReady) {
     find('[data-save-product]', form).textContent = product
       ? 'Save product'
       : 'Create product';
-    find('[data-cancel-editing]', form).hidden = !product;
     find('[data-edit-only]', form).hidden = !product;
     const uploader = find('#product-upload');
     uploader.hidden = false;
@@ -161,9 +171,9 @@ if (await pageReady) {
       showError(error);
     }
   }
-  find('[data-new-product]')?.addEventListener('click', () => {
+  find('[data-new-product]')?.addEventListener('click', (event) => {
     edit();
-    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    modal.open(event.currentTarget);
   });
   find('#product-image').addEventListener('change', (event) => {
     if (selected) return;
@@ -211,14 +221,14 @@ if (await pageReady) {
     find('[data-upload-save]').disabled = !demoImageFile;
     find('[data-upload-cancel]').hidden = !demoImageFile;
   });
-  find('[data-cancel-editing]', form).addEventListener('click', () => edit());
+  find('[data-cancel-editing]', form).addEventListener('click', closeModal);
   find('#admin-product-list').addEventListener('click', (event) => {
     const button = event.target.closest('[data-edit-product], [data-toggle-product]');
     if (!button) return;
     const product = rows.get(button.closest('[data-product-id]').dataset.productId);
     if (button.hasAttribute('data-edit-product')) {
       edit(product);
-      form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      modal.open(button);
       return;
     }
     async function change() {
@@ -229,7 +239,7 @@ if (await pageReady) {
           ? `${product.name} was deactivated.`
           : `${product.name} is active again.`,
       );
-      if (selected?.id === product.id) edit();
+      if (selected?.id === product.id) closeModal();
       await load();
     }
     if (product.is_active)
@@ -262,6 +272,7 @@ if (await pageReady) {
     busy = true;
     setBusy(form, true);
     showError(null);
+    showError(null, modalError);
     try {
       const wasEditing = Boolean(selected);
       const uploader = find('#product-upload');
@@ -298,11 +309,11 @@ if (await pageReady) {
       }
       showNotice(`${result.data.name} was ${wasEditing ? 'updated' : 'created'}.`);
       showCenterNotice(wasEditing ? 'Product updated' : 'Product added');
-      edit();
+      closeModal();
       busy = false;
       await load();
     } catch (error) {
-      showError(error);
+      showError(error, modalError);
     } finally {
       busy = false;
       setBusy(form, false);

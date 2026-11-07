@@ -633,6 +633,71 @@
         </div>
       </article>
     </template>
+    <!-- Reusable HTML: confirmation-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="confirmation-template">
+      <div class="confirmation-root" id="confirmation-overlay">
+        <button
+          class="confirmation-backdrop"
+          type="button"
+          aria-label="Close confirmation"
+          data-close-overlay=""
+        ></button>
+        <section
+          class="confirmation-panel"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="confirmation-title"
+          aria-describedby="confirmation-description"
+        >
+          <span
+            class="grid size-11 place-items-center rounded-full bg-brand-soft text-danger"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-alert-triangle"
+              aria-hidden="true"
+            >
+              <path
+                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+              ></path>
+              <path d="M12 9v4"></path>
+              <path d="M12 17h.01"></path>
+            </svg>
+          </span>
+          <p class="eyebrow mt-5 text-danger">Please confirm</p>
+          <h2
+            class="mt-2 font-display text-3xl text-floral-pink"
+            id="confirmation-title"
+            data-confirm-title=""
+          >
+            Confirm this change?
+          </h2>
+          <p
+            class="mt-3 text-sm leading-6 text-text-muted"
+            id="confirmation-description"
+            data-confirm-description=""
+          >
+            Review this action before continuing.
+          </p>
+          <div class="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button class="button-secondary" type="button" data-close-overlay="">
+              Keep it
+            </button>
+            <button class="button-danger" type="button" data-confirm-action="">
+              Confirm
+            </button>
+          </div>
+        </section>
+      </div>
+    </template>
     <noscript>
       <p class="page-shell py-5">
         Enable JavaScript to load live product data and use account or checkout actions.
