@@ -93,10 +93,40 @@ def list_categories(admin=False):
         ", COUNT(p.id) FILTER (WHERE p.is_active)::int AS active_product_count" if admin else ""
     )
     return rows(f"""SELECT c.id, c.slug, c.name, c.description{fields},
-                    COUNT(p.id)::int AS product_count{active_count}
-                    FROM categories c LEFT JOIN products p ON p.category_id = c.id
+                    COUNT(p.id)::int AS product_count{active_count},
+                    top_p.id AS top_product_id,
+                    top_p.name AS top_product_name,
+                    top_p.image_url AS top_product_image_url,
+                    COALESCE(top_p.sold_quantity, 0)::int AS top_product_sold_quantity
+                    FROM categories c
+                    LEFT JOIN products p ON p.category_id = c.id
                     {"" if admin else "AND p.is_active = TRUE"}
-                    GROUP BY c.id ORDER BY c.name ASC""")
+                    LEFT JOIN LATERAL (
+                        SELECT tp.id, tp.name, tp.image_url,
+                               COALESCE(
+                                   SUM(oi.quantity) FILTER (
+                                       WHERE o.status NOT IN ('cancelled', 'refunded')
+                                   ),
+                                   0
+                               ) AS sold_quantity
+                        FROM products tp
+                        LEFT JOIN order_items oi ON oi.product_id = tp.id
+                        LEFT JOIN orders o ON o.id = oi.order_id
+                        WHERE tp.category_id = c.id AND tp.is_active = TRUE
+                        GROUP BY tp.id
+                        ORDER BY sold_quantity DESC,
+                                 (tp.image_url IS NOT NULL) DESC,
+                                 tp.featured DESC,
+                                 tp.created_at DESC,
+                                 tp.name ASC
+                        LIMIT 1
+                    ) top_p ON TRUE
+                    GROUP BY c.id,
+                             top_p.id,
+                             top_p.name,
+                             top_p.image_url,
+                             top_p.sold_quantity
+                    ORDER BY c.name ASC""")
 
 
 @bp.get("/categories")

@@ -109,26 +109,39 @@ async function loadCatalog() {
 async function loadCategories() {
   const categories = (await catalogApi.getCategories()).data;
   if (page === 'home') {
-    find('#category-list').replaceChildren(
-      ...categories.map((category, index) => {
+    const cards = await Promise.all(
+      categories.map(async (category, index) => {
         const card = copyTemplate('category-card-template');
-        const [label, photo] = categoryPhotos[category.slug] ?? [
+        const [fallbackLabel, fallbackPhoto] = categoryPhotos[category.slug] ?? [
           'Chosen with care',
           categoryPhotos.flowers[1],
         ];
+        const demoImage = category.top_product_id
+          ? await getDemoProductImage(category.top_product_id)
+          : null;
+        const previewPhoto =
+          category.top_product_image_url ?? demoImage ?? fallbackPhoto;
+        const label = category.top_product_name
+          ? `Top seller · ${category.top_product_name}`
+          : fallbackLabel;
+        const soldSuffix =
+          category.top_product_sold_quantity > 0
+            ? ` · ${category.top_product_sold_quantity} sold`
+            : '';
         fillText(card, {
           name: category.name,
           label,
           number:
             { flowers: '01', seeds: '02', perfumes: '03' }[category.slug] ??
             String(index + 1).padStart(2, '0'),
-          count: `${category.product_count} pieces`,
+          count: `${category.product_count} pieces${soldSuffix}`,
         });
         card.href = `/products?category=${category.slug}`;
-        setImage(find('img', card), photo, '');
+        setImage(find('img', card), previewPhoto, '');
         return card;
       }),
     );
+    find('#category-list').replaceChildren(...cards);
   }
   const list = find('#category-filters');
   if (list) {
