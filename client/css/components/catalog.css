@@ -10,11 +10,11 @@
     content: '';
     position: absolute;
     top: 50%;
-    right: -1.5rem;
+    left: -1.5rem;
     transform: translateY(-50%);
     width: min(100%, 34rem);
     height: 17rem;
-    background: url('/assets/florea-logo.png') no-repeat right center / contain;
+    background: url('/assets/florea-logo.png') no-repeat left center / contain;
     opacity: 0.16;
     mix-blend-mode: multiply;
     pointer-events: none;
