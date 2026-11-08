@@ -147,6 +147,7 @@ if (await pageReady) {
             'product-description': `${product.sku} · ${product.category.name}`,
             price: currency(product.price),
             stock: product.stock_quantity,
+            'featured-status': product.featured ? 'Enabled' : 'Disabled',
             'active-status': product.is_active ? 'Active' : 'Inactive',
           });
           setImage(find('img', row), product.image_url, '');
@@ -154,6 +155,18 @@ if (await pageReady) {
             'aria-label',
             `Edit ${product.name}`,
           );
+          const featuredToggle = find('[data-toggle-featured]', row);
+          if (featuredToggle) {
+            const isFeatured = Boolean(product.featured);
+            featuredToggle.setAttribute('aria-checked', String(isFeatured));
+            featuredToggle.setAttribute(
+              'aria-label',
+              `${isFeatured ? 'Disable' : 'Enable'} Featured on Home for ${product.name}`,
+            );
+            featuredToggle.title = isFeatured
+              ? 'Featured on Home (click to disable)'
+              : 'Not featured on Home (click to enable)';
+          }
           const toggle = find('[data-toggle-product]', row);
           toggle.setAttribute(
             'aria-label',
@@ -223,12 +236,40 @@ if (await pageReady) {
   });
   find('[data-cancel-editing]', form).addEventListener('click', closeModal);
   find('#admin-product-list').addEventListener('click', (event) => {
-    const button = event.target.closest('[data-edit-product], [data-toggle-product]');
+    const button = event.target.closest(
+      '[data-edit-product], [data-toggle-product], [data-toggle-featured]',
+    );
     if (!button) return;
     const product = rows.get(button.closest('[data-product-id]').dataset.productId);
     if (button.hasAttribute('data-edit-product')) {
       edit(product);
       modal.open(button);
+      return;
+    }
+    if (button.hasAttribute('data-toggle-featured')) {
+      void (async () => {
+        button.disabled = true;
+        try {
+          const nextFeatured = !product.featured;
+          await adminCatalogApi.updateProduct(product.id, {
+            featured: nextFeatured,
+          });
+          showNotice(
+            nextFeatured
+              ? `${product.name} is now featured on Home.`
+              : `${product.name} was removed from Featured on Home.`,
+          );
+          if (selected?.id === product.id) {
+            selected = { ...selected, featured: nextFeatured };
+            fillForm(form, { featured: nextFeatured });
+          }
+          await load();
+        } catch (error) {
+          showError(error);
+        } finally {
+          button.disabled = false;
+        }
+      })();
       return;
     }
     async function change() {

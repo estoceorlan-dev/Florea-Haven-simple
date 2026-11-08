@@ -160,4 +160,76 @@
     color: var(--color-text-muted);
   }
   /* #endregion */
+  /* #region Admin product table & Featured on Home toggle */
+  @media (min-width: 48rem) {
+    .admin-product-table-row {
+      grid-template-columns: minmax(11.5rem, 1.4fr) minmax(
+          5rem,
+          0.5fr
+        ) 4.25rem 8.75rem 6rem 5.75rem !important;
+    }
+  }
+  .featured-home-toggle {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2rem;
+    padding: 0.25rem 0.65rem 0.25rem 0.35rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-muted);
+    color: var(--color-text-muted);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition:
+      background var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      color var(--motion-fast) var(--ease-standard);
+  }
+  .featured-home-toggle:hover:not(:disabled) {
+    border-color: var(--color-border-strong);
+  }
+  .featured-home-toggle:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .featured-home-toggle[aria-checked='true'] {
+    border-color: var(--color-floral-accent);
+    background: var(--color-brand-soft);
+    color: var(--color-brand-strong);
+  }
+  .featured-home-switch {
+    position: relative;
+    width: 2.05rem;
+    height: 1.15rem;
+    border-radius: 9999px;
+    background: var(--color-border-strong);
+    flex-shrink: 0;
+    transition: background var(--motion-fast) var(--ease-standard);
+  }
+  .featured-home-toggle[aria-checked='true'] .featured-home-switch {
+    background: var(--color-floral-pink);
+  }
+  .featured-home-thumb {
+    position: absolute;
+    top: 0.125rem;
+    left: 0.125rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 9999px;
+    background: #fff;
+    box-shadow: 0 1px 3px #0003;
+    transition: transform var(--motion-fast) var(--ease-standard);
+  }
+  .featured-home-toggle[aria-checked='true'] .featured-home-thumb {
+    transform: translateX(0.9rem);
+  }
+  .featured-home-label {
+    line-height: 1;
+    white-space: nowrap;
+  }
+  /* #endregion */
 }

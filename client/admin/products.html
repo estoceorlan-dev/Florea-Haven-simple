@@ -514,12 +514,13 @@
                   >
                     <div role="table" aria-label="Products and inventory">
                       <div
-                        class="hidden grid-cols-[minmax(14rem,1.5fr)_minmax(6rem,.65fr)_5rem_7rem_6rem] gap-4 bg-surface-muted px-5 py-3 text-[0.64rem] font-extrabold uppercase tracking-[0.12em] text-floral-pink md:grid"
+                        class="admin-product-table-row hidden gap-4 bg-surface-muted px-5 py-3 text-[0.64rem] font-extrabold uppercase tracking-[0.12em] text-floral-pink md:grid"
                         role="row"
                       >
                         <span role="columnheader">Product</span>
                         <span role="columnheader">Price</span>
                         <span role="columnheader">Stock</span>
+                        <span role="columnheader">Featured on Home</span>
                         <span role="columnheader">Status</span>
                         <span role="columnheader">Actions</span>
                       </div>
@@ -1155,7 +1156,7 @@
     <template id="admin-product-template">
       <article
         role="row"
-        class="grid gap-4 p-5 md:grid-cols-[minmax(14rem,1.5fr)_minmax(6rem,.65fr)_5rem_7rem_6rem] md:items-center"
+        class="admin-product-table-row grid gap-4 p-5 md:items-center"
         data-product-row=""
       >
         <div class="flex min-w-0 items-center gap-3" role="cell">
@@ -1189,6 +1190,24 @@
           <span class="mr-2 text-xs font-normal text-text-muted md:hidden">Stock</span>
           <span data-field="stock"></span>
         </p>
+        <div class="flex items-center gap-2" role="cell">
+          <span class="mr-1 text-xs text-text-muted md:hidden">Featured on Home</span>
+          <button
+            class="featured-home-toggle"
+            type="button"
+            role="switch"
+            aria-checked="false"
+            aria-label="Enable Featured on Home"
+            data-toggle-featured=""
+          >
+            <span class="featured-home-switch" aria-hidden="true">
+              <span class="featured-home-thumb"></span>
+            </span>
+            <span class="featured-home-label" data-field="featured-status">
+              Disabled
+            </span>
+          </button>
+        </div>
         <div role="cell">
           <span
             class="rounded-full px-2.5 py-1 text-[0.62rem] font-extrabold uppercase tracking-[0.08em] bg-brand-soft text-success"
