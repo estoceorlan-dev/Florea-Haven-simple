@@ -43,11 +43,15 @@ if (existsSync(rootAssets)) {
   mkdirSync(distAssets, { recursive: true });
   const badgeSource = path.join(rootAssets, 'Florea Haven Floral Badge.png');
   const logoSource = path.join(rootAssets, 'Florea Haven Floral Logo.png');
+  const gardenSource = path.join(rootAssets, 'Floral Shop Garden.jpg');
   if (existsSync(badgeSource)) {
     copyFileSync(badgeSource, path.join(distAssets, 'florea-badge.png'));
   }
   if (existsSync(logoSource)) {
     copyFileSync(logoSource, path.join(distAssets, 'florea-logo.png'));
+  }
+  if (existsSync(gardenSource)) {
+    copyFileSync(gardenSource, path.join(distAssets, 'floral-shop-garden.jpg'));
   }
 }
 
