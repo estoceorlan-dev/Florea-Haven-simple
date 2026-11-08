@@ -15,9 +15,10 @@
   main.admin-content-shell > section:first-of-type > div:first-child::before {
     content: '';
     position: absolute;
-    inset-block: -1.25rem;
-    left: -1rem;
-    width: min(100%, 28rem);
+    top: -4.5rem;
+    left: -2rem;
+    width: min(100%, 44rem);
+    height: 22rem;
     background: url('/assets/florea-logo.png') no-repeat left center / contain;
     opacity: 0.16;
     mix-blend-mode: multiply;
@@ -58,9 +59,10 @@
   .site-footer-brand::before {
     content: '';
     position: absolute;
-    inset-block: -1.5rem;
-    left: -1.25rem;
-    width: min(100%, 22rem);
+    top: -4rem;
+    left: -2.5rem;
+    width: 36rem;
+    height: 18rem;
     background: url('/assets/florea-logo.png') no-repeat left center / contain;
     opacity: 0.22;
     mix-blend-mode: soft-light;
