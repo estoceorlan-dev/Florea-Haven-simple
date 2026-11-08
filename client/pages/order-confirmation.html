@@ -9,6 +9,7 @@
       content="Floréa Haven — flowers, seeds, and botanical fragrances."
     />
     <title>Order received. — Floréa Haven</title>
+    <link rel="icon" type="image/png" href="/assets/florea-badge.png" />
     <link rel="stylesheet" href="/css/styles.css" />
     <script src="/theme-init.js"></script>
     <script type="module" src="/js/common.js"></script>
@@ -62,7 +63,7 @@
                 aria-hidden="true"
                 class="hidden min-[400px]:grid size-8 shrink-0 place-items-center rounded-full border border-floral-pink/20 bg-sage/50 sm:size-9"
               >
-                <span class="brand-sprout">F</span>
+                <img class="brand-badge-img" src="/assets/florea-badge.png" alt="" />
               </span>
               <span
                 class="whitespace-nowrap font-display text-[1.15rem] leading-none tracking-[-0.035em] sm:text-[1.65rem]"
@@ -492,23 +493,35 @@
       >
         <div class="page-shell site-footer-main">
           <div class="site-footer-brand">
-            <a aria-label="Floréa Haven home" href="/">
-              <span class="inline-flex items-center gap-2 text-ivory">
-                <span
-                  class="grid size-8 place-items-center rounded-full border border-ivory/25 bg-canvas/10"
-                >
-                  <span class="brand-sprout">F</span>
+            <img
+              class="brand-logo-card shrink-0"
+              src="/assets/florea-logo.png"
+              alt="Floréa Haven — Seeds, Flowers, Perfumes"
+              loading="lazy"
+            />
+            <div class="min-w-0">
+              <a aria-label="Floréa Haven home" href="/">
+                <span class="inline-flex items-center gap-2 text-ivory">
+                  <span
+                    class="grid size-8 place-items-center rounded-full border border-ivory/25 bg-canvas/10"
+                  >
+                    <img
+                      class="brand-badge-img"
+                      src="/assets/florea-badge.png"
+                      alt=""
+                    />
+                  </span>
+                  <span class="font-display text-xl tracking-[-0.035em]">
+                    Floréa
+                    <i class="font-normal text-ivory">Haven</i>
+                  </span>
                 </span>
-                <span class="font-display text-xl tracking-[-0.035em]">
-                  Floréa
-                  <i class="font-normal text-ivory">Haven</i>
-                </span>
-              </span>
-            </a>
-            <p class="mt-1.5 max-w-sm text-xs leading-5 text-ivory">
-              Garden-grown beauty for homes that make room for softness, scent, and
-              small everyday rituals.
-            </p>
+              </a>
+              <p class="mt-1.5 max-w-sm text-xs leading-5 text-ivory">
+                Garden-grown beauty for homes that make room for softness, scent, and
+                small everyday rituals.
+              </p>
+            </div>
           </div>
           <div>
             <p class="eyebrow text-ivory">Explore</p>

@@ -37,6 +37,19 @@ for (const name of ['index.html', 'pages', 'admin', 'css', 'js', 'licenses']) {
   copy(path.join(client, name), path.join(output, name));
 }
 copy(path.join(client, 'public'), output);
+const rootAssets = path.join(root, 'assets');
+if (existsSync(rootAssets)) {
+  const distAssets = path.join(output, 'assets');
+  mkdirSync(distAssets, { recursive: true });
+  const badgeSource = path.join(rootAssets, 'Florea Haven Floral Badge.png');
+  const logoSource = path.join(rootAssets, 'Florea Haven Floral Logo.png');
+  if (existsSync(badgeSource)) {
+    copyFileSync(badgeSource, path.join(distAssets, 'florea-badge.png'));
+  }
+  if (existsSync(logoSource)) {
+    copyFileSync(logoSource, path.join(distAssets, 'florea-logo.png'));
+  }
+}
 
 const apiBaseUrl = (
   process.env.API_BASE_URL ||

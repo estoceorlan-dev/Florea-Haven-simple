@@ -24,8 +24,9 @@
     align-items: start;
   }
   .site-footer-brand {
-    display: grid;
-    gap: 0.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
   }
   .site-footer-tagline {
     font-family: var(--font-display);
