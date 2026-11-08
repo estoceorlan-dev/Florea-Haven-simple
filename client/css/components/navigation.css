@@ -260,22 +260,47 @@
   }
   @media (min-width: 64rem) {
     body[data-sidebar-collapsed='true'] [data-admin-sidebar] {
-      width: 5rem;
+      width: 4.75rem !important;
     }
     body[data-sidebar-collapsed='true'] [data-admin-main-shell] {
-      padding-left: 5rem;
+      padding-left: 4.75rem !important;
     }
     body[data-sidebar-collapsed='true'] [data-admin-sidebar] > div:first-child {
-      padding: 1rem 0.5rem;
+      padding: 1rem 0.5rem !important;
     }
     body[data-sidebar-collapsed='true'] [data-admin-sidebar] .admin-sidebar-header-row {
-      flex-direction: column;
-      justify-content: center;
-      gap: 0.65rem;
+      justify-content: center !important;
+      gap: 0 !important;
+    }
+    body[data-sidebar-collapsed='true'] [data-admin-sidebar] [data-sidebar-toggle] {
+      display: none !important;
+    }
+    body[data-sidebar-collapsed='true'] [data-admin-sidebar] [data-admin-brand] > span {
+      gap: 0 !important;
     }
     body[data-sidebar-collapsed='true']
       [data-admin-sidebar]
-      a[aria-label='Floréa Haven home']
+      [data-admin-brand]
+      > span
+      > span:first-child {
+      width: 2.5rem !important;
+      height: 2.5rem !important;
+      cursor: pointer;
+      transition:
+        transform var(--motion-fast) var(--ease-standard),
+        box-shadow var(--motion-fast) var(--ease-standard);
+    }
+    body[data-sidebar-collapsed='true']
+      [data-admin-sidebar]
+      [data-admin-brand]:hover
+      > span
+      > span:first-child {
+      transform: scale(1.06);
+      box-shadow: 0 4px 12px #98516826;
+    }
+    body[data-sidebar-collapsed='true']
+      [data-admin-sidebar]
+      [data-admin-brand]
       > span
       > span:last-child,
     body[data-sidebar-collapsed='true'] [data-admin-sidebar] [data-workspace-role],
@@ -288,34 +313,36 @@
       [data-admin-sidebar]
       [data-sign-out]
       .admin-sidebar-label {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
     }
     body[data-sidebar-collapsed='true'] [data-admin-sidebar] > div:nth-child(2) {
-      padding-inline: 0.5rem;
+      padding: 0.75rem 0.5rem !important;
     }
     body[data-sidebar-collapsed='true'] [data-admin-sidebar] .admin-nav-link {
-      justify-content: center;
-      padding-inline: 0;
-      width: 3rem;
-      height: 3rem;
-      margin-inline: auto;
-      border-left-width: 0;
+      justify-content: center !important;
+      padding-inline: 0 !important;
+      width: 2.75rem !important;
+      height: 2.75rem !important;
+      min-height: 2.75rem !important;
+      margin-inline: auto !important;
+      border-left-width: 0 !important;
+      border-radius: 0.85rem !important;
     }
     body[data-sidebar-collapsed='true']
       [data-admin-sidebar]
       .admin-nav-link
       > .admin-sidebar-badge {
       position: absolute;
-      top: 0.15rem;
-      right: 0.15rem;
+      top: 0.1rem;
+      right: 0.1rem;
       margin-left: 0;
       min-width: 1.15rem;
       height: 1.15rem;
@@ -323,20 +350,23 @@
       font-size: 0.6rem;
     }
     body[data-sidebar-collapsed='true'] [data-admin-sidebar] .mt-auto {
-      padding-inline: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding: 0.85rem 0.5rem !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 0.75rem !important;
     }
     body[data-sidebar-collapsed='true'] [data-admin-sidebar] .mt-auto .theme-selector {
-      display: none;
+      display: none !important;
     }
     body[data-sidebar-collapsed='true'] [data-admin-sidebar] [data-sign-out] {
-      justify-content: center;
-      padding-inline: 0;
-      width: 3rem;
-      height: 3rem;
-      margin-inline: auto;
+      justify-content: center !important;
+      padding-inline: 0 !important;
+      width: 2.75rem !important;
+      height: 2.75rem !important;
+      min-height: 2.75rem !important;
+      margin-inline: auto !important;
+      border-radius: 0.85rem !important;
     }
   }
   /* #endregion */

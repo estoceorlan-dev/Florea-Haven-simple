@@ -100,10 +100,18 @@ function setupAdminSidebar() {
   toggleBtn.append(icon);
 
   if (headerBox && brandLink) {
+    brandLink.dataset.adminBrand = '';
     const row = document.createElement('div');
     row.className = 'admin-sidebar-header-row';
     headerBox.insertBefore(row, brandLink);
     row.append(brandLink, toggleBtn);
+    brandLink.addEventListener('click', (event) => {
+      if (document.body.dataset.sidebarCollapsed === 'true') {
+        event.preventDefault();
+        event.stopPropagation();
+        setCollapsed(false);
+      }
+    });
   }
 
   for (const link of findAll('.admin-nav-link', sidebar)) {
@@ -139,6 +147,21 @@ function setupAdminSidebar() {
     toggleBtn.title = collapsed
       ? 'Expand sidebar'
       : 'Collapse sidebar (auto-collapses after 10s of inactivity)';
+    if (brandLink) {
+      brandLink.setAttribute(
+        'aria-label',
+        collapsed ? 'Expand sidebar' : 'Floréa Haven home',
+      );
+      if (collapsed) {
+        brandLink.title = 'Expand sidebar';
+        brandLink.setAttribute('role', 'button');
+        brandLink.setAttribute('aria-expanded', 'false');
+      } else {
+        brandLink.removeAttribute('title');
+        brandLink.removeAttribute('role');
+        brandLink.removeAttribute('aria-expanded');
+      }
+    }
     clearTimeout(idleTimer);
     if (!collapsed) {
       idleTimer = setTimeout(() => {
