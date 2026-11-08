@@ -32,6 +32,27 @@
     opacity: 0.12;
     mix-blend-mode: screen;
   }
+  .page-header-watermark {
+    position: relative;
+    isolation: isolate;
+  }
+  .page-header-watermark::before {
+    content: '';
+    position: absolute;
+    top: -4.5rem;
+    right: -1.5rem;
+    width: min(100%, 40rem);
+    height: 20rem;
+    background: url('/assets/florea-logo.png') no-repeat right center / contain;
+    opacity: 0.16;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: -1;
+  }
+  html[data-theme='dark'] .page-header-watermark::before {
+    opacity: 0.12;
+    mix-blend-mode: screen;
+  }
   /* #endregion */
   /* #region Compact site footer */
   .site-footer {
