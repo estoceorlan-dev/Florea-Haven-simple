@@ -12,16 +12,32 @@
     border-radius: 9999px;
     display: block;
   }
+  :has(> .brand-logo-card) {
+    position: relative;
+    isolation: isolate;
+  }
   .brand-logo-card {
-    width: 9rem;
-    height: 4.25rem;
+    position: absolute;
+    top: -1rem;
+    left: -0.75rem;
+    width: min(100%, 24rem);
+    height: 11rem;
+    margin: 0 !important;
     object-fit: contain;
-    object-position: left center;
+    object-position: left top;
     border: 0;
     border-radius: 0;
     box-shadow: none;
     background: transparent;
+    opacity: 0.16;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: -1;
     display: block;
+  }
+  html[data-theme='dark'] .brand-logo-card {
+    opacity: 0.12;
+    mix-blend-mode: screen;
   }
   .nav-link {
     min-height: calc(var(--spacing) * 11);
