@@ -298,15 +298,31 @@ export async function refreshCartBadge(cart) {
   }
 }
 
+const EXCLUDED_BADGE_ORDER_STATUSES = new Set(['delivered', 'cancelled', 'refunded']);
+
 export async function refreshAdminOrdersBadge() {
   if (!currentUser || !['admin', 'staff'].includes(currentUser.role)) return;
   try {
-    const result = await adminOrderApi.getOrders({ limit: 1 });
-    const orderCount = result.pagination?.total ?? result.data?.length ?? 0;
+    const first = await adminOrderApi.getOrders({ page: 1, limit: 100 });
+    const orders = [...(first.data ?? [])];
+    const totalPages = Math.min(first.pagination?.totalPages ?? 1, 10);
+    if (totalPages > 1) {
+      const rest = await Promise.all(
+        Array.from({ length: totalPages - 1 }, (_, index) =>
+          adminOrderApi.getOrders({ page: index + 2, limit: 100 }),
+        ),
+      );
+      for (const pageResult of rest) {
+        orders.push(...(pageResult.data ?? []));
+      }
+    }
+    const orderCount = orders.filter(
+      (order) => !EXCLUDED_BADGE_ORDER_STATUSES.has(order.status),
+    ).length;
     for (const badge of findAll('[data-admin-orders-badge]')) {
       badge.textContent = String(orderCount);
-      badge.hidden = false;
-      badge.style.display = '';
+      badge.hidden = orderCount === 0;
+      badge.style.display = orderCount === 0 ? 'none' : '';
     }
   } catch {
     /* Ignore non-blocking badge refresh errors */
