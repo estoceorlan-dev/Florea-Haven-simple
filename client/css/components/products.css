@@ -163,10 +163,9 @@
   /* #region Admin product table & Featured on Home toggle */
   @media (min-width: 48rem) {
     .admin-product-table-row {
-      grid-template-columns: minmax(11.5rem, 1.4fr) minmax(
-          5rem,
-          0.5fr
-        ) 4.25rem 8.75rem 6rem 5.75rem !important;
+      grid-template-columns:
+        minmax(11.5rem, 1.4fr) minmax(5rem, 0.5fr)
+        4.25rem 8.75rem 6rem 5.75rem !important;
     }
   }
   .featured-home-toggle {

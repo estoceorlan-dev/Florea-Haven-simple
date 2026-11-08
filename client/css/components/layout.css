@@ -8,9 +8,28 @@
     width: min(100% - (var(--page-gutter) * 2), var(--container-admin));
     margin-inline: auto;
   }
+  main.admin-content-shell > section:first-of-type > div:first-child {
+    position: relative;
+    isolation: isolate;
+    padding-top: 3.75rem;
+  }
+  main.admin-content-shell > section:first-of-type > div:first-child::before {
+    content: '';
+    position: absolute;
+    top: -0.35rem;
+    left: -0.35rem;
+    width: 9.25rem;
+    height: 4.25rem;
+    background: url('/assets/florea-logo.png') no-repeat left center / contain;
+    pointer-events: none;
+    z-index: -1;
+  }
   /* #endregion */
   /* #region Compact site footer */
   .site-footer {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     margin-top: 2rem;
     border-top-left-radius: 1.75rem;
     border-top-right-radius: 1.75rem;
@@ -24,9 +43,20 @@
     align-items: start;
   }
   .site-footer-brand {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.875rem;
+    position: relative;
+    display: grid;
+    gap: 0.25rem;
+    padding-top: 3.75rem;
+  }
+  .site-footer-brand::before {
+    content: '';
+    position: absolute;
+    top: -0.35rem;
+    left: -0.35rem;
+    width: 9rem;
+    height: 4.25rem;
+    background: url('/assets/florea-logo.png') no-repeat left center / contain;
+    pointer-events: none;
   }
   .site-footer-tagline {
     font-family: var(--font-display);
