@@ -144,7 +144,7 @@ def catalog_input(product=False, update=False):
 
 def checkout_input(direct=False):
     selection_fields = (
-        {"productId", "quantity", "expectedUnitPrice"} if direct else {"cartRevision"}
+        {"productId", "quantity", "expectedUnitPrice"} if direct else {"cartRevision", "itemIds"}
     )
     data = body(selection_fields | {"paymentMethod", "deliveryAddress"})
     if direct:
@@ -161,6 +161,13 @@ def checkout_input(direct=False):
                 data.get("cartRevision"), "cartRevision", 64, 64, r"[a-f0-9]{64}"
             )
         }
+        if data.get("itemIds") is not None:
+            raw_ids = data.get("itemIds")
+            if not isinstance(raw_ids, list) or not raw_ids:
+                invalid("itemIds", "Select at least one item to check out.")
+            selection["itemIds"] = list(
+                dict.fromkeys(identifier(item_id, "itemIds") for item_id in raw_ids)
+            )
     payment = choice(
         data.get("paymentMethod"),
         "paymentMethod",

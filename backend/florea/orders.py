@@ -185,6 +185,17 @@ def checkout_items(user_id, data):
             "Your cart changed. Review the latest prices and availability before trying again.",
             {"cart": cart},
         )
+    if "itemIds" in data:
+        selected_ids = set(data["itemIds"])
+        selected_items = [item for item in cart["items"] if str(item["id"]) in selected_ids]
+        if not selected_items or len(selected_items) != len(selected_ids):
+            raise ApiError(
+                409,
+                "CART_CHANGED",
+                "Your cart changed. Review the latest prices and availability before trying again.",
+                {"cart": cart},
+            )
+        return selected_items
     return cart["items"]
 
 
@@ -266,7 +277,13 @@ def place_order(user_id, key, data):
                 ),
             )
         if "productId" not in data:
-            execute("DELETE FROM cart_items WHERE user_id = %s", (user_id,))
+            if "itemIds" in data:
+                execute(
+                    "DELETE FROM cart_items WHERE user_id = %s AND id = ANY(%s::uuid[])",
+                    (user_id, data["itemIds"]),
+                )
+            else:
+                execute("DELETE FROM cart_items WHERE user_id = %s", (user_id,))
         return get_order(order_id, user_id), False
 
 

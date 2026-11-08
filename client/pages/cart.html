@@ -279,10 +279,31 @@
                 Your cart
               </h1>
             </div>
-            <p class="text-sm text-text-muted">1 item</p>
+            <p class="text-sm text-text-muted" data-field="cart-count">1 item</p>
           </div>
           <div class="grid gap-8 pt-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-12">
-            <div class="min-w-0 space-y-4" id="cart-items"></div>
+            <div class="min-w-0 space-y-4">
+              <div
+                class="flex items-center justify-between rounded-control border border-border bg-surface-muted px-4 py-3 text-sm"
+              >
+                <label
+                  class="inline-flex cursor-pointer items-center gap-3 font-semibold text-floral-pink"
+                >
+                  <input
+                    class="size-4 cursor-pointer rounded border-border accent-floral-pink"
+                    type="checkbox"
+                    id="cart-select-all"
+                    checked=""
+                  />
+                  <span>Select all items</span>
+                </label>
+                <span
+                  class="text-xs text-text-muted"
+                  data-field="selected-count"
+                ></span>
+              </div>
+              <div class="space-y-4" id="cart-items"></div>
+            </div>
             <aside
               class="h-fit rounded-card border border-border bg-surface-muted p-6 shadow-low lg:sticky lg:top-28 lg:p-8"
             >
@@ -297,7 +318,14 @@
                 </div>
               </div>
               <div
-                class="mt-6 flex items-center justify-between border-b border-border pb-5 text-sm"
+                class="mt-5 space-y-2.5 border-t border-border pt-4"
+                id="cart-summary-items"
+              ></div>
+              <p class="mt-4 text-xs text-text-muted" id="cart-summary-empty" hidden="">
+                Select at least one item to proceed to checkout.
+              </p>
+              <div
+                class="mt-5 flex items-center justify-between border-b border-border pb-5 text-sm"
               >
                 <span class="text-text-muted">Subtotal</span>
                 <strong
@@ -309,7 +337,11 @@
                 Cash on Delivery. Prices and availability are confirmed before you place
                 the order.
               </p>
-              <a class="button-primary mt-6 w-full" href="/checkout">
+              <a
+                class="button-primary mt-6 w-full"
+                href="/checkout"
+                id="cart-checkout-link"
+              >
                 Continue to checkout
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -660,10 +692,19 @@
     <!-- Reusable HTML: cart-item-template. JavaScript clones this markup and fills its labeled fields. -->
     <template id="cart-item-template">
       <article
-        class="grid grid-cols-[80px_minmax(0,1fr)] gap-4 rounded-card border bg-surface p-4 shadow-low transition sm:grid-cols-[112px_minmax(0,1fr)_auto] sm:gap-6 sm:p-5 border-border"
+        class="grid grid-cols-[auto_80px_minmax(0,1fr)] items-start gap-4 rounded-card border bg-surface p-4 shadow-low transition sm:grid-cols-[auto_112px_minmax(0,1fr)_auto] sm:gap-5 sm:p-5 border-border"
         aria-busy="false"
         data-cart-item=""
       >
+        <label class="mt-2 inline-flex cursor-pointer items-center">
+          <input
+            class="size-4 cursor-pointer rounded border-border accent-floral-pink"
+            type="checkbox"
+            checked=""
+            aria-label="Select item for checkout"
+            data-cart-select=""
+          />
+        </label>
         <a
           class="aspect-[4/5] overflow-hidden rounded-control bg-brand-soft"
           href="/products/20000000-0000-4000-8000-000000000001"
@@ -800,10 +841,109 @@
         </div>
         <p
           class="hidden whitespace-nowrap text-sm font-semibold text-floral-pink sm:block"
+          data-field="line-total"
         >
           ₱1,890
         </p>
       </article>
+    </template>
+    <!-- Reusable HTML: cart-summary-item-template. JavaScript clones this markup and fills its labeled fields. -->
+    <template id="cart-summary-item-template">
+      <div
+        class="flex items-center justify-between gap-3 rounded-control border border-border bg-surface px-3 py-2.5 text-xs"
+        data-summary-item=""
+      >
+        <div class="min-w-0 flex-1">
+          <p
+            class="truncate font-semibold text-floral-pink"
+            data-field="summary-name"
+          ></p>
+          <p
+            class="mt-0.5 font-semibold text-text-muted"
+            data-field="summary-line-total"
+          ></p>
+        </div>
+        <div class="flex shrink-0 items-center gap-1.5">
+          <div
+            class="inline-flex items-center rounded-control border border-border bg-surface-muted"
+          >
+            <button
+              class="grid size-7 place-items-center text-floral-pink transition hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-30"
+              type="button"
+              data-summary-decrease=""
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-minus"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14"></path>
+              </svg>
+            </button>
+            <span
+              class="min-w-6 text-center text-xs font-semibold tabular-nums text-floral-pink"
+              data-field="summary-quantity"
+            >
+              1
+            </span>
+            <button
+              class="grid size-7 place-items-center text-floral-pink transition hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-30"
+              type="button"
+              data-summary-increase=""
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-plus"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14"></path>
+                <path d="M12 5v14"></path>
+              </svg>
+            </button>
+          </div>
+          <button
+            class="grid size-7 place-items-center rounded-control text-text-muted transition hover:bg-brand-soft hover:text-danger disabled:cursor-not-allowed disabled:opacity-50"
+            type="button"
+            data-summary-remove=""
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-trash2"
+              aria-hidden="true"
+            >
+              <path d="M10 11v6"></path>
+              <path d="M14 11v6"></path>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+              <path d="M3 6h18"></path>
+              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
     </template>
     <!-- Reusable HTML: confirmation-template. JavaScript clones this markup and fills its labeled fields. -->
     <template id="confirmation-template">
