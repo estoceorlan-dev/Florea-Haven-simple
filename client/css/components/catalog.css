@@ -1,7 +1,28 @@
 @layer components {
   /* #region Catalog hero banner */
   .catalog-hero-banner {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     padding: 0.95rem 1.25rem;
+  }
+  .catalog-hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -1.5rem;
+    transform: translateY(-50%);
+    width: min(100%, 34rem);
+    height: 17rem;
+    background: url('/assets/florea-logo.png') no-repeat right center / contain;
+    opacity: 0.16;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: -1;
+  }
+  html[data-theme='dark'] .catalog-hero-banner::before {
+    opacity: 0.12;
+    mix-blend-mode: screen;
   }
   .catalog-hero-title {
     font-size: clamp(1.8rem, 3.2vw, 2.55rem);
