@@ -44,6 +44,7 @@ if (existsSync(rootAssets)) {
   const badgeSource = path.join(rootAssets, 'Florea Haven Floral Badge.png');
   const logoSource = path.join(rootAssets, 'Florea Haven Floral Logo.png');
   const gardenSource = path.join(rootAssets, 'Floral Shop Garden.jpg');
+  const promiseGardenSource = path.join(rootAssets, 'garden.jpg');
   if (existsSync(badgeSource)) {
     copyFileSync(badgeSource, path.join(distAssets, 'florea-badge.png'));
   }
@@ -52,6 +53,9 @@ if (existsSync(rootAssets)) {
   }
   if (existsSync(gardenSource)) {
     copyFileSync(gardenSource, path.join(distAssets, 'floral-shop-garden.jpg'));
+  }
+  if (existsSync(promiseGardenSource)) {
+    copyFileSync(promiseGardenSource, path.join(distAssets, 'garden.jpg'));
   }
 }
 
