@@ -290,7 +290,7 @@
                   class="inline-flex cursor-pointer items-center gap-3 font-semibold text-floral-pink"
                 >
                   <input
-                    class="size-4 cursor-pointer rounded border-border accent-floral-pink"
+                    class="cart-select-checkbox"
                     type="checkbox"
                     id="cart-select-all"
                     checked=""
@@ -692,13 +692,13 @@
     <!-- Reusable HTML: cart-item-template. JavaScript clones this markup and fills its labeled fields. -->
     <template id="cart-item-template">
       <article
-        class="grid grid-cols-[auto_80px_minmax(0,1fr)] items-start gap-4 rounded-card border bg-surface p-4 shadow-low transition sm:grid-cols-[auto_112px_minmax(0,1fr)_auto] sm:gap-5 sm:p-5 border-border"
+        class="cart-item-card rounded-card border bg-surface shadow-low transition border-border"
         aria-busy="false"
         data-cart-item=""
       >
-        <label class="mt-2 inline-flex cursor-pointer items-center">
+        <label class="inline-flex cursor-pointer items-center">
           <input
-            class="size-4 cursor-pointer rounded border-border accent-floral-pink"
+            class="cart-select-checkbox"
             type="checkbox"
             checked=""
             aria-label="Select item for checkout"
@@ -706,7 +706,7 @@
           />
         </label>
         <a
-          class="aspect-[4/5] overflow-hidden rounded-control bg-brand-soft"
+          class="cart-item-thumb"
           href="/products/20000000-0000-4000-8000-000000000001"
           data-product-link=""
         >
@@ -723,14 +723,12 @@
         </a>
         <div class="min-w-0">
           <p
-            class="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-clay"
+            class="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-clay"
             data-field="category"
           >
             Collection
           </p>
-          <h2
-            class="mt-1 break-words font-display text-2xl leading-tight text-floral-pink"
-          >
+          <h2 class="cart-item-title break-words">
             <a
               href="/products/20000000-0000-4000-8000-000000000001"
               data-field="name"
@@ -740,25 +738,23 @@
             </a>
           </h2>
           <p
-            class="mt-2 text-sm font-semibold text-floral-pink sm:hidden"
+            class="mt-1 text-sm font-semibold text-floral-pink sm:hidden"
             data-field="line-total"
           ></p>
           <p
             aria-live="polite"
             aria-atomic="true"
-            class="cart-stock-status mt-3 flex-wrap"
+            class="cart-stock-status mt-1 flex-wrap"
             data-stock-state="available"
             data-cart-stock=""
           >
             <span class="stock-indicator-dot" aria-hidden="true"></span>
             <span data-field="cart-stock"></span>
           </p>
-          <div class="mt-4 flex flex-wrap items-center gap-3">
-            <div
-              class="inline-flex min-h-11 items-center rounded-control border border-border bg-surface"
-            >
+          <div class="mt-2.5 flex flex-wrap items-center gap-3">
+            <div class="cart-qty-stepper">
               <button
-                class="grid size-11 place-items-center text-floral-pink disabled:cursor-not-allowed disabled:opacity-30"
+                class="cart-qty-btn"
                 type="button"
                 aria-label="Decrease Blush Garden Bouquet quantity"
                 disabled=""
@@ -766,8 +762,8 @@
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
+                  width="13"
+                  height="13"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -781,22 +777,22 @@
                 </svg>
               </button>
               <span
-                class="min-w-8 text-center text-sm tabular-nums"
+                class="cart-qty-value"
                 aria-label="Quantity"
                 data-field="quantity"
               >
                 1
               </span>
               <button
-                class="grid size-11 place-items-center text-floral-pink disabled:cursor-not-allowed disabled:opacity-30"
+                class="cart-qty-btn"
                 type="button"
                 aria-label="Increase Blush Garden Bouquet quantity"
                 data-cart-increase=""
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
+                  width="13"
+                  height="13"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -812,7 +808,7 @@
               </button>
             </div>
             <button
-              class="inline-flex min-h-11 items-center gap-1.5 px-2 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-text-muted transition hover:text-danger disabled:cursor-not-allowed disabled:opacity-50"
+              class="inline-flex items-center gap-1.5 px-2 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-text-muted transition hover:text-danger disabled:cursor-not-allowed disabled:opacity-50"
               type="button"
               data-cart-remove=""
             >
@@ -849,10 +845,7 @@
     </template>
     <!-- Reusable HTML: cart-summary-item-template. JavaScript clones this markup and fills its labeled fields. -->
     <template id="cart-summary-item-template">
-      <div
-        class="flex items-center justify-between gap-3 rounded-control border border-border bg-surface px-3 py-2.5 text-xs"
-        data-summary-item=""
-      >
+      <div class="cart-summary-row text-xs" data-summary-item="">
         <div class="min-w-0 flex-1">
           <p
             class="truncate font-semibold text-floral-pink"
@@ -863,12 +856,10 @@
             data-field="summary-line-total"
           ></p>
         </div>
-        <div class="flex shrink-0 items-center gap-1.5">
-          <div
-            class="inline-flex items-center rounded-control border border-border bg-surface-muted"
-          >
+        <div class="flex shrink-0 items-center gap-2">
+          <div class="summary-qty-stepper">
             <button
-              class="grid size-7 place-items-center text-floral-pink transition hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-30"
+              class="summary-qty-btn"
               type="button"
               data-summary-decrease=""
             >
@@ -888,14 +879,9 @@
                 <path d="M5 12h14"></path>
               </svg>
             </button>
-            <span
-              class="min-w-6 text-center text-xs font-semibold tabular-nums text-floral-pink"
-              data-field="summary-quantity"
-            >
-              1
-            </span>
+            <span class="summary-qty-value" data-field="summary-quantity">1</span>
             <button
-              class="grid size-7 place-items-center text-floral-pink transition hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-30"
+              class="summary-qty-btn"
               type="button"
               data-summary-increase=""
             >
@@ -918,14 +904,14 @@
             </button>
           </div>
           <button
-            class="grid size-7 place-items-center rounded-control text-text-muted transition hover:bg-brand-soft hover:text-danger disabled:cursor-not-allowed disabled:opacity-50"
+            class="summary-remove-btn"
             type="button"
             data-summary-remove=""
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="13"
-              height="13"
+              width="14"
+              height="14"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

@@ -874,12 +874,10 @@
             <span class="stock-indicator-dot" aria-hidden="true"></span>
             <span data-field="cart-stock"></span>
           </p>
-          <div class="flex shrink-0 items-center gap-1.5">
-            <div
-              class="inline-flex items-center rounded-control border border-border bg-surface-muted"
-            >
+          <div class="flex shrink-0 items-center gap-2">
+            <div class="summary-qty-stepper">
               <button
-                class="grid size-7 place-items-center text-floral-pink transition hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-30"
+                class="summary-qty-btn"
                 type="button"
                 data-checkout-decrease=""
               >
@@ -899,14 +897,11 @@
                   <path d="M5 12h14"></path>
                 </svg>
               </button>
-              <span
-                class="min-w-6 text-center text-xs font-semibold tabular-nums text-floral-pink"
-                data-field="checkout-quantity"
-              >
+              <span class="summary-qty-value" data-field="checkout-quantity">
                 1
               </span>
               <button
-                class="grid size-7 place-items-center text-floral-pink transition hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-30"
+                class="summary-qty-btn"
                 type="button"
                 data-checkout-increase=""
               >
@@ -929,14 +924,14 @@
               </button>
             </div>
             <button
-              class="grid size-7 place-items-center rounded-control text-text-muted transition hover:bg-brand-soft hover:text-danger disabled:cursor-not-allowed disabled:opacity-50"
+              class="summary-remove-btn"
               type="button"
               data-checkout-remove=""
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="13"
-                height="13"
+                width="14"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
