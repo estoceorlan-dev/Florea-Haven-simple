@@ -294,9 +294,96 @@ if (await pageReady) {
       });
     else void change().catch(showError);
   });
+  function validateProductForm() {
+    const rawName = form.elements.name.value.trim();
+    const rawSku = form.elements.sku.value;
+    const trimmedSku = rawSku.trim();
+    const rawCategory = form.elements.categoryId.value.trim();
+    const rawSlug = form.elements.slug.value;
+    const trimmedSlug = rawSlug.trim();
+    const rawPrice = form.elements.price.value.trim();
+    const rawStock = form.elements.stockQuantity.value.trim();
+    const rawDescription = form.elements.description.value.trim();
+
+    const missing = [];
+    if (!rawName) missing.push('Product name');
+    if (!trimmedSku) missing.push('SKU');
+    if (!rawCategory) missing.push('Category');
+    if (rawPrice === '') missing.push('Price');
+    if (rawStock === '') missing.push('Stock quantity');
+    if (!rawDescription) missing.push('Description');
+    if (missing.length > 0) {
+      return new Error(
+        missing.length === 1
+          ? `${missing[0]} is required. Please fill in all required fields.`
+          : `Please fill in all required fields: ${missing.join(', ')}.`,
+      );
+    }
+    if (rawName.length < 2 || rawName.length > 120) {
+      return new Error('Product name must be between 2 and 120 characters.');
+    }
+    if (/\s/.test(rawSku)) {
+      return new Error(
+        'SKU cannot contain spaces. Use letters, numbers, hyphens (-), underscores (_), or periods (.).',
+      );
+    }
+    if (
+      trimmedSku.length < 2 ||
+      trimmedSku.length > 50 ||
+      !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(trimmedSku)
+    ) {
+      return new Error(
+        'Invalid SKU format. Start with a letter or number and use only letters, numbers, hyphens (-), underscores (_), or periods (.) with no spaces.',
+      );
+    }
+    if (/\s/.test(rawSlug)) {
+      return new Error(
+        'Slug cannot contain spaces. Use lowercase letters, numbers, and hyphens (-).',
+      );
+    }
+    if (
+      trimmedSlug &&
+      (trimmedSlug.length < 2 ||
+        trimmedSlug.length > 60 ||
+        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(trimmedSlug))
+    ) {
+      return new Error(
+        'Slug must use lowercase letters, numbers, and single hyphens only (no spaces).',
+      );
+    }
+    const price = Number(rawPrice);
+    if (!Number.isFinite(price) || price < 0 || price > 9999999.99) {
+      return new Error('Enter a valid price between 0 and 9,999,999.99.');
+    }
+    const stockQuantity = Number(rawStock);
+    if (!Number.isInteger(stockQuantity) || stockQuantity < 0) {
+      return new Error('Stock quantity must be a whole number (0 or greater).');
+    }
+    return null;
+  }
+
+  form.addEventListener('input', (event) => {
+    if (event.target.name === 'sku' && /\s/.test(event.target.value)) {
+      showError(
+        new Error(
+          'SKU cannot contain spaces. Use letters, numbers, hyphens (-), underscores (_), or periods (.).',
+        ),
+        modalError,
+      );
+      return;
+    }
+    showError(null, modalError);
+  });
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (busy) return;
+    const validationError = validateProductForm();
+    if (validationError) {
+      showError(validationError, modalError);
+      modalError?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return;
+    }
     const values = formValues(form);
     const input = {
       name: values.name,
@@ -355,6 +442,7 @@ if (await pageReady) {
       await load();
     } catch (error) {
       showError(error, modalError);
+      modalError?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } finally {
       busy = false;
       setBusy(form, false);
