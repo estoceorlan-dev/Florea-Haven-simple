@@ -1,6 +1,7 @@
 import { cartApi } from './api.js';
 import { getDemoProductImage } from './demo-images.js';
-import { pageReady, refreshCartBadge, showPage } from './common.js';
+import { currentUser, pageReady, refreshCartBadge, showPage } from './common.js';
+import { isStaffOrAdminUser, showOrderingRestrictedDialog } from './purchase.js';
 import {
   find,
   findAll,
@@ -42,7 +43,15 @@ export const availabilityMessage = (item) =>
         : `Only ${item.product.stock_quantity} available · ${item.quantity} in your cart`;
 
 if (document.body.dataset.page === 'cart' && (await pageReady)) {
-  const items = new Map();
+  if (isStaffOrAdminUser(currentUser)) {
+    const content = find('#cart-content');
+    if (content) content.hidden = true;
+    const empty = find('#cart-empty');
+    if (empty) empty.hidden = false;
+    showPage();
+    showOrderingRestrictedDialog();
+  } else {
+    const items = new Map();
   let currentCart = null;
   let selectedIds = null;
   let knownIds = new Set();
@@ -247,7 +256,8 @@ if (document.body.dataset.page === 'cart' && (await pageReady)) {
   find('#cart-checkout-link')?.addEventListener('click', (event) => {
     if (!selectedIds || selectedIds.size === 0) event.preventDefault();
   });
-  await load();
-  watchAvailability(load);
-  showPage();
+    await load();
+    watchAvailability(load);
+    showPage();
+  }
 }

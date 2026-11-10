@@ -72,10 +72,12 @@ def protected(role=None):
                 raise failure
             allowed_roles = {"admin", "staff"} if role == "staff" else {role}
             if role and g.user["role"] not in allowed_roles:
-                label = "Administrator" if role == "admin" else "Staff"
-                raise ApiError(
-                    403, f"{role.upper()}_ACCESS_REQUIRED", f"{label} access is required."
-                )
+                if role == "customer":
+                    message = "Admin and staff accounts cannot place orders. Sign in with a customer account to shop."
+                else:
+                    label = "Administrator" if role == "admin" else "Staff"
+                    message = f"{label} access is required."
+                raise ApiError(403, f"{role.upper()}_ACCESS_REQUIRED", message)
             return fn(*args, **kwargs)
 
         return wrapped

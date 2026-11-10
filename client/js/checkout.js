@@ -1,6 +1,7 @@
 import { cartApi, orderApi } from './api.js';
 import { pageReady, currentUser, refreshCartBadge, showPage } from './common.js';
 import { availabilityMessage, readSavedSelectedIds, saveSelectedIds } from './cart.js';
+import { isStaffOrAdminUser, showOrderingRestrictedDialog } from './purchase.js';
 import { paymentSubmitLabels, simulateCashlessPayment } from './payment-simulation.js';
 import {
   find,
@@ -15,7 +16,14 @@ import {
 
 if (await pageReady) {
   const form = find('#checkout-form');
-  form.elements.recipientName.value = currentUser.name;
+  if (isStaffOrAdminUser(currentUser)) {
+    form.hidden = true;
+    const emptyState = find('#empty-state');
+    if (emptyState) emptyState.hidden = false;
+    showPage();
+    showOrderingRestrictedDialog();
+  } else {
+    form.elements.recipientName.value = currentUser.name;
   form.elements.country.value = 'Philippines';
   const items = new Map();
   let cart = null;
@@ -233,7 +241,8 @@ if (await pageReady) {
       if (hasUnavailable) find('[type=submit]', form).disabled = true;
     }
   });
-  await load();
-  showPage();
-  watchAvailability(load, 10000);
+    await load();
+    showPage();
+    watchAvailability(load, 10000);
+  }
 }

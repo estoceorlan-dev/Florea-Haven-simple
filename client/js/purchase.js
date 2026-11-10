@@ -14,8 +14,89 @@ import {
   showError,
 } from './helpers.js';
 
+export function isStaffOrAdminUser(user = currentUser) {
+  return Boolean(user && ['admin', 'staff'].includes(user.role));
+}
+
+export function showOrderingRestrictedDialog(trigger) {
+  const roleLabel = currentUser?.role === 'staff' ? 'Staff' : 'Administrator';
+  const workspaceHref =
+    currentUser?.role === 'staff' ? '/admin/products' : '/admin';
+  const message = `${roleLabel} accounts are for catalog and order management only and cannot add items to the cart or place customer orders. Please sign in with a customer account to shop.`;
+
+  showError(new Error(message));
+
+  const existing = document.getElementById('ordering-restricted-dialog');
+  if (existing) existing.remove();
+
+  const dialog = document.createElement('dialog');
+  dialog.id = 'ordering-restricted-dialog';
+  dialog.className =
+    'm-auto w-[min(100%-1.5rem,28rem)] overflow-hidden rounded-[1.5rem] border border-border bg-surface p-0 text-text shadow-high backdrop:bg-black/60';
+  dialog.setAttribute('aria-label', `Ordering restricted for ${roleLabel} accounts`);
+
+  const header = document.createElement('div');
+  header.className = 'border-b border-border bg-surface-muted px-5 py-4';
+
+  const eyebrow = document.createElement('p');
+  eyebrow.className = 'eyebrow text-danger';
+  eyebrow.textContent = `${roleLabel} Account Restriction`;
+
+  const title = document.createElement('h2');
+  title.className = 'mt-1.5 font-display text-2xl text-floral-pink';
+  title.textContent = 'Ordering Not Available';
+
+  header.append(eyebrow, title);
+
+  const body = document.createElement('div');
+  body.className = 'p-5 grid gap-4 text-xs leading-5 text-text-muted';
+
+  const description = document.createElement('p');
+  description.textContent = `You are currently signed in as ${currentUser?.name ?? roleLabel} (${roleLabel}). ${message}`;
+
+  const actions = document.createElement('div');
+  actions.className = 'flex flex-col-reverse gap-2.5 pt-1 sm:flex-row sm:justify-end';
+
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'button-secondary';
+  closeBtn.textContent = 'Close';
+
+  const workspaceLink = document.createElement('a');
+  workspaceLink.href = workspaceHref;
+  workspaceLink.className = 'button-primary';
+  workspaceLink.textContent = `Go to ${roleLabel.toLowerCase()} workspace`;
+
+  actions.append(closeBtn, workspaceLink);
+  body.append(description, actions);
+  dialog.append(header, body);
+  document.body.append(dialog);
+
+  function close() {
+    dialog.close();
+    dialog.remove();
+    trigger?.focus();
+  }
+
+  closeBtn.addEventListener('click', close);
+  dialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    close();
+  });
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) close();
+  });
+
+  dialog.showModal();
+  closeBtn.focus();
+}
+
 // The dialog, review panel, and delivery form are in the page's HTML template.
 export function openPurchase(product, trigger, initialQuantity = 1) {
+  if (isStaffOrAdminUser()) {
+    showOrderingRestrictedDialog(trigger);
+    return;
+  }
   const dialog = copyTemplate('purchase-template');
   document.body.append(dialog);
   let item = product;
@@ -177,6 +258,10 @@ export function enablePurchases(products) {
   document.addEventListener('click', async (event) => {
     const button = event.target.closest('[data-buy-now], [data-add-cart]');
     if (!button) return;
+    if (isStaffOrAdminUser()) {
+      showOrderingRestrictedDialog(button);
+      return;
+    }
     const id = button.closest('[data-product-id]')?.dataset.productId;
     const product = products.get(id);
     if (!product) return;

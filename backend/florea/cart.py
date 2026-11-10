@@ -126,13 +126,13 @@ def check_availability(product_id, quantity):
 
 
 @bp.get("")
-@protected()
+@protected("customer")
 def cart():
     return jsonify(data={"cart": get_cart(g.user["id"])})
 
 
 @bp.post("/items")
-@protected()
+@protected("customer")
 def add_item():
     data = v.body()
     product_id = v.identifier(data.get("productId"), "productId")
@@ -162,7 +162,7 @@ def add_item():
 
 
 @bp.put("/items/<item_id>")
-@protected()
+@protected("customer")
 def update_item(item_id):
     item_id = v.identifier(item_id)
     quantity = v.number(v.body().get("quantity"), "quantity", 1, 99, integer=True)
@@ -184,7 +184,7 @@ def update_item(item_id):
 
 
 @bp.delete("/items/<item_id>")
-@protected()
+@protected("customer")
 def delete_item(item_id):
     item_id = v.identifier(item_id)
     user_id = g.user["id"]

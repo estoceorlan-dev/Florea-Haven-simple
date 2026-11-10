@@ -1,7 +1,7 @@
 import { catalogApi } from './api.js';
 import { getDemoProductImage } from './demo-images.js';
 import { pageReady } from './common.js';
-import { enablePurchases, openPurchase } from './purchase.js';
+import { enablePurchases, isStaffOrAdminUser, openPurchase } from './purchase.js';
 import {
   find,
   findAll,
@@ -11,6 +11,7 @@ import {
   setImage,
   updateStock,
   showError,
+  showNotice,
   watchAvailability,
   formValues,
   updatePagination,
@@ -194,6 +195,11 @@ if (search) {
 
 if (await pageReady) {
   enablePurchases(products);
+  if (isStaffOrAdminUser()) {
+    showNotice(
+      'Viewing storefront with an administrator or staff account. Ordering and cart actions are restricted to customer accounts.',
+    );
+  }
   if (page === 'product') {
     const id = /^\/products\/([^/]+)$/.exec(location.pathname)?.[1] ?? query.get('id');
     const loadProduct = async () => {
