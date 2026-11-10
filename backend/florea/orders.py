@@ -364,6 +364,61 @@ def customer_order(order_id):
     return jsonify(data=get_order(v.identifier(order_id), g.user["id"]))
 
 
+@bp.post("/orders/<order_id>/cancel")
+@protected("customer")
+def cancel_customer_order(order_id):
+    order_id = v.identifier(order_id)
+    payload = v.body({"reason", "details"})
+    reason = v.string(payload.get("reason"), "reason", 2, 160)
+    details = v.string(payload.get("details"), "details", 0, 300) if payload.get("details") else ""
+    with get_db().transaction():
+        order = one(
+            "SELECT id, status, payment_method, total_amount FROM orders WHERE id = %s AND user_id = %s FOR UPDATE",
+            (order_id, g.user["id"]),
+        )
+        if not order:
+            missing("order")
+        if order["status"] not in {"pending", "confirmed", "preparing"}:
+            raise ApiError(
+                409,
+                "ORDER_NOT_CANCELLABLE",
+                f"Orders with status '{order['status']}' can no longer be cancelled.",
+                {"currentStatus": order["status"]},
+            )
+        items = rows(
+            "SELECT product_id, quantity FROM order_items WHERE order_id = %s ORDER BY product_id",
+            (order_id,),
+        )
+        for item in items:
+            if item["product_id"]:
+                execute(
+                    "UPDATE products SET stock_quantity = stock_quantity + %s, updated_at = CURRENT_TIMESTAMP WHERE id = %s",
+                    (item["quantity"], item["product_id"]),
+                )
+        payment_labels = {
+            "gcash": "GCash",
+            "maya": "Maya",
+            "cash_on_delivery": "Cash on Delivery",
+        }
+        payment_label = payment_labels.get(order["payment_method"], "original payment method")
+        reason_summary = f"{reason} ({details})" if details else reason
+        status_note = (
+            f"Cancelled by customer (Reason: {reason_summary}). "
+            f"Refund of ₱{order['total_amount']:,.2f} processed via {payment_label} and items returned to stock."
+        )
+        execute(
+            """UPDATE orders
+               SET status = 'cancelled',
+                   estimated_delivery = 'Order cancelled & refunded',
+                   status_note = %s,
+                   status_updated_at = CURRENT_TIMESTAMP,
+                   updated_at = CURRENT_TIMESTAMP
+               WHERE id = %s""",
+            (status_note, order_id),
+        )
+        return jsonify(data=get_order(order_id, g.user["id"]))
+
+
 @bp.get("/admin/orders")
 @protected("staff")
 def admin_orders():

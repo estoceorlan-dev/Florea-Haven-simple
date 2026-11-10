@@ -187,4 +187,5 @@ export const orderApi = {
   getOrders: (params = {}, options = {}) =>
     request(`/api/orders${toQueryString(params)}`, options),
   getOrder: (id, options = {}) => request(`/api/orders/${id}`, options),
+  cancelOrder: (id, input) => jsonRequest(`/api/orders/${id}/cancel`, 'POST', input),
 };

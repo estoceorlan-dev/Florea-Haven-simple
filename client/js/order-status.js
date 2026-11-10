@@ -454,3 +454,275 @@ export function showOrderToast({
   stack.append(toast);
   return { close: removeToast };
 }
+
+export const customerCancellationReasons = [
+  'Changed my mind or ordered by mistake',
+  'Need to update delivery address or contact details',
+  'Found a different arrangement or item',
+  'Delivery time is longer than expected',
+  'Duplicate order placed',
+  'Other reason',
+];
+
+function formatPeso(amount) {
+  return new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency: 'PHP',
+    maximumFractionDigits: 2,
+  }).format(Number(amount || 0));
+}
+
+function formatPaymentLabel(method) {
+  if (method === 'gcash') return 'GCash';
+  if (method === 'maya') return 'Maya';
+  return 'Cash on Delivery (Voided & Refunded)';
+}
+
+export function openOrderCancelledSummaryDialog({ order, reason, details, trigger }) {
+  const orderCode = order.id.slice(0, 8).toUpperCase();
+  const dialog = makeElement(
+    'dialog',
+    'm-auto w-[min(100%-1.5rem,30rem)] overflow-hidden rounded-[1.5rem] border border-border bg-surface p-0 text-text shadow-high backdrop:bg-black/60',
+  );
+  dialog.setAttribute('aria-label', `Order #${orderCode} cancelled and refunded`);
+
+  const header = makeElement(
+    'div',
+    'border-b border-border bg-surface-muted px-5 py-4',
+  );
+  const topRow = makeElement('div', 'flex items-center justify-between gap-3');
+  const eyebrow = makeElement(
+    'p',
+    'eyebrow text-clay',
+    `Cancellation & Refund · Order #${orderCode}`,
+  );
+  const closeBtn = makeElement('button', 'order-action-btn', 'Close');
+  closeBtn.type = 'button';
+  topRow.append(eyebrow, closeBtn);
+
+  const title = makeElement(
+    'h2',
+    'mt-1.5 font-display text-2xl text-floral-pink',
+    'Order Cancelled & Refunded',
+  );
+  const subtitle = makeElement(
+    'p',
+    'mt-1 text-xs leading-5 text-text-muted',
+    'Your order has been successfully cancelled, your refund has been processed, and the reserved items have been returned to stock.',
+  );
+  header.append(topRow, title, subtitle);
+
+  const body = makeElement('div', 'p-5 grid gap-4 text-xs');
+  const summaryCard = makeElement(
+    'div',
+    'rounded-card border border-border bg-surface-muted p-4 grid gap-2.5',
+  );
+
+  const summaryRows = [
+    ['Order reference', `#${orderCode}`],
+    ['Order status', 'Cancelled & Refunded'],
+    ['Refund amount', formatPeso(order.total_amount)],
+    ['Refund method', formatPaymentLabel(order.payment_method)],
+    ['Cancellation reason', details ? `${reason} (${details})` : reason],
+    ['Inventory status', 'Reserved stock returned to catalog'],
+  ];
+
+  for (const [label, value] of summaryRows) {
+    const row = makeElement(
+      'div',
+      'flex items-start justify-between gap-3 border-b border-border pb-2 last:border-b-0 last:pb-0',
+    );
+    const labelEl = makeElement('span', 'text-text-muted', label);
+    const valueEl = makeElement(
+      'strong',
+      'text-right font-semibold text-floral-pink',
+      value,
+    );
+    row.append(labelEl, valueEl);
+    summaryCard.append(row);
+  }
+
+  const actions = makeElement('div', 'flex justify-end pt-1');
+  const doneBtn = makeElement('button', 'button-primary', 'Done');
+  doneBtn.type = 'button';
+  actions.append(doneBtn);
+
+  body.append(summaryCard, actions);
+  dialog.append(header, body);
+  document.body.append(dialog);
+
+  function close() {
+    dialog.close();
+    dialog.remove();
+    trigger?.focus();
+  }
+
+  closeBtn.addEventListener('click', close);
+  doneBtn.addEventListener('click', close);
+  dialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    close();
+  });
+
+  dialog.showModal();
+  doneBtn.focus();
+}
+
+export function openCancelOrderDialog({ order, trigger, onConfirm }) {
+  const orderCode = order.id.slice(0, 8).toUpperCase();
+  const dialog = makeElement(
+    'dialog',
+    'm-auto w-[min(100%-1.5rem,30rem)] overflow-hidden rounded-[1.5rem] border border-border bg-surface p-0 text-text shadow-high backdrop:bg-black/60',
+  );
+  dialog.setAttribute('aria-label', `Cancel Order #${orderCode}`);
+
+  const header = makeElement(
+    'div',
+    'border-b border-border bg-surface-muted px-5 py-4',
+  );
+  const topRow = makeElement('div', 'flex items-center justify-between gap-3');
+  const eyebrow = makeElement(
+    'p',
+    'eyebrow text-danger',
+    `Cancel Order · Order #${orderCode}`,
+  );
+  const closeBtn = makeElement('button', 'order-action-btn', 'Close');
+  closeBtn.type = 'button';
+  topRow.append(eyebrow, closeBtn);
+
+  const title = makeElement(
+    'h2',
+    'mt-1.5 font-display text-2xl text-floral-pink',
+    'Cancel & Refund Order',
+  );
+  const subtitle = makeElement(
+    'p',
+    'mt-1 text-xs leading-5 text-text-muted',
+    `Select a reason for cancelling Order #${orderCode} (${formatPeso(order.total_amount)}). Your order will be refunded and reserved stock will be returned immediately.`,
+  );
+  header.append(topRow, title, subtitle);
+
+  const form = makeElement('form', 'p-5 grid gap-4');
+  form.noValidate = true;
+  const errorBox = makeElement('p', 'form-alert text-xs', '');
+  errorBox.hidden = true;
+  errorBox.setAttribute('role', 'alert');
+
+  const reasonFieldset = makeElement('fieldset', 'grid gap-2');
+  const legend = makeElement(
+    'legend',
+    'mb-1 text-xs font-semibold text-floral-pink',
+    'Reason for cancellation',
+  );
+  reasonFieldset.append(legend);
+
+  customerCancellationReasons.forEach((reasonText, index) => {
+    const optionLabel = makeElement(
+      'label',
+      'flex cursor-pointer items-center gap-2.5 rounded-control border border-border bg-surface px-3 py-2 text-xs text-text transition hover:border-border-strong',
+    );
+    const radio = makeElement('input', 'accent-floral-pink');
+    radio.type = 'radio';
+    radio.name = 'cancelReason';
+    radio.value = reasonText;
+    if (index === 0) radio.checked = true;
+    const textSpan = makeElement('span', '', reasonText);
+    optionLabel.append(radio, textSpan);
+    reasonFieldset.append(optionLabel);
+  });
+
+  const detailsField = makeElement('div', 'form-field');
+  const detailsLabel = makeElement(
+    'label',
+    '',
+    'Additional details (optional)',
+  );
+  detailsLabel.htmlFor = 'cancel-order-details';
+  const detailsInput = makeElement('textarea', 'form-textarea');
+  detailsInput.id = 'cancel-order-details';
+  detailsInput.rows = 2;
+  detailsInput.maxLength = 300;
+  detailsInput.placeholder = 'Share any additional notes about your cancellation…';
+  detailsField.append(detailsLabel, detailsInput);
+
+  const actions = makeElement(
+    'div',
+    'flex flex-col-reverse gap-2.5 pt-1 sm:flex-row sm:justify-end',
+  );
+  const keepBtn = makeElement('button', 'button-secondary', 'Keep order');
+  keepBtn.type = 'button';
+  const confirmBtn = makeElement(
+    'button',
+    'button-danger',
+    'Cancel & refund order',
+  );
+  confirmBtn.type = 'submit';
+  actions.append(keepBtn, confirmBtn);
+
+  form.append(errorBox, reasonFieldset, detailsField, actions);
+  dialog.append(header, form);
+  document.body.append(dialog);
+
+  function close() {
+    dialog.close();
+    dialog.remove();
+  }
+
+  closeBtn.addEventListener('click', () => {
+    close();
+    trigger?.focus();
+  });
+  keepBtn.addEventListener('click', () => {
+    close();
+    trigger?.focus();
+  });
+  dialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    close();
+    trigger?.focus();
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const selectedRadio = form.querySelector('input[name="cancelReason"]:checked');
+    const reason = selectedRadio?.value ?? '';
+    const details = detailsInput.value.trim();
+    if (!reason) {
+      errorBox.textContent = 'Please select a cancellation reason.';
+      errorBox.hidden = false;
+      return;
+    }
+    if (reason === 'Other reason' && details.length < 2) {
+      errorBox.textContent =
+        'Please provide a brief explanation for "Other reason".';
+      errorBox.hidden = false;
+      detailsInput.focus();
+      return;
+    }
+    errorBox.hidden = true;
+    confirmBtn.disabled = true;
+    keepBtn.disabled = true;
+    confirmBtn.textContent = 'Cancelling & refunding…';
+    try {
+      const updatedOrder = await onConfirm({ reason, details });
+      close();
+      openOrderCancelledSummaryDialog({
+        order: updatedOrder ?? order,
+        reason,
+        details,
+        trigger,
+      });
+    } catch (error) {
+      errorBox.textContent =
+        error?.details?.[0]?.message ??
+        error?.message ??
+        'Could not cancel order. Please try again.';
+      errorBox.hidden = false;
+      confirmBtn.disabled = false;
+      keepBtn.disabled = false;
+      confirmBtn.textContent = 'Cancel & refund order';
+    }
+  });
+
+  dialog.showModal();
+}

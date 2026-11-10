@@ -21,10 +21,13 @@ import {
 } from './helpers.js';
 import {
   buildDefaultStatusNote,
+  openCancelOrderDialog,
   orderStatusLabels,
   showOrderToast,
 } from './order-status.js';
 import { paymentMethodLabels } from './payment-simulation.js';
+
+const CANCELLABLE_STATUSES = ['pending', 'confirmed', 'preparing'];
 
 const CATEGORY_FALLBACK_IMAGES = {
   flowers:
@@ -135,6 +138,10 @@ export function fillOrderDetails(order) {
   });
   for (const badge of findAll('.order-status-badge'))
     badge.dataset.status = order.status;
+  const cancelSection = find('[data-cancel-order-section]');
+  if (cancelSection) {
+    cancelSection.hidden = !CANCELLABLE_STATUSES.includes(order.status);
+  }
   const address = order.delivery_address;
   fillText(document, {
     'delivery-address': [
@@ -179,7 +186,7 @@ export function fillOrderDetails(order) {
   );
 }
 
-function buildOrderCatalogCard(order, previewUrl) {
+function buildOrderCatalogCard(order, previewUrl, onCancelSuccess) {
   const row = copyTemplate('order-card-template');
   const productTitle = formatOrderProductTitle(order);
   fillText(row, {
@@ -223,6 +230,24 @@ function buildOrderCatalogCard(order, previewUrl) {
   find('.order-status-badge', row).dataset.status = order.status;
   for (const link of findAll('[data-order-link]', row)) {
     link.href = '/orders/' + order.id;
+  }
+  const cancelBtn = find('[data-cancel-order]', row);
+  if (cancelBtn) {
+    const canCancel = CANCELLABLE_STATUSES.includes(order.status);
+    cancelBtn.hidden = !canCancel;
+    if (canCancel) {
+      cancelBtn.addEventListener('click', () => {
+        openCancelOrderDialog({
+          order,
+          trigger: cancelBtn,
+          onConfirm: async (input) => {
+            const response = await orderApi.cancelOrder(order.id, input);
+            await onCancelSuccess?.(response.data);
+            return response.data;
+          },
+        });
+      });
+    }
   }
   return row;
 }
@@ -294,7 +319,7 @@ if (
         grid.className = 'order-catalog-grid';
         grid.append(
           ...matching.map(({ order, previewUrl }) =>
-            buildOrderCatalogCard(order, previewUrl),
+            buildOrderCatalogCard(order, previewUrl, load),
           ),
         );
 
@@ -443,9 +468,11 @@ if (
       /^\/orders\/([^/]+)/.exec(location.pathname)?.[1] ??
       new URLSearchParams(location.search).get('id');
     let previousSignature = null;
+    let currentOrder = null;
     async function load() {
       try {
         const order = (await orderApi.getOrder(id)).data;
+        currentOrder = order;
         const signature = `${order.status}|${order.status_updated_at ?? ''}|${order.courier_name ?? ''}|${order.estimated_delivery ?? ''}`;
         if (previousSignature && previousSignature !== signature) {
           showOrderToast({
@@ -474,6 +501,23 @@ if (
       } catch (error) {
         showError(error);
       }
+    }
+    const cancelBtn = find('[data-cancel-order]');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        if (!currentOrder) return;
+        openCancelOrderDialog({
+          order: currentOrder,
+          trigger: cancelBtn,
+          onConfirm: async (input) => {
+            const response = await orderApi.cancelOrder(currentOrder.id, input);
+            currentOrder = response.data;
+            previousSignature = `${currentOrder.status}|${currentOrder.status_updated_at ?? ''}|${currentOrder.courier_name ?? ''}|${currentOrder.estimated_delivery ?? ''}`;
+            fillOrderDetails(currentOrder);
+            return currentOrder;
+          },
+        });
+      });
     }
     await load();
     watchAvailability(load);
