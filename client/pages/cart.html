@@ -259,7 +259,63 @@
         </form>
       </header>
 
-      <main id="main-content" hidden="" tabindex="-1">
+      <div
+        class="page-shell py-12 sm:py-16"
+        data-loading-for="main-content"
+        role="status"
+        aria-live="polite"
+      >
+        <span class="sr-only">Loading cart...</span>
+        <div aria-hidden="true">
+          <div class="grid gap-4 mb-8">
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-line skeleton-line-medium"></div>
+          </div>
+          <div class="skeleton-columns">
+            <div class="grid gap-4">
+              <div class="skeleton-card skeleton-row">
+                <div class="skeleton skeleton-thumbnail"></div>
+                <div class="skeleton-copy">
+                  <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                  <div class="skeleton skeleton-line"></div>
+                  <div class="skeleton skeleton-line skeleton-line-short"></div>
+                </div>
+              </div>
+              <div class="skeleton-card skeleton-row">
+                <div class="skeleton skeleton-thumbnail"></div>
+                <div class="skeleton-copy">
+                  <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                  <div class="skeleton skeleton-line"></div>
+                  <div class="skeleton skeleton-line skeleton-line-short"></div>
+                </div>
+              </div>
+              <div class="skeleton-card skeleton-row">
+                <div class="skeleton skeleton-thumbnail"></div>
+                <div class="skeleton-copy">
+                  <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                  <div class="skeleton skeleton-line"></div>
+                  <div class="skeleton skeleton-line skeleton-line-short"></div>
+                </div>
+              </div>
+            </div>
+            <div class="skeleton-card">
+              <div class="skeleton-copy">
+                <div class="skeleton skeleton-line skeleton-line-short"></div>
+                <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                <div class="skeleton skeleton-line"></div>
+                <div class="skeleton skeleton-button"></div>
+              </div>
+              <div class="skeleton-copy">
+                <div class="skeleton skeleton-line skeleton-line-short"></div>
+                <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                <div class="skeleton skeleton-line"></div>
+                <div class="skeleton skeleton-button"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <main id="main-content" hidden="" tabindex="-1" aria-busy="true">
         <p id="page-error" class="form-alert mb-6" role="alert" hidden=""></p>
         <p
           id="page-notice"

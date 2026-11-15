@@ -364,11 +364,52 @@
               </div>
             </div>
           </header>
+          <div
+            class="admin-content-shell py-8 sm:py-10"
+            data-loading-for="main-content"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="sr-only">Loading categories...</span>
+            <div aria-hidden="true">
+              <div class="grid gap-4 mb-8">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-line skeleton-line-medium"></div>
+              </div>
+              <div class="grid gap-4">
+                <div class="skeleton-card skeleton-row">
+                  <div class="skeleton skeleton-thumbnail"></div>
+                  <div class="skeleton-copy">
+                    <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                    <div class="skeleton skeleton-line"></div>
+                    <div class="skeleton skeleton-line skeleton-line-short"></div>
+                  </div>
+                </div>
+                <div class="skeleton-card skeleton-row">
+                  <div class="skeleton skeleton-thumbnail"></div>
+                  <div class="skeleton-copy">
+                    <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                    <div class="skeleton skeleton-line"></div>
+                    <div class="skeleton skeleton-line skeleton-line-short"></div>
+                  </div>
+                </div>
+                <div class="skeleton-card skeleton-row">
+                  <div class="skeleton skeleton-thumbnail"></div>
+                  <div class="skeleton-copy">
+                    <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                    <div class="skeleton skeleton-line"></div>
+                    <div class="skeleton skeleton-line skeleton-line-short"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <main
             id="main-content"
             class="admin-content-shell py-8 sm:py-10"
             hidden=""
             tabindex="-1"
+            aria-busy="true"
           >
             <p id="page-error" class="form-alert mb-6" role="alert" hidden=""></p>
             <p

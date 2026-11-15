@@ -426,7 +426,27 @@
               to feel personal and quietly special.
             </p>
           </div>
-          <div class="grid gap-4 sm:grid-cols-3 lg:gap-6" id="category-list"></div>
+          <div
+            class=""
+            data-loading-for="category-list"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="sr-only">Loading collections...</span>
+            <div aria-hidden="true">
+              <div class="grid gap-4 sm:grid-cols-3 lg:gap-6">
+                <div class="skeleton category-card"></div>
+                <div class="skeleton category-card"></div>
+                <div class="skeleton category-card"></div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="grid gap-4 sm:grid-cols-3 lg:gap-6"
+            id="category-list"
+            hidden=""
+            aria-busy="true"
+          ></div>
         </section>
         <section
           class="rounded-[2rem] border-y border-border/70 bg-surface-muted/50 py-14 sm:mx-4 sm:rounded-[2.5rem] sm:py-20 lg:py-24"
@@ -457,7 +477,60 @@
                 </svg>
               </a>
             </div>
-            <div class="product-grid featured-grid" id="product-list"></div>
+            <div
+              class=""
+              data-loading-for="product-list"
+              role="status"
+              aria-live="polite"
+            >
+              <span class="sr-only">Loading products...</span>
+              <div aria-hidden="true">
+                <div class="product-grid featured-grid">
+                  <div class="skeleton-card">
+                    <div class="skeleton skeleton-media"></div>
+                    <div class="skeleton-copy">
+                      <div class="skeleton skeleton-line skeleton-line-short"></div>
+                      <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                      <div class="skeleton skeleton-line"></div>
+                      <div class="skeleton skeleton-button"></div>
+                    </div>
+                  </div>
+                  <div class="skeleton-card">
+                    <div class="skeleton skeleton-media"></div>
+                    <div class="skeleton-copy">
+                      <div class="skeleton skeleton-line skeleton-line-short"></div>
+                      <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                      <div class="skeleton skeleton-line"></div>
+                      <div class="skeleton skeleton-button"></div>
+                    </div>
+                  </div>
+                  <div class="skeleton-card">
+                    <div class="skeleton skeleton-media"></div>
+                    <div class="skeleton-copy">
+                      <div class="skeleton skeleton-line skeleton-line-short"></div>
+                      <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                      <div class="skeleton skeleton-line"></div>
+                      <div class="skeleton skeleton-button"></div>
+                    </div>
+                  </div>
+                  <div class="skeleton-card">
+                    <div class="skeleton skeleton-media"></div>
+                    <div class="skeleton-copy">
+                      <div class="skeleton skeleton-line skeleton-line-short"></div>
+                      <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                      <div class="skeleton skeleton-line"></div>
+                      <div class="skeleton skeleton-button"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="product-grid featured-grid"
+              id="product-list"
+              hidden=""
+              aria-busy="true"
+            ></div>
             <section
               id="empty-state"
               hidden=""

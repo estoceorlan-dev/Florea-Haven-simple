@@ -404,8 +404,26 @@
                   <div>
                     <h2 class="filter-heading">Collection</h2>
                     <div
+                      class="mt-3 w-full"
+                      data-loading-for="category-filters"
+                      role="status"
+                      aria-live="polite"
+                    >
+                      <span class="sr-only">Loading collection filters...</span>
+                      <div aria-hidden="true">
+                        <div class="grid gap-2">
+                          <div class="skeleton skeleton-filter"></div>
+                          <div class="skeleton skeleton-filter"></div>
+                          <div class="skeleton skeleton-filter"></div>
+                          <div class="skeleton skeleton-filter"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
                       class="mt-3 flex flex-col items-start gap-1"
                       id="category-filters"
+                      hidden=""
+                      aria-busy="true"
                     >
                       <a
                         class="filter-option filter-option-active"
@@ -460,7 +478,123 @@
                 <p class="mb-4 min-h-5 text-xs text-text-muted" role="status">
                   Availability refreshes every 30 seconds while you browse.
                 </p>
-                <div class="product-grid" id="product-list"></div>
+                <div
+                  class=""
+                  data-loading-for="product-list"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <span class="sr-only">Loading products...</span>
+                  <div aria-hidden="true">
+                    <div class="product-grid">
+                      <div class="skeleton-card">
+                        <div class="skeleton skeleton-media"></div>
+                        <div class="skeleton-copy">
+                          <div class="skeleton skeleton-line skeleton-line-short"></div>
+                          <div
+                            class="skeleton skeleton-line skeleton-line-medium"
+                          ></div>
+                          <div class="skeleton skeleton-line"></div>
+                          <div class="skeleton skeleton-button"></div>
+                        </div>
+                      </div>
+                      <div class="skeleton-card">
+                        <div class="skeleton skeleton-media"></div>
+                        <div class="skeleton-copy">
+                          <div class="skeleton skeleton-line skeleton-line-short"></div>
+                          <div
+                            class="skeleton skeleton-line skeleton-line-medium"
+                          ></div>
+                          <div class="skeleton skeleton-line"></div>
+                          <div class="skeleton skeleton-button"></div>
+                        </div>
+                      </div>
+                      <div class="skeleton-card">
+                        <div class="skeleton skeleton-media"></div>
+                        <div class="skeleton-copy">
+                          <div class="skeleton skeleton-line skeleton-line-short"></div>
+                          <div
+                            class="skeleton skeleton-line skeleton-line-medium"
+                          ></div>
+                          <div class="skeleton skeleton-line"></div>
+                          <div class="skeleton skeleton-button"></div>
+                        </div>
+                      </div>
+                      <div class="skeleton-card">
+                        <div class="skeleton skeleton-media"></div>
+                        <div class="skeleton-copy">
+                          <div class="skeleton skeleton-line skeleton-line-short"></div>
+                          <div
+                            class="skeleton skeleton-line skeleton-line-medium"
+                          ></div>
+                          <div class="skeleton skeleton-line"></div>
+                          <div class="skeleton skeleton-button"></div>
+                        </div>
+                      </div>
+                      <div class="skeleton-card">
+                        <div class="skeleton skeleton-media"></div>
+                        <div class="skeleton-copy">
+                          <div class="skeleton skeleton-line skeleton-line-short"></div>
+                          <div
+                            class="skeleton skeleton-line skeleton-line-medium"
+                          ></div>
+                          <div class="skeleton skeleton-line"></div>
+                          <div class="skeleton skeleton-button"></div>
+                        </div>
+                      </div>
+                      <div class="skeleton-card">
+                        <div class="skeleton skeleton-media"></div>
+                        <div class="skeleton-copy">
+                          <div class="skeleton skeleton-line skeleton-line-short"></div>
+                          <div
+                            class="skeleton skeleton-line skeleton-line-medium"
+                          ></div>
+                          <div class="skeleton skeleton-line"></div>
+                          <div class="skeleton skeleton-button"></div>
+                        </div>
+                      </div>
+                      <div class="skeleton-card">
+                        <div class="skeleton skeleton-media"></div>
+                        <div class="skeleton-copy">
+                          <div class="skeleton skeleton-line skeleton-line-short"></div>
+                          <div
+                            class="skeleton skeleton-line skeleton-line-medium"
+                          ></div>
+                          <div class="skeleton skeleton-line"></div>
+                          <div class="skeleton skeleton-button"></div>
+                        </div>
+                      </div>
+                      <div class="skeleton-card">
+                        <div class="skeleton skeleton-media"></div>
+                        <div class="skeleton-copy">
+                          <div class="skeleton skeleton-line skeleton-line-short"></div>
+                          <div
+                            class="skeleton skeleton-line skeleton-line-medium"
+                          ></div>
+                          <div class="skeleton skeleton-line"></div>
+                          <div class="skeleton skeleton-button"></div>
+                        </div>
+                      </div>
+                      <div class="skeleton-card">
+                        <div class="skeleton skeleton-media"></div>
+                        <div class="skeleton-copy">
+                          <div class="skeleton skeleton-line skeleton-line-short"></div>
+                          <div
+                            class="skeleton skeleton-line skeleton-line-medium"
+                          ></div>
+                          <div class="skeleton skeleton-line"></div>
+                          <div class="skeleton skeleton-button"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="product-grid"
+                  id="product-list"
+                  hidden=""
+                  aria-busy="true"
+                ></div>
                 <section
                   id="empty-state"
                   hidden=""

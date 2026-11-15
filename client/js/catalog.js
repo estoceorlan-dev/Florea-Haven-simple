@@ -1,6 +1,7 @@
 import { catalogApi } from './api.js';
 import { getDemoProductImage } from './demo-images.js';
 import { pageReady } from './common.js';
+import { setLoading } from './loading.js';
 import { enablePurchases, isStaffOrAdminUser, openPurchase } from './purchase.js';
 import {
   find,
@@ -104,68 +105,75 @@ async function loadCatalog() {
     showError(null);
   } catch (error) {
     showError(error);
+  } finally {
+    setLoading('#product-list', false);
   }
 }
 
 async function loadCategories() {
-  const categories = (await catalogApi.getCategories()).data;
-  if (page === 'home') {
-    const cards = await Promise.all(
-      categories.map(async (category, index) => {
-        const card = copyTemplate('category-card-template');
-        const [fallbackLabel, fallbackPhoto] = categoryPhotos[category.slug] ?? [
-          'Chosen with care',
-          categoryPhotos.flowers[1],
-        ];
-        const demoImage = category.top_product_id
-          ? await getDemoProductImage(category.top_product_id)
-          : null;
-        const previewPhoto =
-          category.top_product_image_url ?? demoImage ?? fallbackPhoto;
-        const label = category.top_product_name
-          ? `Top seller · ${category.top_product_name}`
-          : fallbackLabel;
-        const soldSuffix =
-          category.top_product_sold_quantity > 0
-            ? ` · ${category.top_product_sold_quantity} sold`
-            : '';
-        fillText(card, {
-          name: category.name,
-          label,
-          number:
-            { flowers: '01', seeds: '02', perfumes: '03' }[category.slug] ??
-            String(index + 1).padStart(2, '0'),
-          count: `${category.product_count} pieces${soldSuffix}`,
-        });
-        card.href = `/products?category=${category.slug}`;
-        setImage(find('img', card), previewPhoto, '');
-        return card;
-      }),
-    );
-    find('#category-list').replaceChildren(...cards);
-  }
-  const list = find('#category-filters');
-  if (list) {
-    const make = (slug, title, count) => {
-      const link = copyTemplate('category-filter-template');
-      fillText(link, { name: title, count });
-      find('[data-field=count]', link).hidden = !slug;
-      const params = new URLSearchParams(query);
-      params.delete('page');
-      if (slug) params.set('category', slug);
-      else params.delete('category');
-      link.href = '/products' + (params.size ? '?' + params : '');
-      const active = (query.get('category') ?? '') === slug;
-      link.classList.toggle('filter-option-active', active);
-      if (active) link.setAttribute('aria-current', 'page');
-      return link;
-    };
-    list.replaceChildren(
-      make('', 'All pieces'),
-      ...categories.map((category) =>
-        make(category.slug, category.name, category.product_count),
-      ),
-    );
+  try {
+    const categories = (await catalogApi.getCategories()).data;
+    if (page === 'home') {
+      const cards = await Promise.all(
+        categories.map(async (category, index) => {
+          const card = copyTemplate('category-card-template');
+          const [fallbackLabel, fallbackPhoto] = categoryPhotos[category.slug] ?? [
+            'Chosen with care',
+            categoryPhotos.flowers[1],
+          ];
+          const demoImage = category.top_product_id
+            ? await getDemoProductImage(category.top_product_id)
+            : null;
+          const previewPhoto =
+            category.top_product_image_url ?? demoImage ?? fallbackPhoto;
+          const label = category.top_product_name
+            ? `Top seller · ${category.top_product_name}`
+            : fallbackLabel;
+          const soldSuffix =
+            category.top_product_sold_quantity > 0
+              ? ` · ${category.top_product_sold_quantity} sold`
+              : '';
+          fillText(card, {
+            name: category.name,
+            label,
+            number:
+              { flowers: '01', seeds: '02', perfumes: '03' }[category.slug] ??
+              String(index + 1).padStart(2, '0'),
+            count: `${category.product_count} pieces${soldSuffix}`,
+          });
+          card.href = `/products?category=${category.slug}`;
+          setImage(find('img', card), previewPhoto, '');
+          return card;
+        }),
+      );
+      find('#category-list').replaceChildren(...cards);
+    }
+    const list = find('#category-filters');
+    if (list) {
+      const make = (slug, title, count) => {
+        const link = copyTemplate('category-filter-template');
+        fillText(link, { name: title, count });
+        find('[data-field=count]', link).hidden = !slug;
+        const params = new URLSearchParams(query);
+        params.delete('page');
+        if (slug) params.set('category', slug);
+        else params.delete('category');
+        link.href = '/products' + (params.size ? '?' + params : '');
+        const active = (query.get('category') ?? '') === slug;
+        link.classList.toggle('filter-option-active', active);
+        if (active) link.setAttribute('aria-current', 'page');
+        return link;
+      };
+      list.replaceChildren(
+        make('', 'All pieces'),
+        ...categories.map((category) =>
+          make(category.slug, category.name, category.product_count),
+        ),
+      );
+    }
+  } finally {
+    setLoading('#category-list', false);
+    setLoading('#category-filters', false);
   }
 }
 
@@ -211,6 +219,8 @@ if (await pageReady) {
         showError(null);
       } catch (error) {
         showError(error);
+      } finally {
+        setLoading('#product-details', false, { showContent: products.has(id) });
       }
     };
     await loadProduct();
@@ -218,12 +228,11 @@ if (await pageReady) {
       openPurchase(products.get(id), find('[data-buy-now]'), query.get('quantity'));
     watchAvailability(loadProduct);
   } else {
-    try {
-      await loadCategories();
-    } catch (error) {
-      showError(error);
-    }
-    await loadCatalog();
+    const [categoriesResult] = await Promise.allSettled([
+      loadCategories(),
+      loadCatalog(),
+    ]);
+    if (categoriesResult.status === 'rejected') showError(categoriesResult.reason);
     watchAvailability(loadCatalog);
   }
 }

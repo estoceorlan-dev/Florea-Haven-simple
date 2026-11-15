@@ -4,6 +4,7 @@
     background: var(--color-skeleton);
     position: relative;
     overflow: hidden;
+    border-radius: var(--radius-control);
   }
   .skeleton:after {
     background: linear-gradient(90deg, #0000, #fffaf8b8, #0000);
@@ -24,6 +25,102 @@
   .skeleton:after {
     content: '';
     animation: skeleton-shimmer 1.65s var(--ease-standard) infinite;
+  }
+  .skeleton-card {
+    overflow: hidden;
+    min-width: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .skeleton-media {
+    aspect-ratio: 1;
+    margin: 0.5rem 0.5rem 0;
+    border-radius: 1.1rem;
+  }
+  .skeleton-detail-media {
+    aspect-ratio: 4/5;
+    border-radius: 0;
+  }
+  .skeleton-copy {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+  .skeleton-line {
+    height: 1rem;
+    width: 100%;
+  }
+  .skeleton-line-short {
+    width: 40%;
+  }
+  .skeleton-line-medium {
+    width: 70%;
+  }
+  .skeleton-title {
+    width: min(75%, 24rem);
+    height: 2.5rem;
+  }
+  .skeleton-button {
+    height: 3rem;
+  }
+  .skeleton-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+  .skeleton-thumbnail {
+    flex: none;
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+  .skeleton-row .skeleton-copy {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+  }
+  .skeleton-detail-copy {
+    display: grid;
+    align-content: center;
+    gap: 1.75rem;
+  }
+  .skeleton-filter {
+    width: 100%;
+    height: 2.75rem;
+  }
+  .skeleton-chart {
+    height: 20rem;
+  }
+  .skeleton-columns {
+    display: grid;
+    align-items: start;
+    gap: 2rem;
+  }
+  .skeleton-metrics {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (width >= 640px) {
+    .skeleton-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (width >= 1024px) {
+    .skeleton-columns {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.5fr);
+    }
+    .skeleton-metrics {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  [data-loading-for] .category-card:hover {
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton:after {
+      animation: none;
+    }
   }
   /* #endregion */
   /* #region Motion lift */

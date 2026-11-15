@@ -288,9 +288,33 @@
               Back to the collection
             </a>
           </div>
+          <div
+            class="page-shell pb-20 md:pb-28"
+            data-loading-for="product-details"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="sr-only">Loading product details...</span>
+            <div aria-hidden="true">
+              <div class="grid gap-9 md:grid-cols-[1.05fr_0.95fr] md:gap-16 lg:gap-24">
+                <div class="skeleton skeleton-detail-media rounded-card"></div>
+                <div class="skeleton-detail-copy">
+                  <div class="skeleton skeleton-line skeleton-line-short"></div>
+                  <div class="skeleton skeleton-title"></div>
+                  <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                  <div class="skeleton skeleton-line"></div>
+                  <div class="skeleton skeleton-line"></div>
+                  <div class="skeleton skeleton-line skeleton-line-medium"></div>
+                  <div class="skeleton skeleton-button"></div>
+                </div>
+              </div>
+            </div>
+          </div>
           <article
             class="page-shell grid gap-9 pb-20 md:grid-cols-[1.05fr_0.95fr] md:gap-16 md:pb-28 lg:gap-24"
             id="product-details"
+            hidden=""
+            aria-busy="true"
           >
             <div
               class="relative aspect-[4/5] overflow-hidden rounded-card bg-brand-soft"

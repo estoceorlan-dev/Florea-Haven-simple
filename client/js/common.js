@@ -1,4 +1,5 @@
 import { adminOrderApi, authApi, cartApi, orderApi } from './api.js';
+import { setLoading } from './loading.js';
 import {
   find,
   findAll,
@@ -25,8 +26,7 @@ import {
 export let currentUser = null;
 
 export function showPage() {
-  const main = find('main');
-  if (main) main.hidden = false;
+  setLoading(find('main'), false);
 }
 
 function applyTheme(preference = getStoredThemePreference()) {
@@ -474,8 +474,7 @@ export const pageReady = (async () => {
   } catch (error) {
     if (error.status !== 401 && document.body.dataset.access !== 'public') {
       showError(error);
-      const main = find('main');
-      if (main) main.hidden = false;
+      showPage();
       return false;
     }
   }
@@ -499,7 +498,7 @@ export const pageReady = (async () => {
   for (const link of findAll('[data-admin-only]'))
     link.hidden = currentUser.role !== 'admin';
   updateUser(currentUser);
-  if (access === 'public' || document.body.dataset.page === 'admin-home') showPage();
+  if (access === 'public') showPage();
   void refreshCartBadge();
   void refreshAdminOrdersBadge();
   void checkCustomerOrderNotifications();
